@@ -42,9 +42,15 @@ inst_commandBuffer commandControlTop(
 
 // Instance of header/RAM pipe here
 
+// Instance of RAM Read/Write interface
+
 // Instance of RAM/Flash pipe here
 
-// Instance of 
+// Instance of Flash Read/Write interface 
+
+// Instance of Flash/Output pipe here
+// (Wraps around back to pixel/layer counter stage)
+
 
 
 endmodule

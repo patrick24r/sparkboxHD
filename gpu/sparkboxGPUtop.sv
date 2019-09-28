@@ -23,12 +23,12 @@ module sparkboxGPUtop(
 // Instance of the oscillator'/ main clock
 
 // Instance of the controller generating control signals for the GPU
-inst_controller gpuControllerTop(
+gpuControllerTop inst_controller(
 
 );
 
 // Instance of the command control module
-inst_commandBuffer commandControlTop(
+ commandControlTop inst_commandBuffer(
 
 );
 
@@ -39,6 +39,9 @@ inst_commandBuffer commandControlTop(
 // Instance of counter/header info pipe here
 
 // Instance of layer header info module here
+layerHeadersTop inst_layerheaderTop(
+
+);
 
 // Instance of header/RAM pipe here
 

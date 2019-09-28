@@ -3,7 +3,7 @@
 
 /**
  * This is the main file for the startup firmware on 
- * the Sparkboxkbox
+ * the SparkboxHD
  *
  */
  
@@ -20,7 +20,7 @@ int32_t main()
 			// User selects the game they want to play
 			gameNum = spk.userSelectGame();
 			// Error reading SD card, show error and try again
-		} while (gameNum < 0)
+		} while (gameNum < 0);
 	
 		// Play the next level if it is valid
 		while (!spk.validLevel(level)) {

@@ -2,12 +2,14 @@
 // E.g. Stores register 0 for all layers
 module layerRegisterMem(
     input clk,
-    input reset,
-    input [4:0] readAddr,
+    input reset, // master reset, active low
+    input [4:0] readAddr1,
+    input [4:0] readAddr2,
     input writeEn,
     input [4:0] writeAddr,
     input [15:0] writeData,
-    output [15:0] readData
+    output [15:0] readData1,
+    output [15:0] readData2
 );
 
 reg [15:0] layerRegisters [4:0];
@@ -20,18 +22,22 @@ initial begin
 end
 
 // Asynchronous reads
-assign readData = layerRegisters[readAddr];
+assign readData1 = layerRegisters[readAddr1];
+assign readData2 = layerRegisters[readAddr2];
 
+// Synchronous writes/reset
 // Writes on posedge
-always @(posedge clk) begin
+always_ff @(posedge clk or negedge reset) begin
     if (!reset) begin
-    // Reset all data to 0
+        // Reset all data to 0
         for (1 = 0; i < 32; i = i + 1) begin
             layerRegisters[i] <= 16'd0;
         end
     end
     else begin
-        layerRegisters[writeAddr] <= writeData;
+        if (writeEn) begin
+            layerRegisters[writeAddr] <= writeData;
+        end
     end
 end
 

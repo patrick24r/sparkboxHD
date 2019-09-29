@@ -1,7 +1,8 @@
 #include "main.h"
 
-// Main function must take 
-int32_t main(*PeripheralHandles handles)
+int32_t main(void)
 {
-    // User code here
+  // User code here
+
+
 }

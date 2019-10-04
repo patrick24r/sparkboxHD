@@ -1,11 +1,11 @@
-`define Y_MAX 1080
-
 module ycnt
 (
     input x, // Looking for x position to change to change y position
     input reset, // 0 = reset, 1 = no reset
     output reg [10:0] y // Y is value from 0 to 1919 (1920 pixels)
 );
+
+parameter Y_MAX = 1080;
 
 initial y = 0;
 

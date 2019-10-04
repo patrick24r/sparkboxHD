@@ -13,7 +13,17 @@ module sparkboxGPUtop(
 // ----------------------------------------------------------------------------
 // The GPU works by taking commands from an external source
 //
-// Commands only work when the device is not in the process of updating a frame
+// All commands can be given at any time, but special behavior occurs during a frame render
+// 
+// Write commands are put on hold during a render event. Therefore, read commands sent during a render
+// event will have priority over write commands sent during that same render. 
+//
+// For example, if before a render event, suppose the color stored in layer 3's palette color slot 5 is Red.
+// Suppose a render event begins, then the following commands are received in this order:
+// - Write to Palette Layer 3 Color 5 value (Color Gray)
+// - Read from Palette Layer 3 Color 5
+// The read command will execute first and return the color Red, while the write command will execute 
+// immediately following the render event's completion
 // 
 // Once a frame is rendered, all commands sent during that frame execute
 // before the next frame is rendered
@@ -23,12 +33,12 @@ module sparkboxGPUtop(
 // Instance of the oscillator'/ main clock
 
 // Instance of the controller generating control signals for the GPU
-inst_controller gpuControllerTop(
+controllerTop inst_controller(
 
 );
 
 // Instance of the command control module
-inst_commandBuffer commandControlTop(
+commandControlTop inst_commandBuffer(
 
 );
 
@@ -39,18 +49,15 @@ inst_commandBuffer commandControlTop(
 // Instance of counter/header info pipe here
 
 // Instance of layer header info module here
+layerHeadersTop inst_layerheaderTop(
+
+);
 
 // Instance of header/RAM pipe here
 
-// Instance of RAM Read/Write interface
-
 // Instance of RAM/Flash pipe here
 
-// Instance of Flash Read/Write interface 
-
-// Instance of Flash/Output pipe here
-// (Wraps around back to pixel/layer counter stage)
-
+// Instance of 
 
 
 endmodule

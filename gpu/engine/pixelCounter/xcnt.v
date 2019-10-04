@@ -1,16 +1,16 @@
-`define X_MAX 1920
-
 module xcnt
 (
-    input pixelInc, // Looking for layer to change to change x position
+    input layer, // Looking for layer to change to change x position
     input reset, // 0 = reset, 1 = no reset
     output reg [10:0] x // X is value from 0 to 1919 (1920 pixels)
 );
 
+parameter X_MAX = 1920;
+
 initial x = 0;
 
 // Whenever layer changes, may need to update x
-always @(posedge pixelInc) begin
+always @(posedge layer) begin
     if (!reset)
         x <= 0;
     else begin

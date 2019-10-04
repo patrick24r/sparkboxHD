@@ -1,10 +1,14 @@
+`include "controllerTop.v"
+`include "commandControlTop.v"
+`include "layerHeadersTop.v"
+`include "layerRamTop.v"
+
 // This is the top level file for the sparkbox GPU
 module sparkboxGPUtop(
     input cmd_clk_in,           // Clock for receiving GPU commands
     input cmd_inout,            // Command direction bit
-    inout [7:0] command,        // Specifies the command for the GPU
-    inout [15:0] commandData,   // Specifies the data for the given command
-    output cmd_clk_out          // Clock for sending GPU read data
+    inout [15:0] command,        // Specifies the command for the GPU
+    inout [15:0] commandData    // Specifies the data for the given command
     // Include RAM / Flash external control signals here
     // Include HDMI outputs here
 );
@@ -54,6 +58,11 @@ layerHeadersTop inst_layerheaderTop(
 );
 
 // Instance of header/RAM pipe here
+
+// Instance of RAM module here
+layerRamTop inst_layerRamTop(
+
+);
 
 // Instance of RAM/Flash pipe here
 

@@ -1,8 +1,8 @@
 `include "layerHeaderInfo.v"
 
 module layerHeadersTop(
-    input clk, // Master clock
-    input reset, // Reset and clear sprite data
+    input clk, // GPU clock
+    input reset, // Reset
     input resetLayer, // Reset and clear an individual layer's data
     input [4:0] ctrlReadWriteLayer, // Controller port to r/w to given layer
     input [2:0] layerRegisterIndex, // Index of Sprite register to r/w

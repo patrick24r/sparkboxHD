@@ -1,5 +1,5 @@
 module commandBuffer(
-    input gpuClock,
+    input pipelineClock,
     input reset,
     input gpuBusy, // 1 = GPU busy/rendering, 0 = GPU free/not rendering
     input [15:0] interfaceCmd, // Command received from interface
@@ -7,76 +7,6 @@ module commandBuffer(
     output reg [15:0] gpuCommand, // Command to send to GPU
     output reg [15:0] gpuData // Data to send to GPU
 );
-
-/* **************************************************************************
- *                              COMMAND USAGE
- * **************************************************************************
- * Commands are 16 bits [15:0] and are accompanied by 16 bit data
- * command[15:14] - Command Type
- *      00 - Reset
- *      01 - Read
- *      10 - Write
- *      11 - Reserved
- *          (potentially used to dynamically change size in
- *          RAM/Flash of each sprite/font)
- *          (Use to manually trigger frame updates and set frame rate)
- *
- *
- * command[13:11] - Target GPU memory
- *      000 - All GPU memories
- *      001 - layer headers
- *      010 - RAM (layer data storage)
- *      011 - Palette
- *      100 - Flash (text glyph data)
- *      101 - Reserved
- *      11X - Reserved
- *
- *
- * COMMAND PARAMETERS
- * If targeting pallete, layer headers, or RAM memory
- * --------------------------------------------------
- * command[5:0]
- *      000000 - Layer 0
- *      000001 - Layer 1
- *      ...
- *      ...
- *      011111 - Layer 31
- *      1xxxxx - All layers
- *
- * If targeting layer headers
- * ------------------------------------------------
- * command[8:6] - Layer header register address
- * command[10:9] - Reserved
- *
- * If targeting palette
- * ------------------------------------------------
- * command[10:6] - Palette index
- *
- * If targeting RAM
- * ------------------------------------------------
- * command[10:6] - Reserved
- *
- *
- * If targeting Flash memory (Should not be done by normal game)
- * ---------------------------------------------------
- * command[10:0] - Font index (2^11 theoretical possible fonts)
- * Only target flash if you really know what you're doing
- *
- * Each font takes up a fixed number of bytes in flash memory
- * Therefore only an index number is needed to determine the start write address
- *
- *
- * Notes: NOT all combinations of command pieces are supported
- * For example, reading/writing all gpu memories is not supported
- * Block reads/writes: RAM and Flash memories use block reads/writes
- * For block writes, continuously clock in the same write command (used to find start address)
- * and update data line bit values
- * For block reads, continuously clock in the same read command (used to find start address)
- * and data lines will update with read data
- *
- */
-
-
 
 // Buffers for commands
 reg [15:0] commandBuffer [3:0];
@@ -99,7 +29,7 @@ initial begin
 end
 
 // Shift buffers
-always @(posedge gpuClock or negedge reset) begin
+always @(posedge pipelineClock or negedge reset) begin
     if (!reset) begin
         // Reset all internal registers
         for (i = 0; i < 15; i = i + 1) begin
@@ -135,7 +65,7 @@ end
 
 
 // On the negative edge of the clock, determine the buffer offset for the next buffer shift
-always @(negedge gpuClock) begin
+always @(negedge pipelineClock) begin
     if (gpuBusy) begin
         // Stall GPU write/reset/special commands
         // Works by using a buffer offset that identifies the first

@@ -2,7 +2,7 @@
 
 // This module interfaces and controls all layer header data
 module layerHeaderInfo(
-    input clk, // Master clock
+    input clk, // GPU clock
     input reset, // 0 = reset, 1 = no reset
     input resetLayerEn, // 0 = reset layer, 1 = no reset layer 
     input [4:0] readLayerPipe, // Layer header to read for pipeline

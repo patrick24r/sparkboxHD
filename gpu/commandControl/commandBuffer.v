@@ -11,9 +11,10 @@ module commandBuffer(
 // Buffers for commands
 reg [15:0] commandBuffer [3:0];
 reg [15:0] dataBuffer [3:0];
+integer i;
 
 // Offset of buffer for next valid command/data pair
-unsigned reg [3:0] bufferOffset;
+reg unsigned [3:0] bufferOffset;
 reg offsetFound;
 
 // Initialize outputs and registers to all 0's

@@ -2,6 +2,7 @@ module ramAddressCalc(
     input unsigned [31:0] startAddress,
     input isSprite,
     input unsigned [7:0] frameNumber,
+	 input unsigned [15:0] height,
     input unsigned [15:0] width,
     input unsigned [15:0] xOffset,
     input unsigned [15:0] yOffset,
@@ -18,9 +19,9 @@ always begin
             (yOffset * width) + xOffset; // Pixel X offset
     end
     else begin
-        endaaddress <= startAddress +
+        endAddress <= startAddress +
             (characterIndex << 1); // 2 characters / 16 bits
     end
 end
 
-endmodule;
+endmodule

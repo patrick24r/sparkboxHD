@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22E22C8
-set_global_assignment -name TOP_LEVEL_ENTITY sparkboxGPUtop
+set_global_assignment -name TOP_LEVEL_ENTITY pixelCounterTop
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:59:40  SEPTEMBER 15, 2019"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"
@@ -54,10 +54,13 @@ set_global_assignment -name EDA_BOARD_DESIGN_TIMING_TOOL "Stamp (Timing)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT STAMP -section_id eda_board_design_timing
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name QIP_FILE sdram/sdramInterface_phy_alt_mem_phy_pll.qip
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VERILOG_FILE layerHeaders/layerRegisterMem.v
 set_global_assignment -name VERILOG_FILE layerHeaders/layerHeadersTop.v
 set_global_assignment -name VERILOG_FILE layerHeaders/layerHeaderInfo.v
+set_global_assignment -name QIP_FILE sdram/sdramInterface_phy_alt_mem_phy_pll.qip
 set_global_assignment -name VERILOG_FILE layerRam/ramAddressCalc.v
 set_global_assignment -name VERILOG_FILE layerRam/layerRamTop.v
 set_global_assignment -name VERILOG_FILE palette/paletteTop.v
@@ -74,3 +77,4 @@ set_global_assignment -name VERILOG_FILE engine/pixelCounter/layercnt.v
 set_global_assignment -name VERILOG_FILE engine/engineTop.v
 set_global_assignment -name VERILOG_FILE sparkboxGPUtop.v
 set_global_assignment -name QIP_FILE sdram/sdramInterface.qip
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -10,16 +10,23 @@ module paletteMem(
 );
 
 reg [15:0] paletteMemory [9:0];
+integer i;
 
 // Asynchronous reads as long as not under reset
 assign readData1 = rst ? paletteMemory[addr1] : {16{1'b0}};
 assign readData2 = rst ? paletteMemory[addr2] : {16{1'b0}};
 
+initial begin
+	for (i = 0; i < 1024; i = i + 1) begin
+		 paletteMemory[i] = 16'd0;
+   end
+end
+
 
 always @(posedge clk or negedge rst) begin
     if (!rst) begin
         // Reset all data to 0
-        for (1 = 0; i < 1024; i = i + 1) begin
+        for (i = 0; i < 1024; i = i + 1) begin
             paletteMemory[i] <= 16'd0;
         end
     end

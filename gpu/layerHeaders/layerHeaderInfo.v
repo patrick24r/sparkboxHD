@@ -1,4 +1,4 @@
-`include "layerRegisterMem.v"
+//`include "layerRegisterMem.v"
 
 // This module interfaces and controls all layer header data
 module layerHeaderInfo(
@@ -11,17 +11,23 @@ module layerHeaderInfo(
     input ctrlWriteEn, // 1 = write enabled, 0 = write disabled
     input [15:0] ctrlWriteData, // Data to write to specified register
     output [127:0] layerInfo, // All layer header info that was read (for pipeline)
-    output [15:0] ctrlReadData // Data controller is reading (for controller)
+    output reg [15:0] ctrlReadData // Data controller is reading (for controller)
 );
 // Layer to which to write data
-wire [4:0] writeLayer;
+reg [4:0] writeLayer;
 // Write enable wires for each register
-wire write0en, write1en, write2en, write3en, write4en, write5en, write6en, write7en;
+reg write0en, write1en, write2en, write3en, write4en, write5en, write6en, write7en;
 // Write data wires for each register
-wire [15:0] writeData;
+reg [15:0] writeData;
 // Controller read data
-wire [15:0] ctrlRead0, [15:0] ctrlRead1, [15:0] ctrlRead2, [15:0] ctrlRead3;
-wire [15:0] ctrlRead4, [15:0] ctrlRead5, [15:0] ctrlRead6, [15:0] ctrlRead7;
+reg [15:0] ctrlRead0;
+reg [15:0] ctrlRead1;
+reg [15:0] ctrlRead2;
+reg [15:0] ctrlRead3;
+reg [15:0] ctrlRead4;
+reg [15:0] ctrlRead5;
+reg [15:0] ctrlRead6;
+reg [15:0] ctrlRead7;
 
 // 8 memory modules for each layer register
 layerRegisterMem reg_inst_0(clk, reset, readLayerPipe, readWriteLayerCtrl, write0en, writeLayer, writeData, layerInfo[15:0], ctrlRead0);
@@ -53,7 +59,7 @@ always begin
 
     end else begin
         // Not resetting a layer, normal operation
-        writeLayer <= ctrlLayer;
+        writeLayer <= readWriteLayerCtrl;
         // Write controller data
         writeData <= ctrlWriteData;
         // Only enable writing to the register specified by ctrlLayerRegister

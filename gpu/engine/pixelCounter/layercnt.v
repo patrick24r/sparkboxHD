@@ -1,6 +1,5 @@
 // This module keeps track of the current layer being processed
-module layercnt
-(
+module layercnt(
 	input layerInc, 
 	input reset, 
 	output reg [4:0] layer

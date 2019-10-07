@@ -1,5 +1,5 @@
-`include "commandBuffer.v"
-`include "commandInterface.v"
+//`include "commandBuffer.v"
+//`include "commandInterface.v"
 
 // NOTE: Pipeline clock used to ensure only 1 command executes per stage of pipeline
 // We DO NOT want multiple commands executing while the pipeline is unmoving

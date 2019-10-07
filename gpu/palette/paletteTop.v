@@ -1,4 +1,4 @@
-`include "paletteMem.sv"
+//`include "paletteMem.v"
 
 module paletteTop(
     input clk,
@@ -10,7 +10,7 @@ module paletteTop(
     input [15:0] controllerWriteData, // Controller write data
     input [4:0] pipeLayer, // Layer for pipeline read
     input [4:0] pipeColor, // Color index for pipeline read
-    output [15:0] controllerReadData, // Controller read data
+    output reg [15:0] controllerReadData, // Controller read data
     output [23:0] pipeReadData, // RGB 888 formatted color data for output
     output pixelFound // 1 = non-transparent pixel exists, 0 = transparent pixel exists
 );
@@ -28,7 +28,7 @@ assign pixelFound = rst ? pipeColor != 0 : 1'b0;
 
 // TODO: Update based on how HDMI wants colors formatted
 // Currently RGB 888 (Using 8 MSB of 16 bit color storage)
-assign pipeReadData = rst ? {allPaletteReads[47:40] allPaletteReads[31:24] allPaletteReads[15:8]} : {24{1'b0}};
+assign pipeReadData = rst ? {allPaletteReads[47:40], allPaletteReads[31:24], allPaletteReads[15:8]} : {24{1'b0}};
 
 // NOTE: The color position 0 is reserved for transparent. 
 // Therefore any and all writes to it are disabled here.
@@ -38,9 +38,9 @@ paletteMem inst_paletteMemR(
     clk,
     rst,
     writeEn && controllerRGB == colorR && controllerColor != 0,
-    {controllerLayer controllerColor},
+    {controllerLayer, controllerColor},
     controllerWriteData,
-    {pipeLayer pipeColor},
+    {pipeLayer, pipeColor},
     allPaletteReads[47:32]
 );
 
@@ -49,9 +49,9 @@ paletteMem inst_paletteMemG(
     clk,
     rst,
     writeEn && controllerRGB == colorG && controllerColor != 0,
-    {controllerLayer controllerColor},
+    {controllerLayer, controllerColor},
     controllerWriteData,
-    {pipeLayer pipeColor},
+    {pipeLayer, pipeColor},
     allPaletteReads[31:16]
 );
 
@@ -60,24 +60,24 @@ paletteMem inst_paletteMemB(
     clk,
     rst,
     writeEn && controllerRGB == colorB && controllerColor != 0,
-    {controllerLayer controllerColor},
+    {controllerLayer, controllerColor},
     controllerWriteData,
-    {pipeLayer pipeColor},
+    {pipeLayer, pipeColor},
     allPaletteReads[15:0]
 );
 
 // MUX for controller reading back color data
 always begin
-    if (!rst)
+    if (!rst) begin
+		  controllerReadData <= 16'd0;
+    end
+    else begin
         case (controllerRGB)
             colorR: controllerReadData <= allPaletteReads[47:32];
             colorG: controllerReadData <= allPaletteReads[31:16];
-            colorB: controllerReadData <= allPaletteReads[15:0]
+            colorB: controllerReadData <= allPaletteReads[15:0];
             colorX: controllerReadData <= 16'd0;
         endcase
-    end
-    else begin
-        controllerReadData <= 16'd0;
     end
 end
 

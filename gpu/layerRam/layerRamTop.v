@@ -5,7 +5,7 @@ module layerRamTop(
 
     input controllerReadEn, // Determines if controller is reading data
     input controllerWriteEn, // Determines if controller is writing data
-    input controller
+    input controller,
 
     output reg doneRam // Done accessing RAM, pipeline can advance
 );
@@ -44,13 +44,12 @@ always @(posedge gpuClock or negedge reset) begin
         // State machine for controlling RAM accesses
         case (state)
         
-        state_reset:
+        state_reset: begin
             // New pipeline data, determine if controller is reading/writing
             if (controllerReadEn) begin
                 // Controller reads take priority
                 state <= state_readController;
-            end
-            else begin
+            end else begin
                 if (controllerWriteEn) begin
                     // Controller writes next state
                     state <= state_write;
@@ -61,18 +60,20 @@ always @(posedge gpuClock or negedge reset) begin
                 end    
             end
 
-            clockCountEn <= 1'b0;
-            doneRam <= 1'b0;
-
-        state_readController:
+            clockCountEn <= 0;
+            doneRam <= 0;
+		  end
+		  
+        state_readController: begin
             // After done reading for the controller,
             // read for the pipeline
             state <= state_readPipeline;
+				
+            doneRam <= 0;
+            clockCountEn <= 0;
+		  end
 
-            doneRam <= 1'b0;
-            clockCountEn <= 1'b0;
-
-        state_readPipeline:
+        state_readPipeline: begin
             // As long as pipeline clock's prior falling edge occured before
             // this state is reached, there should be no error
 
@@ -81,16 +82,18 @@ always @(posedge gpuClock or negedge reset) begin
             else state <= state_readPipeline;
 
             // After this cycle, RAM controller will be done
-            doneRam <= 1'b1;
-            clockCountEn <= 1'b0;
+            doneRam <= 1;
+            clockCountEn <= 0;
+		  end
 
-        state_write:
+        state_write: begin
             // Clock counter indicates the number of cycles that have alrready occured
             if (clockCounter < 5) state <= state_write;
             else state <= state_readPipeline;
 
-            doneRam <= 1'b0;
-            clockCountEn <= 1'b1;
+            doneRam <= 0;
+            clockCountEn <= 1;
+		  end
 
         endcase
     end

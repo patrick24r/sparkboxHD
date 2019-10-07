@@ -13,11 +13,12 @@ module layerRegisterMem(
 );
 
 reg [15:0] layerRegisters [4:0];
+integer i;
 
 // Initialize all data as blank
 initial begin
-    for (1 = 0; i < 32; i = i + 1) begin
-        layerRegisters[i] = 16'd0;
+    for (i = 0; i < 32; i = i + 1) begin
+        layerRegisters[i] = 0;
     end
 end
 
@@ -30,7 +31,7 @@ assign readData2 = reset ? layerRegisters[readAddr2] : {16{1'b0}};
 always @(posedge clk or negedge reset) begin
     if (!reset) begin
         // Reset all data to 0
-        for (1 = 0; i < 32; i = i + 1) begin
+        for (i = 0; i < 32; i = i + 1) begin
             layerRegisters[i] <= 16'd0;
         end
     end

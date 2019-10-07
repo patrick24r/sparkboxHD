@@ -1,7 +1,7 @@
-`include "controllerTop.v"
-`include "commandControlTop.v"
-`include "layerHeadersTop.v"
-`include "layerRamTop.v"
+//`include "controllerTop.v"
+//`include "commandControlTop.v"
+//`include "layerHeadersTop.v"
+//`include "layerRamTop.v"
 
 // This is the top level file for the sparkbox GPU
 module sparkboxGPUtop(

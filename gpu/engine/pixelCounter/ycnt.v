@@ -10,21 +10,14 @@ parameter Y_MAX = 1080;
 initial y = 0;
 
 // Whenever X changes, may need to update Y as well
-always @(x) begin
-    if (!reset)
+always @(x or reset) begin
+    if (!reset || y == Y_MAX - 1)
         y <= 0;
     else begin
-        if (layer == 0) begin
-            // X changed to 0, increment Y
-            if (y < Y_MAX - 1)
-                y <= y + 1;
-            else
-                y <= 0;
-        end
-        else begin
-            // X changed but is now not 0, do not change Y
-            y <= y;
-        end
+		  // X changed to 0, increment Y
+        if (x == 0 && y < Y_MAX - 1) y <= y + 1;
+		  // X did not change to 0, keep y value
+		  else y <= y;
     end
 end
 

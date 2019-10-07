@@ -1,4 +1,4 @@
-`include "layerHeaderInfo.v"
+//`include "layerHeaderInfo.v"
 
 module layerHeadersTop(
     input clk, // GPU clock
@@ -11,19 +11,18 @@ module layerHeadersTop(
     input [4:0] layer, // Layer / Sprite number
     input [10:0] pixelX, // Pixel X position
     input [10:0] pixelY, // Pixel Y position
-    output readFlashEn, // Enable read from flash for fonts
-    output readRamEn, // Enable read from RAM for data
-    output [7:0] layerID, // ID number for the layer specified by the input 'layer'
-    output [15:0] layerWidth, // Width of the font/sprite in pixels
-    output [15:0] layerHeight, // Height of the font/sprite in pixels
-    output [15:0] layerX, // X offset of layer for this pixel
-    output [15:0] layerY, // Y offset of layer for this pixel
-    output [7:0] spriteFrameIndex, // Up to 256 sprite frames per sprite sheet
-    output [15:0] fontIndex, // Selects the font to use (Flash addr calc)
-    output [15:0] characterIndex, // Current index of the character in text string (Flash addr calc)
-    output [15:0] ctrlReadData // Data the controller is reading from layer headers
+    output reg readFlashEn, // Enable read from flash for fonts
+    output reg readRamEn, // Enable read from RAM for data
+    output reg [7:0] layerID, // ID number for the layer specified by the input 'layer'
+    output reg [15:0] layerWidth, // Width of the font/sprite in pixels
+    output reg [15:0] layerHeight, // Height of the font/sprite in pixels
+    output reg signed [15:0] layerX, // X offset of layer for this pixel
+    output reg signed [15:0] layerY, // Y offset of layer for this pixel
+    output reg [7:0] spriteFrameIndex, // Up to 256 sprite frames per sprite sheet
+    output reg [15:0] fontIndex, // Selects the font to use (Flash addr calc)
+    output reg [15:0] characterIndex, // Current index of the character in text string (Flash addr calc)
+    output reg [15:0] ctrlReadData // Data the controller is reading from layer headers
 );
-
 // 32 layers, each with 128 bits
 // Synchronous writes (posedge), asychronous reads (constant reads)
 // 8 * 16 bit "virtual registers" per sprite = 128 total bits per sprite register
@@ -74,8 +73,6 @@ wire [127:0] currLayerHeader;
 // Wire for pixel offset calculations
 
 // Wire for read memory enable bits
-wire layerOnPixel;
-
 // Memory module for layer header info
 layerHeaderInfo layer_head_inst(
     clk, // Master clock
@@ -100,7 +97,7 @@ layerHeaderInfo layer_head_inst(
 // Assign outputs based on header information read
 always begin
     // Determine if reading RAM and Flash is necessary
-    if (currLayerHeader[0])
+    if (currLayerHeader[0]) begin
         // Layer populated
         if (currLayerHeader[1]) begin
             // Sprite layer
@@ -110,21 +107,25 @@ always begin
 
             // Read RAM only if sprite is on current pixel 
             readRamEn <= 
-                ((signed)layerX + 1) > 0 && // Check X bounds (sprite width)
+                (layerX + 1) > 0 && // Check X bounds (sprite width)
                 layerX < currLayerHeader[31:16] &&
-                ((signed)layerY + 1) > 0 && // Check Y bounds (sprite height)
+                (layerY + 1) > 0 && // Check Y bounds (sprite height)
                 layerY < currLayerHeader[47:32];
         end else begin
             // Text layer
 
             // Read flash only if reading RAM
-            readFlashEn <= readRamEn;
+            readFlashEn <= 
+					 (layerX + 1) > 0 && // Check X bounds (num chars * font width)
+                layerX < currLayerHeader[31:16] * currLayerHeader[111:96] &&
+                (layerY + 1) > 0 && // Check Y bounds (font height)
+                layerY < currLayerHeader[47:32];
 
             // Read RAM to find character if text covers pixel
             readRamEn <= 
-                ((signed)layerX + 1) > 0 && // Check X bounds (num chars * font width)
+                (layerX + 1) > 0 && // Check X bounds (num chars * font width)
                 layerX < currLayerHeader[31:16] * currLayerHeader[111:96] &&
-                ((signed)layerY + 1) > 0 && // Check Y bounds (font height)
+                (layerY + 1) > 0 && // Check Y bounds (font height)
                 layerY < currLayerHeader[47:32];
         end
     end else begin
@@ -151,7 +152,7 @@ always begin
     fontIndex <= currLayerHeader[95:80];
 
     // Find index of character to draw on current pixel
-    characterIndex <= (unsigned)layerX / (unsigned)currLayerHeader[95:80];
+    characterIndex <= $unsigned(layerX) / $unsigned(currLayerHeader[95:80]);
 
     
 end

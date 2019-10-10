@@ -6,7 +6,7 @@ module paletteTop(
     input writeEn,
     input [4:0] controllerLayer, // Selects layer for read/write
     input [4:0] controllerColor, // Selects color slot for read/write
-    input [1:0] controllerRGB, // Selecting write/read from 
+    input [1:0] controllerRGB, // Controller RGB select
     input [15:0] controllerWriteData, // Controller write data
     input [4:0] pipeLayer, // Layer for pipeline read
     input [4:0] pipeColor, // Color index for pipeline read

@@ -97,12 +97,12 @@ int32_t SparkboxBIOS::playLevel(int32_t level)
 {
 	// If the code in flash is valid, execute it
 	if (loadedLevelNum >= 0 && loadedLevelNum == level) {
-		// Call level with peripheral handles
-		// Return the next level number
-
 		// Cast LEVEL_START as a function pointer and call it
+    // Return the next level number
 		return ((int32_t(*))LEVEL_START)();
-	}
+	} else {
+    return -1;
+  }
 }
 
 /**

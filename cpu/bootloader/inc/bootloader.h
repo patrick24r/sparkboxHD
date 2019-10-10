@@ -2,7 +2,7 @@
 
 // This contains the enum for all error codes that may occur during the
 // bootloading process
-typedef enum {
+typedef enum : uint16_t {
     NO_ERROR = 0,
     NO_SD,
     BAD_SD_INIT,

@@ -1,8 +1,6 @@
-//`include "commandBuffer.v"
-//`include "commandInterface.v"
-
 // NOTE: Pipeline clock used to ensure only 1 command executes per stage of pipeline
 // We DO NOT want multiple commands executing while the pipeline is unmoving
+// as that could lead to corrupted or missed commands
 
 module commandControlTop(
     input pipelineClk, // Pipeline clock
@@ -51,16 +49,20 @@ module commandControlTop(
  *      ...
  *      ...
  *      011111 - Layer 31
- *      1xxxxx - All layers
+ *      1XXXXX - All Layers (Only valid for reset commands)
  *
  * If targeting layer headers
  * ------------------------------------------------
  * command[8:6] - Layer header register address
- * command[10:9] - Reserved
+ * command[10:8] - Reserved
  *
  * If targeting palette
  * ------------------------------------------------
- * command[10:6] - Palette index
+ * command[10:7] - Palette index / Color slot
+ * command [6:5] - RGB specifier 
+ *      00 - Red
+ *      01 - Green
+ *      10 - Blue
  *
  * If targeting RAM
  * ------------------------------------------------
@@ -115,7 +117,5 @@ commandBuffer inst_commandBuffer(
     gpuCommand,
     gpuData
 );
-
-
 
 endmodule

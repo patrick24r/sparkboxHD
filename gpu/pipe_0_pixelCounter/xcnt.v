@@ -4,7 +4,7 @@ module xcnt(
     output reg unsigned [10:0] x // X is value from 0 to 1919 (1920 pixels)
 );
 
-parameter X_MAX = 1920;
+parameter X_MAX = 1280;
 
 initial x = 0;
 
@@ -13,7 +13,7 @@ always @(posedge pixelInc or negedge reset) begin
     if (!reset)
         x <= 0;
     else begin
-        // Layer changed to 0, 
+        // Update x value
         if (x < X_MAX - 1) x <= x + 1;
         else x <= 0;
     end

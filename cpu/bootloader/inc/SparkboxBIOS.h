@@ -47,13 +47,12 @@ public:
 
 
 private:
-	// Initializes Sparkbox hardware
-	void lowLevelInit(void);
-	// Number of the selected game. -1 for no game / invalid game
-	int32_t currentGameNum;
-	// Number of level loaded for selected game. -1 for no level
-	int32_t loadedLevelNum;
+  // Initializes Sparkbox hardware
+  void lowLevelInit(void);
+  // Number of the selected game. -1 for no game / invalid game
+  int32_t currentGameNum;
+  // Number of level loaded for selected game. -1 for no level
+  int32_t loadedLevelNum;
   // Pointer to GPU class
   SparkboxGpu* gpu;
-
 };

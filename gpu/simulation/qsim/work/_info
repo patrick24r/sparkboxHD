@@ -1,0 +1,96 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/sparkboxHD/gpu/simulation/qsim
+vlayercnt
+Z1 !s110 1570669958
+!i10b 1
+!s100 RiPjW<K[6_m3h^XPl?bKA0
+IZ2GNdYIa?8ezIi5lTf6AM2
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1570669957
+Z3 8sparkboxGPU.vo
+Z4 FsparkboxGPU.vo
+Z5 L0 31
+Z6 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z7 !s108 1570669958.000000
+Z8 !s107 sparkboxGPU.vo|
+Z9 !s90 -work|work|sparkboxGPU.vo|
+!i113 1
+Z10 o-work work
+Z11 tCvgOpt 0
+vlayercnt_vlg_vec_tst
+R1
+!i10b 1
+!s100 GYJU4EmD[1oLnYVAeZYV_1
+IF5i>:6JYcf]WGfg3NPNV_1
+R2
+R0
+w1570669955
+Z12 8pipe_0_sim.vwf.vt
+Z13 Fpipe_0_sim.vwf.vt
+Z14 L0 29
+R6
+r1
+!s85 0
+31
+R7
+!s107 pipe_0_sim.vwf.vt|
+Z15 !s90 -work|work|pipe_0_sim.vwf.vt|
+!i113 1
+R10
+R11
+vpixelCounterTop
+Z16 !s110 1570672487
+!i10b 1
+!s100 @7NhO6GVO_]YdEOZ8nC^Y2
+I8k8WOgkc0hWSfBe`XX=e;1
+R2
+R0
+w1570672486
+R3
+R4
+R5
+R6
+r1
+!s85 0
+31
+Z17 !s108 1570672487.000000
+R8
+R9
+!i113 1
+R10
+R11
+npixel@counter@top
+vpixelCounterTop_vlg_vec_tst
+R16
+!i10b 1
+!s100 Sbk836JgR5EaWO3ebANZj3
+IMTYFoCLPcnT3TCB7CAno_1
+R2
+R0
+w1570672485
+R12
+R13
+R14
+R6
+r1
+!s85 0
+31
+R17
+!s107 pipe_0_sim.vwf.vt|
+R15
+!i113 1
+R10
+R11
+npixel@counter@top_vlg_vec_tst

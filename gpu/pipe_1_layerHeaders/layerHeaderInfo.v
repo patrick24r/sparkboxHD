@@ -20,18 +20,18 @@ reg write0en, write1en, write2en, write3en, write4en, write5en, write6en, write7
 // Write data wires for each register
 reg [15:0] writeData;
 // Controller read data
-reg [15:0] ctrlRead0;
-reg [15:0] ctrlRead1;
-reg [15:0] ctrlRead2;
-reg [15:0] ctrlRead3;
-reg [15:0] ctrlRead4;
-reg [15:0] ctrlRead5;
-reg [15:0] ctrlRead6;
-reg [15:0] ctrlRead7;
+wire [15:0] ctrlRead0;
+wire [15:0] ctrlRead1;
+wire [15:0] ctrlRead2;
+wire [15:0] ctrlRead3;
+wire [15:0] ctrlRead4;
+wire [15:0] ctrlRead5;
+wire [15:0] ctrlRead6;
+wire [15:0] ctrlRead7;
 
 // 8 memory modules for each layer register
 layerRegisterMem reg_inst_0(clk, reset, readLayerPipe, readWriteLayerCtrl, write0en, writeLayer, writeData, layerInfo[15:0], ctrlRead0);
-layerRegisterMem reg_inst_1(clk, reset, readLayerPipe, readWriteLayerCtrl, write1en, writeLayer, writeData, layerInfo[31:15], ctrlRead1);
+layerRegisterMem reg_inst_1(clk, reset, readLayerPipe, readWriteLayerCtrl, write1en, writeLayer, writeData, layerInfo[31:16], ctrlRead1);
 layerRegisterMem reg_inst_2(clk, reset, readLayerPipe, readWriteLayerCtrl, write2en, writeLayer, writeData, layerInfo[47:32], ctrlRead2);
 layerRegisterMem reg_inst_3(clk, reset, readLayerPipe, readWriteLayerCtrl, write3en, writeLayer, writeData, layerInfo[63:48], ctrlRead3);
 layerRegisterMem reg_inst_4(clk, reset, readLayerPipe, readWriteLayerCtrl, write4en, writeLayer, writeData, layerInfo[79:64], ctrlRead4);

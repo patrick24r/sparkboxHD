@@ -1,0 +1,367 @@
+// Copyright (C) 2018  Intel Corporation. All rights reserved.
+// Your use of Intel Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Intel Program License 
+// Subscription Agreement, the Intel Quartus Prime License Agreement,
+// the Intel FPGA IP License Agreement, or other applicable license
+// agreement, including, without limitation, that your use is for
+// the sole purpose of programming logic devices manufactured by
+// Intel and sold by Intel or its authorized distributors.  Please
+// refer to the applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench with test vectors .The test vectors  
+// are exported from a vector file in the Quartus Waveform Editor and apply to  
+// the top level entity of the current Quartus project .The user can use this   
+// testbench to simulate his design using a third-party simulation tool .       
+// *****************************************************************************
+// Generated on "10/11/2019 14:49:06"
+                                                                                
+// Verilog Test Bench (with test vectors) for design :                          layerHeadersTop
+// 
+// Simulation tool : 3rd Party
+// 
+
+`timescale 1 ps/ 1 ps
+module layerHeadersTop_vlg_vec_tst();
+// constants                                           
+// general purpose registers
+reg clk;
+reg [4:0] ctrlReadWriteLayer;
+reg [4:0] layer;
+reg [2:0] layerRegisterIndex;
+reg reset;
+reg resetLayer;
+reg [15:0] writeLayerData;
+reg writeLayerEn;
+// wires                                               
+wire [15:0] ctrlReadData;
+wire [127:0] currLayerHeader;
+
+// assign statements (if any)                          
+layerHeadersTop i1 (
+// port map - connection between master ports and signals/registers   
+	.clk(clk),
+	.ctrlReadData(ctrlReadData),
+	.ctrlReadWriteLayer(ctrlReadWriteLayer),
+	.currLayerHeader(currLayerHeader),
+	.layer(layer),
+	.layerRegisterIndex(layerRegisterIndex),
+	.reset(reset),
+	.resetLayer(resetLayer),
+	.writeLayerData(writeLayerData),
+	.writeLayerEn(writeLayerEn)
+);
+initial 
+begin 
+#1000000 $stop;
+end 
+
+// reset
+initial
+begin
+	reset = 1'b0;
+	reset = #30000 1'b1;
+	reset = #670000 1'b0;
+	reset = #180000 1'b1;
+end 
+
+// resetLayer
+initial
+begin
+	resetLayer = 1'b1;
+end 
+
+// clk
+initial
+begin
+	clk = 1'b1;
+	# 5000;
+	repeat(99)
+	begin
+		clk = 1'b0;
+		clk = #5000 1'b1;
+		# 5000;
+	end
+	clk = 1'b0;
+end 
+// ctrlReadWriteLayer[ 4 ]
+initial
+begin
+	ctrlReadWriteLayer[4] = 1'b0;
+	ctrlReadWriteLayer[4] = #800000 1'b1;
+end 
+// ctrlReadWriteLayer[ 3 ]
+initial
+begin
+	ctrlReadWriteLayer[3] = 1'b0;
+	ctrlReadWriteLayer[3] = #400000 1'b1;
+	ctrlReadWriteLayer[3] = #400000 1'b0;
+end 
+// ctrlReadWriteLayer[ 2 ]
+initial
+begin
+	repeat(2)
+	begin
+		ctrlReadWriteLayer[2] = 1'b0;
+		ctrlReadWriteLayer[2] = #200000 1'b1;
+		# 200000;
+	end
+	ctrlReadWriteLayer[2] = 1'b0;
+end 
+// ctrlReadWriteLayer[ 1 ]
+always
+begin
+	ctrlReadWriteLayer[1] = 1'b0;
+	ctrlReadWriteLayer[1] = #100000 1'b1;
+	#100000;
+end 
+// ctrlReadWriteLayer[ 0 ]
+always
+begin
+	ctrlReadWriteLayer[0] = 1'b0;
+	ctrlReadWriteLayer[0] = #50000 1'b1;
+	#50000;
+end 
+// layerRegisterIndex[ 2 ]
+initial
+begin
+	repeat(12)
+	begin
+		layerRegisterIndex[2] = 1'b0;
+		layerRegisterIndex[2] = #40000 1'b1;
+		# 40000;
+	end
+	layerRegisterIndex[2] = 1'b0;
+end 
+// layerRegisterIndex[ 1 ]
+always
+begin
+	layerRegisterIndex[1] = 1'b0;
+	layerRegisterIndex[1] = #20000 1'b1;
+	#20000;
+end 
+// layerRegisterIndex[ 0 ]
+always
+begin
+	layerRegisterIndex[0] = 1'b0;
+	layerRegisterIndex[0] = #10000 1'b1;
+	#10000;
+end 
+// writeLayerData[ 15 ]
+initial
+begin
+	writeLayerData[15] = 1'b0;
+	writeLayerData[15] = #300000 1'b1;
+	writeLayerData[15] = #100000 1'b0;
+	writeLayerData[15] = #200000 1'b1;
+end 
+// writeLayerData[ 14 ]
+initial
+begin
+	writeLayerData[14] = 1'b1;
+	writeLayerData[14] = #100000 1'b0;
+	writeLayerData[14] = #100000 1'b1;
+	writeLayerData[14] = #100000 1'b0;
+	writeLayerData[14] = #200000 1'b1;
+	writeLayerData[14] = #100000 1'b0;
+	writeLayerData[14] = #200000 1'b1;
+end 
+// writeLayerData[ 13 ]
+initial
+begin
+	writeLayerData[13] = 1'b1;
+	writeLayerData[13] = #100000 1'b0;
+	writeLayerData[13] = #100000 1'b1;
+	writeLayerData[13] = #100000 1'b0;
+	writeLayerData[13] = #100000 1'b1;
+	writeLayerData[13] = #500000 1'b0;
+end 
+// writeLayerData[ 12 ]
+initial
+begin
+	writeLayerData[12] = 1'b1;
+	writeLayerData[12] = #100000 1'b0;
+	writeLayerData[12] = #600000 1'b1;
+	writeLayerData[12] = #100000 1'b0;
+	writeLayerData[12] = #100000 1'b1;
+end 
+// writeLayerData[ 11 ]
+initial
+begin
+	writeLayerData[11] = 1'b1;
+	writeLayerData[11] = #100000 1'b0;
+	writeLayerData[11] = #100000 1'b1;
+	writeLayerData[11] = #100000 1'b0;
+	writeLayerData[11] = #200000 1'b1;
+	writeLayerData[11] = #100000 1'b0;
+	writeLayerData[11] = #300000 1'b1;
+end 
+// writeLayerData[ 10 ]
+initial
+begin
+	writeLayerData[10] = 1'b1;
+	writeLayerData[10] = #200000 1'b0;
+	writeLayerData[10] = #100000 1'b1;
+	writeLayerData[10] = #100000 1'b0;
+	writeLayerData[10] = #300000 1'b1;
+	writeLayerData[10] = #200000 1'b0;
+end 
+// writeLayerData[ 9 ]
+initial
+begin
+	writeLayerData[9] = 1'b0;
+	writeLayerData[9] = #400000 1'b1;
+	writeLayerData[9] = #100000 1'b0;
+	writeLayerData[9] = #100000 1'b1;
+end 
+// writeLayerData[ 8 ]
+initial
+begin
+	writeLayerData[8] = 1'b0;
+	writeLayerData[8] = #300000 1'b1;
+	writeLayerData[8] = #200000 1'b0;
+	writeLayerData[8] = #100000 1'b1;
+	writeLayerData[8] = #100000 1'b0;
+	writeLayerData[8] = #100000 1'b1;
+	writeLayerData[8] = #100000 1'b0;
+end 
+// writeLayerData[ 7 ]
+initial
+begin
+	writeLayerData[7] = 1'b1;
+	writeLayerData[7] = #100000 1'b0;
+	writeLayerData[7] = #100000 1'b1;
+	writeLayerData[7] = #100000 1'b0;
+end 
+// writeLayerData[ 6 ]
+initial
+begin
+	writeLayerData[6] = 1'b0;
+	writeLayerData[6] = #100000 1'b1;
+	writeLayerData[6] = #500000 1'b0;
+end 
+// writeLayerData[ 5 ]
+initial
+begin
+	writeLayerData[5] = 1'b0;
+	writeLayerData[5] = #200000 1'b1;
+	writeLayerData[5] = #400000 1'b0;
+	writeLayerData[5] = #200000 1'b1;
+end 
+// writeLayerData[ 4 ]
+initial
+begin
+	writeLayerData[4] = 1'b0;
+	writeLayerData[4] = #100000 1'b1;
+	writeLayerData[4] = #400000 1'b0;
+	writeLayerData[4] = #200000 1'b1;
+	writeLayerData[4] = #200000 1'b0;
+end 
+// writeLayerData[ 3 ]
+initial
+begin
+	writeLayerData[3] = 1'b1;
+	writeLayerData[3] = #100000 1'b0;
+	writeLayerData[3] = #100000 1'b1;
+	writeLayerData[3] = #300000 1'b0;
+	writeLayerData[3] = #100000 1'b1;
+	writeLayerData[3] = #200000 1'b0;
+	writeLayerData[3] = #100000 1'b1;
+end 
+// writeLayerData[ 2 ]
+initial
+begin
+	writeLayerData[2] = 1'b1;
+	writeLayerData[2] = #100000 1'b0;
+	writeLayerData[2] = #100000 1'b1;
+	writeLayerData[2] = #300000 1'b0;
+	writeLayerData[2] = #100000 1'b1;
+	writeLayerData[2] = #100000 1'b0;
+	writeLayerData[2] = #200000 1'b1;
+end 
+// writeLayerData[ 1 ]
+initial
+begin
+	writeLayerData[1] = 1'b1;
+	writeLayerData[1] = #200000 1'b0;
+	writeLayerData[1] = #100000 1'b1;
+	writeLayerData[1] = #300000 1'b0;
+	writeLayerData[1] = #200000 1'b1;
+	writeLayerData[1] = #100000 1'b0;
+end 
+// writeLayerData[ 0 ]
+initial
+begin
+	writeLayerData[0] = 1'b1;
+	writeLayerData[0] = #100000 1'b0;
+	writeLayerData[0] = #200000 1'b1;
+	writeLayerData[0] = #100000 1'b0;
+	writeLayerData[0] = #100000 1'b1;
+	writeLayerData[0] = #100000 1'b0;
+	writeLayerData[0] = #300000 1'b1;
+end 
+
+// writeLayerEn
+initial
+begin
+	writeLayerEn = 1'b1;
+	writeLayerEn = #200000 1'b0;
+	writeLayerEn = #100000 1'b1;
+	writeLayerEn = #100000 1'b0;
+	writeLayerEn = #100000 1'b1;
+	writeLayerEn = #200000 1'b0;
+	writeLayerEn = #200000 1'b1;
+end 
+// layer[ 4 ]
+initial
+begin
+	repeat(3)
+	begin
+		layer[4] = 1'b0;
+		layer[4] = #160000 1'b1;
+		# 160000;
+	end
+	layer[4] = 1'b0;
+end 
+// layer[ 3 ]
+initial
+begin
+	repeat(6)
+	begin
+		layer[3] = 1'b0;
+		layer[3] = #80000 1'b1;
+		# 80000;
+	end
+	layer[3] = 1'b0;
+end 
+// layer[ 2 ]
+initial
+begin
+	repeat(12)
+	begin
+		layer[2] = 1'b0;
+		layer[2] = #40000 1'b1;
+		# 40000;
+	end
+	layer[2] = 1'b0;
+end 
+// layer[ 1 ]
+always
+begin
+	layer[1] = 1'b0;
+	layer[1] = #20000 1'b1;
+	#20000;
+end 
+// layer[ 0 ]
+always
+begin
+	layer[0] = 1'b0;
+	layer[0] = #10000 1'b1;
+	#10000;
+end 
+endmodule
+

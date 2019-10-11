@@ -12,13 +12,14 @@ module layerRegisterMem(
     output [15:0] readData2
 );
 
-reg [15:0] layerRegisters [4:0];
+// Creates an array of 32 registers 16 bits in size
+reg [15:0] layerRegisters [31:0];
 integer i;
 
 // Initialize all data as blank
 initial begin
     for (i = 0; i < 32; i = i + 1) begin
-        layerRegisters[i] = 0;
+        layerRegisters[i] = 16'd0;
     end
 end
 
@@ -36,6 +37,7 @@ always @(posedge clk or negedge reset) begin
         end
     end
     else begin
+		  i <= 0;
         if (writeEn) begin
             layerRegisters[writeAddr] <= writeData;
         end

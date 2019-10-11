@@ -9,8 +9,6 @@ module layerHeadersTop(
     input [15:0] writeLayerData, // Data to write to sprite registers
     input writeLayerEn, // Enable overwrite
     input [4:0] layer, // Layer / Sprite number
-    input [10:0] pixelX, // Pixel X position
-    input [10:0] pixelY, // Pixel Y position
     output [15:0] ctrlReadData, // Data read by the controller
     output [127:0] currLayerHeader // Always the current sprite layer info
 );

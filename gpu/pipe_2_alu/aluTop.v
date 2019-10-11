@@ -6,18 +6,20 @@ module aluTop(
     output reg readFlashEn, // Enable read from flash for fonts
     output reg readRamEn, // Enable read from RAM for data
     output reg [7:0] layerID, // ID number for the layer specified by the input 'layer'
-    output reg [25:0] ramAddressOffset, // Address offset for RAM
-    output reg [21:0] flashAddress, // Address for flash
-    output reg [15:0] ctrlReadData // Data the controller is reading from layer headers
+    output [25:0] ramAddressOffset, // Address offset for RAM (words)
+    output [25:0] flashAddressBits, // Address for flash (bits)
+	 output reg unsigned [15:0] layerX,
+	 output reg unsigned [15:0] layerY,
+	 output reg unsigned [15:0] characterIndex
 );
 
-reg [15:0] layerWidth; // Width of the font/sprite in pixels
-reg [15:0] layerHeight; // Height of the font/sprite in pixels
-reg signed [15:0] layerX; // X offset of layer for this pixel
-reg signed [15:0] layerY; // Y offset of layer for this pixel
+reg unsigned [15:0] layerWidth; // Width of the font/sprite in pixels
+reg unsigned [15:0] layerHeight; // Height of the font/sprite in pixels
+//reg unsigned [15:0] layerX; // X offset of layer for this pixel
+//reg unsigned [15:0] layerY; // Y offset of layer for this pixel
 reg unsigned [7:0] spriteFrameIndex; // Up to 256 sprite frames per sprite sheet
 reg unsigned [15:0] fontIndex; // Selects the font to use (Flash addr calc)
-reg unsigned [15:0] characterIndex; // Current index of the character in text string (Flash addr calc)
+// reg unsigned [15:0] characterIndex; // Current index of the character in text string (Flash addr calc)
 
 ramAddressCalc inst_ramAddressCalc(
     .isSprite(currLayerHeader[1]),
@@ -35,9 +37,8 @@ flashAddressCalc inst_flashAddressCalc(
     .fontHeight(layerHeight),
     .xOffset(layerX),
     .yOffset(layerY),
-    .fontindex(fontIndex),
-    .characterindex(characterIndex),
-    .addressOffset(flashAddress)
+    .fontIndex(fontIndex),
+    .addressOffsetBits(flashAddressBits)
 );
 
 // Assign registers based on header information
@@ -52,26 +53,28 @@ always begin
             readFlashEn <= 1'b0;
 
             // Read RAM only if sprite is on current pixel 
+				// Because layer[XY] is unsigned, upper bounds check also is a layer[XY] > 0 check
             readRamEn <= 
-                (layerX + 1) > 0 && // Check X bounds (sprite width)
-                layerX < currLayerHeader[31:16] &&
-                (layerY + 1) > 0 && // Check Y bounds (sprite height)
-                layerY < currLayerHeader[47:32];
+                // Check X bounds (sprite width)
+                layerX < $unsigned(currLayerHeader[31:16]) &&
+					 // Check Y bounds (sprite height)
+                layerY < $unsigned(currLayerHeader[47:32]);
         end else begin
             // Text layer
 
             // Read flash only if reading RAM
+				// Because layer[XY] is unsigned, upper bounds check also is a layer[XY] > 0 check
             readFlashEn <= 
-					 (layerX + 1) > 0 && // Check X bounds (num chars * font width)
-                layerX < currLayerHeader[31:16] * currLayerHeader[111:96] &&
-                (layerY + 1) > 0 && // Check Y bounds (font height)
-                layerY < currLayerHeader[47:32];
+					 // Check X bounds (num chars * font width)
+                layerX < $unsigned(currLayerHeader[31:16]) * $unsigned(currLayerHeader[111:96]) &&
+                // Check Y bounds (font height)
+                layerY < $unsigned(currLayerHeader[47:32]);
 
             // Read RAM to find character if text covers pixel
             readRamEn <= 
-                (layerX + 1) > 0 && // Check X bounds (num chars * font width)
+                // Check X bounds (num chars * font width)
                 layerX < currLayerHeader[31:16] * currLayerHeader[111:96] &&
-                (layerY + 1) > 0 && // Check Y bounds (font height)
+                // Check Y bounds (font height)
                 layerY < currLayerHeader[47:32];
         end
     end else begin
@@ -97,8 +100,9 @@ always begin
     // Wire out font index
     fontIndex <= currLayerHeader[95:80];
 
-    // Find index of character to draw on current pixel
-    characterIndex <= currLayerHeader[1] == 0 ? 0 : ($unsigned(layerX) / $unsigned(currLayerHeader[95:80]));
+    // Find index of character to draw on current pixel if layer is text
+	 
+    characterIndex <= currLayerHeader[1] ? 0 : ($unsigned(layerX) / $unsigned(layerWidth));
 
     
 end

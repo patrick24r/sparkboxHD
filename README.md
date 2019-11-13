@@ -1,2 +1,2 @@
 # sparkboxHD
-Sparkbox, now in 1080p!
+Sparkbox, now in 720p!

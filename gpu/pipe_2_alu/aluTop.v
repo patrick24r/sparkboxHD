@@ -1,16 +1,16 @@
 // This module calculates address offsets for RAM and flash reads
 module aluTop(
     input [127:0] currLayerHeader, // Current layer header data
-	 input [10:0] pixelX, // Current X pixel position
-	 input [10:0] pixelY, // Current Y pixel position
+	input [10:0] pixelX, // Current X pixel position
+	input [10:0] pixelY, // Current Y pixel position
     output reg readFlashEn, // Enable read from flash for fonts
     output reg readRamEn, // Enable read from RAM for data
     output reg [7:0] layerID, // ID number for the layer specified by the input 'layer'
     output [25:0] ramAddressOffset, // Address offset for RAM (words)
-    output [25:0] flashAddressBits, // Address for flash (bits)
-	 output reg unsigned [15:0] layerX,
-	 output reg unsigned [15:0] layerY,
-	 output reg unsigned [15:0] characterIndex
+    output [29:0] flashAddressBits, // Address for flash (bits)
+	output reg unsigned [15:0] layerX,
+	output reg unsigned [15:0] layerY,
+	output reg unsigned [15:0] characterIndex
 );
 
 reg unsigned [15:0] layerWidth; // Width of the font/sprite in pixels

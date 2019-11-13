@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22E22C8
-set_global_assignment -name TOP_LEVEL_ENTITY layerHeadersTop
+set_global_assignment -name TOP_LEVEL_ENTITY paletteTop
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:59:40  SEPTEMBER 15, 2019"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"
@@ -54,14 +54,24 @@ set_global_assignment -name EDA_BOARD_DESIGN_TIMING_TOOL "Stamp (Timing)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT STAMP -section_id eda_board_design_timing
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE sparkboxGPUtop.v
+set_global_assignment -name VERILOG_FILE pipe_5_palette/paletteMemControl.v
+set_global_assignment -name VERILOG_FILE commandControl/commandBuffer.v
+set_global_assignment -name VERILOG_FILE controller/ramCtrl.v
+set_global_assignment -name VERILOG_FILE controller/pixelCountCtrl.v
+set_global_assignment -name VERILOG_FILE controller/paletteCtrl.v
+set_global_assignment -name VERILOG_FILE controller/layerHeaderCtrl.v
+set_global_assignment -name VERILOG_FILE controller/flashCtrl.v
+set_global_assignment -name VERILOG_FILE pipe_5_palette/paletteTop.v
+set_global_assignment -name VERILOG_FILE pipe_5_palette/paletteMem.v
+set_global_assignment -name VERILOG_FILE pipe_4_textFlash/textFlashTop.v
 set_global_assignment -name QIP_FILE pipe_3_layerRam/sdram/sdramInterface.qip
 set_global_assignment -name VERILOG_FILE controller/controllerTop.v
 set_global_assignment -name VERILOG_FILE commandControl/commandInterface.v
 set_global_assignment -name VERILOG_FILE commandControl/commandControlTop.v
-set_global_assignment -name VERILOG_FILE commandControl/commandBuffer.v
-set_global_assignment -name VERILOG_FILE pipe_5_textFlash/textFlashTop.v
-set_global_assignment -name VERILOG_FILE pipe_4_palette/paletteTop.v
-set_global_assignment -name VERILOG_FILE pipe_4_palette/paletteMem.v
 set_global_assignment -name VERILOG_FILE pipe_2_alu/ramAddressCalc.v
 set_global_assignment -name VERILOG_FILE pipe_2_alu/flashAddressCalc.v
 set_global_assignment -name VERILOG_FILE pipe_2_alu/aluTop.v
@@ -74,8 +84,6 @@ set_global_assignment -name VERILOG_FILE pipe_0_pixelCounter/pixelCounterTop.v
 set_global_assignment -name VERILOG_FILE pipe_0_pixelCounter/layercnt.v
 set_global_assignment -name VECTOR_WAVEFORM_FILE pipe_0_sim.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE pipe_2_sim.vwf
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VECTOR_WAVEFORM_FILE pipe_1_sim.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE pipe_5_sim.vwf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

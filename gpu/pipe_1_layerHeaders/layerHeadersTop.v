@@ -68,7 +68,7 @@ module layerHeadersTop(
 // Wire for read memory enable bits
 // Memory module for layer header info
 layerHeaderInfo layer_head_inst(
-    !clk, // pipeline clock inverted - read on negative edges to complete in 1 cycle
+    !clk, // pipeline clock inverted - write on negative edges to complete in 1 cycle
     reset, // 0 = reset, 1 = no reset
     resetLayer, // 0 = reset, 1 = no reset
     layer, // Layer header to read for pipeline

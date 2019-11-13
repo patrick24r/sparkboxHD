@@ -3,15 +3,17 @@
 // as that could lead to corrupted or missed commands
 
 module commandControlTop(
-    input pipelineClk, // Pipeline clock
+    input gpuClk, // 400 MHz clock
     input rst,
-    input gpuBusy,
+    input gpuBusyController, // Controller busy signal
+    input frameRendering, // Controller frame rendering signal
     input chipSelect, // Chip Select I pin
     input outputEnable, // Output enable I pin
     input commandClk, // Command Clock I pin
     input [15:0] inputCommand, // Command I pins
     input [15:0] dataFromGpu, // Data from GPU for chip reads
     inout [15:0] dataInOut, // Data I/O pins
+    output readyBusy, // #RDY/BSY O pin
     output [15:0] gpuCommand, // Command to GPU
     output [15:0] gpuData // Data to GPU 
 );
@@ -21,13 +23,10 @@ module commandControlTop(
  * **************************************************************************
  * Commands are 16 bits [15:0] and are accompanied by 16 bit data
  * command[15:14] - Command Type
- *      00 - Reset
+ *      00 - Special
  *      01 - Read
  *      10 - Write
- *      11 - Reserved
- *          (potentially used to dynamically change size in
- *          RAM/Flash of each sprite/font)
- *          (Use to manually trigger frame updates and set frame rate)
+ *      11 - Reset
  *
  *
  * command[13:11] - Target GPU memory
@@ -54,15 +53,14 @@ module commandControlTop(
  * If targeting layer headers
  * ------------------------------------------------
  * command[8:6] - Layer header register address
- * command[10:8] - Reserved
+ * command[10:9] - Reserved
  *
  * If targeting palette
  * ------------------------------------------------
  * command[10:7] - Palette index / Color slot
- * command [6:5] - RGB specifier 
- *      00 - Red
- *      01 - Green
- *      10 - Blue
+ * command [6] - RGB specifier 
+ *      0 - Blue and X (Maybe alpha at a later date?)
+ *      1 - Red and Green
  *
  * If targeting RAM
  * ------------------------------------------------
@@ -79,12 +77,17 @@ module commandControlTop(
  * Therefore only an index number is needed to determine the start write address
  *
  *
+ * Special commands:
+ * command[13:0]
+ * 14'b00000000000000 - no op
+ * 14'b00000000000001 - Update frame
+ *
  * Notes: NOT all combinations of command pieces are supported
  * For example, reading/writing all gpu memories is not supported
  * Block reads/writes: RAM and Flash memories use block reads/writes
- * For block writes, continuously clock in the same write command (used to find start address)
+ * For block writes, continuously clock in the same write command
  * and update data line bit values
- * For block reads, continuously clock in the same read command (used to find start address)
+ * For block reads, continuously clock in the same read command
  * and data lines will update with read data
  *
  */
@@ -107,13 +110,18 @@ commandInterface inst_commandInterface(
     gpuDataInt
 );
 
-// Instantiate active/smart command buffer
+// State machine and command buffer - only accept commands when 'idle',
+// accept no commands during frame update, inject read/write layer header commands
+// to update headers (animated, velocities) after a frame render event
 commandBuffer inst_commandBuffer(
-    pipelineClk,
+    gpuClk,
     rst,
-    gpuBusy,
+    gpuBusyController,
+    frameRendering,
     gpuCommandInt,
-    gpuDataInt,
+    gpuDataInt, 
+    dataFromGpu,
+    readyBusy,
     gpuCommand,
     gpuData
 );

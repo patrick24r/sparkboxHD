@@ -6,30 +6,34 @@ module controllerTop(
     input [15:0] data, // Data from I/O pins (buffered)
 
     // Pixel counter inputs
-    input [10:0] pixelCntX, // Pixel in pixel counter pipe's x position
-    input [10:0] pixelCntY, // Pixel in pixel counter pipe's y position
+    input unsigned [10:0] pixelCntX, // Pixel in pixel counter pipe's x position
+    input unsigned [10:0] pixelCntY, // Pixel in pixel counter pipe's y position
+
+    // Layer header inputs
+    input [15:0] layerHeaderData, // Data from layer headers
 
     // RAM inputs
     input ramDone, // RAM memory operations done
     input [15:0] ramData, // Data from RAM memory
-    input [10:0] ramX, // Pixel in ram pipe's x position
-    input [10:0] ramY, // Pixel in ram pipe's y position
+    input unsigned [10:0] ramX, // Pixel in ram pipe's x position
+    input unsigned [10:0] ramY, // Pixel in ram pipe's y position
 
     // Flash inputs
     input flashDone, // Flash memory operations done 
     input [15:0] flashData, // Data from flash memory
-    input [10:0] flashX, // Pixel X position in flash pipe
-    input [10:0] flashY, // Pixel in flash pipe's y position
+    input unsigned [10:0] flashX, // Pixel X position in flash pipe
+    input unsigned [10:0] flashY, // Pixel in flash pipe's y position
 
     // Palette inputs
     input [15:0] paletteData,
     input pixelFound, // Non-transparent pixel found
-    input [10:0] paletteX, // Pixel X position in palette pipe
-    input [10:0] paletteY, // Pixel Y position in palette pipe
+    input unsigned [10:0] paletteX, // Pixel X position in palette pipe
+    input unsigned [10:0] paletteY, // Pixel Y position in palette pipe
 
 
     // Pixel counter pipeline control bits
-    output reg pixelInc, // Pixel increment pulse
+    output reg rstPixelInc, // Reset pixel counter
+    output pixelInc, // Pixel increment pulse
 
     // Layer header pipe control bits
     output rstLayerheaders, // Reset all layer headers
@@ -51,43 +55,72 @@ module controllerTop(
     output rstPalette, // Reset palette
     output wPalette, // Write palette enable
     output [4:0] controllerColor, // Selects palette color slot
-    output [1:0] controllerRGB, // Controller RGB select
+    output controllerRGB, // Controller RGB select
 
     // Generic ouputs
     output [15:0] pipelineData, // Data to pipeline from external source
     output [4:0] commandLayer, // Layer specified by the command
     output reg [15:0] dataOut, // Data to external source
-    output reg pipelineClock // Pipeline clock
+    output reg pipelineClock, // Pipeline clock
+    output reg currentlyRendering, // 1 = Rendering, 0 = not rendering
+    output gpuBusy // 1 = GPU busy, 0 = GPU not busy
 );
 
+parameter X_MAX = 1280,
+			 Y_MAX = 720;
+
+initial currentlyRendering = 0;
+initial rstPixelInc = 1;
 
 
-// Pixel counter control outputs
-// Force increment pixel if still on that pixel
-always @(gpuClock) begin
-    if (pixelFound && gpuClock && pixelCntX == paletteX && pixelCntY == paletteY) pixelInc <= 1;
-    else pixelInc <= 0;
-end
+// All control signal(s) to Pipe 0, Pixel counter pipe
+pixelCountCtrl inst_pixelCountCtrl(
+    gpuClock, // Inputs
+    pixelFound,
+    pixelCntX,
+    pixelCntY,
+    paletteX,
+    paletteY,
 
-// Layer header control outputs
-assign rstLayerheaders = !(command[15:11] == 0 || (command[15:11] == 5'b00001 && command[5])); // Reset all layers
-assign rstSingleLayer = !(command[15:11] == 5'b00001 == 0 && !command[5]); // Reset 1 layer
-assign layerRegister = command[8:6]; // Layer register select
-assign wLayerHeaders = (command[15:11] == 5'b10001); // write layer headers
+    pixelInc // Output
+);
 
-// RAM control outputs
-assign rstRAM = !(command[15:11] == 0 || command[15:11] == 5'b00010); // Reset RAM
-assign rRAM = (command[15:11] == 5'b01010); // read RAM enable
-assign wRAM = (command[15:11] == 5'b10010); // Write RAM enable
+// All control signal(s) to Pipe 1, Layer headers pipe
+layerHeaderCtrl inst_layerHeaderCtrl(
+    command, // Input
 
-// Flash control outputs
-// Must specifically target flash to reset it to protect the glyph data
-assign rstFlash = !(command[15:11] == 5'b00100); 
-assign rFlash = (command[15:11] == 5'b01100); // read Flash enable
-assign wFlash = (command[15:11] == 5'b10100); // Write Flash enanble
+    rstLayerheaders, // Outputs
+    rstSingleLayer,
+    wLayerHeaders
+);
 
-// Palette control outputs
-assign wPalette = (command[15:11] == 5'b10011); // write palette enable
+// All control signal(s) to Pipe 3, Layer RAM pipe
+ramCtrl inst_ramCtrl(
+    command[15:11], // Input
+
+    rstRAM, // Outputs
+    rRAM,
+    wRAM
+);
+
+// All control signal(s) to Pipe 4, text Flash pipe
+flashCtrl inst_flashCtrl(
+    command[15:11], // Input
+
+    rstFlash, // Outputs
+    rFlash,
+    wFlash
+);
+
+// All control signal(s) to Pipe 5, palette pipe
+paletteCtrl inst_paletteCtrl(
+    command, // Input
+
+    rstPalette, // Outputs
+    wPalette,
+    controllerColor,
+    controllerRGB
+);
 
 
 // Generic pipeline control outputs
@@ -96,14 +129,18 @@ assign pipelineData = data;
 // Layer position specified by the command (0-31)
 assign commandLayer = command[4:0];
 
+// GPU is 'busy' if reading from flash/ram
+assign gpuBusy = !(ramDone && flashDone);
+
 // MUX data out based on command
 always begin
     // MUX out data based on where command is reading/writing
     case (command[13:11])
     3'h0: dataOut <= 0; // All GPU memories (Not supported)
-    3'h1: dataOut <= ramData; // RAM (layer data)
-    3'h2: dataOut <= paletteData; // Palette
-    3'h3: dataOut <= flashData; // Flash (text glyph data)
+    3'h1: dataOut <= layerHeaderData; // Layer header data
+    3'h2: dataOut <= ramData; // RAM (layer data)
+    3'h3: dataOut <= paletteData; // Palette
+    3'h4: dataOut <= flashData; // Flash (text glyph data)
     default: dataOut <= 0;
     endcase
 end
@@ -117,29 +154,65 @@ end
  *                    _               _
  * pipeline clock   _| |_____________| |_
  *
- * In this example, the pipeline took 4 clock cycles to oomplete
- *
- * TODO: If a pixel is found for a given x&y position on a higher layer, 
- * advance pipeline if flash and ram also are looking for that x&y position
- * regardless of whether they are done or not
+ * In this example, the pipeline took 4 clock cycles to complete
+ * The pipleine clock is also gated to only go high if a frame is rendering
  * 
  */
- always @(gpuClock) begin
-    if (gpuClock) begin
-        // If a pixel is found for an xy combo in flash and ram pipes,
-        // that operation does not need to finish, the data will be unused
-        if (pixelFound && 
-            paletteX == flashX &&
-            paletteY == flashY &&
-            paletteX == ramX &&
-            paletteY == ramY)  pipelineClock <= 1;
-        else begin
-            // Flash and RAM operations complete advance pipeline
-            if (flashDone && ramDone) pipelineClock <= 1;
-            else pipelineClock <= 0;
+ always @(gpuClock or negedge reset) begin
+    if (!reset) begin
+        pipelineClock <= 0;
+    end else begin
+        if (gpuClock && currentlyRendering) begin
+            // If a pixel is found for an xy combo in flash and ram pipes,
+            // that operation does not need to finish, the data will be unused
+            if (pixelFound && 
+                paletteX == flashX &&
+                paletteY == flashY &&
+                paletteX == ramX &&
+                paletteY == ramY)  pipelineClock <= 1;
+            else begin
+                // Flash and RAM operations complete advance pipeline
+                if (flashDone && ramDone) pipelineClock <= 1;
+                else pipelineClock <= 0;
+            end
+        end
+        else pipelineClock <= 0;
+    end
+ end
+
+// Determine if the GPU is currently rendering and whether or not to 
+// reset the pixel counter
+always @(gpuClock or negedge reset) begin
+    if (!reset) begin
+        currentlyRendering <= 0;
+        rstPixelInc <= 0;
+    end 
+	 else begin
+        // On negative edge, determine if palette found the last pixel
+        if (!gpuClock) begin
+            if (currentlyRendering) begin
+                // Rendering and palette found last pixel, no longer rendering
+                if (pixelFound && paletteX == (X_MAX - 1) && paletteY == (Y_MAX - 1)) currentlyRendering <= 1'b0; 
+                // Palette did not find last pixel, still rendering
+                else currentlyRendering <= 1'b1; 
+                rstPixelInc <= 1;
+            end else begin
+                // Not rendering, begin rendering if update frame command is sent
+                if (command == 16'h0001) begin
+                    currentlyRendering <= 1'b1;
+                    // Reset pixel counter
+                    rstPixelInc <= 0;
+                end else begin
+                    currentlyRendering <= 1'b0;
+                    rstPixelInc <= 1;
+                end
+            end
+        end 
+		  else begin
+            currentlyRendering <= currentlyRendering;
+            rstPixelInc <= 1;
         end
     end
-    else pipelineClock <= 0;
- end
+end
 
 endmodule

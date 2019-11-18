@@ -1,8 +1,8 @@
 #include "main.h"
 
-int32_t main(void)
+int32_t main(std::string *levelDirectory)
 {
-  // User code here
-
+  // Instantiate the SparkboxHD
+  Sparkbox spk = Sparkbox(*levelDirectory);
 
 }

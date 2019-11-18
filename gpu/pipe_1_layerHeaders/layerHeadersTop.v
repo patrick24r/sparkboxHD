@@ -27,7 +27,7 @@ module layerHeadersTop(
 // layerRegisterIndex = 3'b000 - currLayerHeader[15:0] -> Layer Flags - uint16_t
 // currLayerHeader[0] -> 0 = No layer not populated, 1 = layer populated
 // currLayerHeader[1] -> 0 = Text layer, 1 = Sprite layer
-// currLayerHeader[2] -> 0 = layer visible, 1 = layer hidden
+// currLayerHeader[2] -> 0 = layer invisible, 1 = layer visible
 // currLayerHeader[3] -> 0 = not animated, 1 = animated (does not apply to text)
 // currLayerHeader[4:7] -> unused
 // currLayerHeader[15:8] -> Layer ID -> Up to 256 total layers, but can only use 32 at a time

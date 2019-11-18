@@ -18,7 +18,7 @@ assign readData2 = rst ? paletteMemory[addr2] : {16{1'b0}};
 
 initial begin
 	for (i = 0; i < 10; i = i + 1) begin
-		 paletteMemory[i] = 16'd0;
+		paletteMemory[i] = 16'd0;
    end
 end
 
@@ -31,7 +31,7 @@ always @(posedge clk or negedge rst) begin
         end
     end
     else begin
-	     i <= 0;
+	    i <= 0;
         if (writeEn) begin
             paletteMemory[addr1] <= writeData;
         end

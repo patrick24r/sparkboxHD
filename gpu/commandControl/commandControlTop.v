@@ -13,7 +13,7 @@ module commandControlTop(
     input [15:0] inputCommand, // Command I pins
     input [15:0] dataFromGpu, // Data from GPU for chip reads
     inout [15:0] dataInOut, // Data I/O pins
-    output readyBusy, // #RDY/BSY O pin
+    output readyBusy, // RDY/#BSY O pin, 1 = ready, 0 = busy
     output [15:0] gpuCommand, // Command to GPU
     output [15:0] gpuData // Data to GPU 
 );
@@ -96,7 +96,9 @@ module commandControlTop(
 // Intermediary wires between interface and buffer
 wire [15:0] gpuCommandInt;
 wire [15:0] gpuDataInt;
+wire gpuBusyInt; // 1 = GPU busy
 
+assign readyBusy = !gpuBusyInt;
 
 // Instantiate I/O level command interface
 commandInterface inst_commandInterface(
@@ -121,7 +123,7 @@ commandBuffer inst_commandBuffer(
     gpuCommandInt,
     gpuDataInt, 
     dataFromGpu,
-    readyBusy,
+    gpuBusyInt,
     gpuCommand,
     gpuData
 );

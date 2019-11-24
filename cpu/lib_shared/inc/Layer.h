@@ -1,5 +1,5 @@
 #pragma once
-#include "Sparkbox.h"
+#include "allPeripherals.h"
 
 #define PALETTE_SIZE 32
 #define PALETTE_OFFSET_BYTES 128
@@ -31,7 +31,20 @@ public:
 
     /*--------------- GENERIC METHODS ------------------------*/
     /* These methods apply for both sprites and text layers */
+    uint16_t getLayerRegisterValue(uint8_t registerNumber);
+
+    layertype_t getLayerType(void);
+
+    void setxPosition(int16_t newxPosition);
+    uint16_t getxPosition(void);
+
+    void setyPosition(int16_t newyPosition);
+    uint16_t getyPosition(void);
+
+    void setWidth(uint16_t newWidth);
     uint16_t getWidth(void);
+    
+    void setHeight(uint16_t newHeight);
     uint16_t getHeight(void);
 
     void setVisible(uint8_t visible);
@@ -50,7 +63,6 @@ public:
 
     /*--------------------- SPRITE METHODS ----------------------*/
     /* These methods apply for only sprite layers */
-
     uint16_t getNumberOfFrames(void);
 
     void setCurrentFrameNumber(uint8_t frame);
@@ -61,23 +73,25 @@ public:
 
     std::string getFilePath(void);
 
+    void setxVelocity(int16_t newxVelocity);
+    int16_t getxVelocity(void);
+
+    void setyVelocity(int16_t newyVelocity);
+    int16_t getyVelocity(void);
+
 
     /*--------------------- TEXT METHODS ----------------------*/
     /* These methods apply for only text layers */
-    void setTextString(std::string newString);
     std::string getTextString(void);
 
     void setNumberOfVisibleCharacters(uint16_t number);
     uint16_t getNumberOfVisibleCharacters(void);
 
-    void setFontWidth(uint16_t newWidth);
-    uint16_t getFontWidth(void);
-
-    void setFontHeight(uint16_t newHeight);
-    uint16_t getFontHeight(void);
-
-    void setFont(Font selection);
+    void setFont(font_t selection);
     Font getFont(void);
+
+    void setFontPaletteSelection(uint8_t paletteIndex);
+    uint8_t getFontPaletteSelection(void);
 
 private:
     /*--------------- GENERIC PROPERTIES ------------------------*/
@@ -101,5 +115,6 @@ private:
     uint16_t numberOfVisibleCharacters;
     uint16_t fontWidth;
     uint16_t fontHeight;
-    Font fontSelection;
+    font_t fontSelection;
+    uint8_t fontPaletteSelection;
 }

@@ -11,8 +11,8 @@ assign rstPalette = !(command[15:11] == 5'b11011 || command[15:11] == 5'b11000);
 // Write palette enable
 assign wPalette = (command[15:11] == 5'b10011);
 // Controller color slot select
-assign controllerColor = command[10:7];
+assign controllerColor = command[10:6];
 // Controller RGB select (RG or BX)
-assign controllerRGB = command[6];
+assign controllerRGB = command[5];
 
 endmodule

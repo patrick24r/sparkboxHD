@@ -40,8 +40,10 @@ module commandControlTop(
  *
  *
  * COMMAND PARAMETERS
- * If targeting pallete or layer headers memory
+ * If targeting layer headers
  * --------------------------------------------------
+ * command[10:9] - Reserved
+ * command[8:6] - Layer header register address
  * command[5:0]
  *      000000 - Layer 0
  *      000001 - Layer 1
@@ -50,17 +52,18 @@ module commandControlTop(
  *      011111 - Layer 31
  *      1XXXXX - All Layers (Only valid for reset commands)
  *
- * If targeting layer headers
- * ------------------------------------------------
- * command[8:6] - Layer header register address
- * command[10:9] - Reserved
- *
  * If targeting palette
  * ------------------------------------------------
- * command[10:7] - Palette index / Color slot
- * command [6] - RGB specifier 
+ * command[10:6] - Palette index / Color slot
+ * command [5] - RGB specifier 
  *      0 - Blue and X (Maybe alpha at a later date?)
  *      1 - Red and Green
+ * command[4:0]
+ *      00000 - Layer 0
+ *      00001 - Layer 1
+ *      ...
+ *      ...
+ *      11111 - Layer 31
  *
  * If targeting RAM
  * ------------------------------------------------

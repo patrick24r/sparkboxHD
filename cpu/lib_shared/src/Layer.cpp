@@ -21,7 +21,7 @@ Layer::Layer(layertype_t type, std::string initString)
     // Import sprite header data from fatfs file system
     error = f_open(&file, textString, FA_READ);
 
-    // If 
+    // If an error occured, set sprite fields to 0
     if (error) {
       spriteHeight = 0;
       spriteWidth = 0;
@@ -34,7 +34,7 @@ Layer::Layer(layertype_t type, std::string initString)
     f_close(&file);
 
     if (error || numBytesRead != SPRITE_HEADER_BYTES) {
-      // Do something to handle this file read error
+      // Set sprite fields to 0 to fields to indicate error
       f_close(&file);
       spriteHeight = 0;
       spriteWidth = 0;
@@ -75,11 +75,85 @@ Layer::Layer(layertype_t type, std::string initString)
 
 
 /*------------------ GENERIC METHODS ------------------------*/
+// Get the layer header register value given a register index
+uint16_t Layer::getLayerRegisterValue(uint8_t registerNumber)
+{
+  switch (registerNumber) {
+    case 0: // Layer flags
+      return layerFlags;
+    case 1: // Sprite or Font width
+      return getWidth();
+    case 2: // Sprite or Font height
+      return getHeight();
+    case 3: // X position
+      return (uint16_t)xPosition;
+    case 4: // Y position
+      return (uint16_t)yPosition;
+    case 5: // Sprite - X velocity, Text - Font selection index
+      if (layerType == SPRITE) return (uint16_t)xVelocity;
+      else return fontSelection;
+    case 6: // Sprite - Y velocity, Text - Number of visible characters
+      if (layerType == SPRITE) return (uint16_t)yVelocity;
+      else return numberOfVisibleCharacters;
+    case 7: // Sprite - Number of frames & Current frame number, Text - Palette select
+      if (layerType == SPRITE) return ((uint16_t)(currentFrameNumber) << 8) | numberOfFrames;
+      else return (uint16_t)fontPaletteSelection;
+    default:
+      return NULL;
+  }
+}
+
+// Get the layer type of the current layer
+layertype_t Layer::getLayerType(void)
+{
+  return layerType;
+}
+
+// Set a new x position
+void Layer::setxPosition(int16_t newxPosition)
+{
+  xPosition = newxPosition;
+}
+
+// Get the x position
+uint16_t Layer::getxPosition(void)
+{
+  return xPosition;
+}
+
+// Set the y position
+void Layer::setyPosition(int16_t newyPosition)
+{
+  yPosition = newyPosition;
+}
+
+// Get the y position
+uint16_t Layer::getyPosition(void);
+{
+  return yPosition;
+}
+
+// Set the layer width
+void Layer::setWidth(uint16_t newWidth)
+{
+  // User may only set font width,
+  // sprite width is defined in the sprite file
+  if (layerType == TEXT) fontWidth = newWidth;
+}
+
 // Get the layer width
 uint16_t Layer::getWidth(void)
 {
   if (layerType == SPRITE) return spriteWidth;
   else return fontWidth;
+}
+
+// Set the layer height
+void Layer::setHeight(uint16_t newHeight)
+{
+  // User may only set font width,
+  // sprite height is defined in the sprite file
+  if (layerType == TEXT) fontHeight = newHeight;
 }
 
 // Get the layer height
@@ -201,14 +275,33 @@ std::string Layer::getFilePath(void)
   else return NULL;
 }
 
-
-/*--------------------- TEXT METHODS ----------------------*/
-// Set the text string
-void Layer::setTextString(std::string newString)
+// Set the sprite x velocity
+void Layer::setxVelocity(int16_t newxVelocity)
 {
-  if (layerType == TEXT) layerString = newString;
+  if (layerType == SPRITE) xVelocity = newxVelocity;
 }
 
+// Get the sprite x velocity
+int16_t Layer::getxVelocity(void)
+{
+  if (layerType == SPRITE) return xVelocity;
+  else return NULL;
+}
+
+// Set the sprite y velocity
+void Layer::setyVelocity(int16_t newyVelocity)
+{
+  if (layerType == SPRITE) yVelocity = newyVelocity;
+}
+
+// Get the sprite y velocity
+int16_t Layer::getyVelocity(void)
+{
+  if (layerType == SPRITE) return yVelocity;
+  else return NULL;
+}
+
+/*--------------------- TEXT METHODS ----------------------*/
 // Get the text string
 std::string Layer::getTextString(void)
 {
@@ -232,41 +325,28 @@ uint16_t Layer::getNumberOfVisibleCharacters(void);
   else return NULL;
 }
 
-// Set the font width
-void Layer::setFontWidth(uint16_t newWidth);
-{
-  if (layerType == TEXT) fontWidth = newWidth;
-}
-
-// Get the font width
-uint16_t Layer::getFontWidth(void)
-{
-  if (layerType == TEXT) return fontWidth;
-  else return NULL;
-}
-
-// Set the font height
-void Layer::setFontHeight(uint16_t newHeight)
-{
-  if (layerType == TEXT) fontHeight = newHeight;
-}
-
-// Get the font width
-uint16_t Layer::getFontHeight(void)
-{
-  if (layerType == TEXT) return fontHeight;
-  else return NULL;
-}
-
 // Set the font
-void Layer::setFont(Font selection)
+void Layer::setFont(font_t selection)
 {
   if (layerType == TEXT) fontSelection = selection;
 }
 
 // Get the font
-Font Layer::getFont(void)
+font_t Layer::getFont(void)
 {
   if (layerType == TEXT) return fontSelection;
+  else return NULL;
+}
+
+// Set the font palette index
+void Layer::setFontPaletteSelection(uint8_t newFontPalette)
+{
+  if (layerType == TEXT) fontPaletteSelection = newFontPalette;
+}
+
+// Get the font palette index
+uint8_t Layer::getFontPaletteSelection(void)
+{
+  if (layerType == TEXT) return fontPaletteSelection;
   else return NULL;
 }

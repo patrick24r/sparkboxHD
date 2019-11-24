@@ -8,7 +8,7 @@ module paletteTop(
     input controllerRGB, // Controller RGB select
     input [15:0] controllerWriteData, // Controller write data
     input [4:0] pipeLayer, // Layer for pipeline read
-    input [6:0] pipeColor, // Color index for pipeline read
+    input [4:0] pipeColor, // Color index for pipeline read
 	input [10:0] xPosition, // Used to ensure no repeat pixel is found
 	input [10:0] yPosition, // Used to ensure no repeat pixel is found
     output [15:0] controllerReadData, // Controller read data

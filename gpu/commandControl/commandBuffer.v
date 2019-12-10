@@ -63,9 +63,14 @@ else begin
         // Not currently rendering, accepting commands from interface 
         gpuBusy <= gpuBusyController;
 
-        // Do not impede flow of command and data
-        gpuCommand <= interfaceCmd;
-        gpuData <= interfaceData;
+        // Do not impede flow of command and data if GPU isn't busy
+		  if (gpuBusyController) begin
+				gpuCommand <= interfaceCmd;
+				gpuData <= interfaceData;
+		  end else begin
+				gpuCommand <= 16'd0;
+				gpuData <= 16'd0;
+		  end
 
 
         if (interfaceCmd == CMD_UPDATE_FRAME) state <= CASE_RENDERING;

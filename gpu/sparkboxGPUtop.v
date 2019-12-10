@@ -6,9 +6,8 @@
 // This is the top level file for the sparkbox GPU
 module sparkboxGPUtop(
     input cmd_clk_in,           // Clock for receiving GPU commands
-    input cmd_inout,            // Command direction bit
-    inout [15:0] command,        // Specifies the command for the GPU
-    inout [15:0] commandData    // Specifies the data for the given command
+    input cmd_outputEnable,     // Output enable pin
+    inout [15:0] cmd_data,       // GPU command and data lines
     // Include RAM / Flash external control signals here
     // Include HDMI outputs here
 );

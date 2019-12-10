@@ -17,7 +17,7 @@ always@(posedge layerInc or negedge reset) begin
 		layer <= 0;
 		overflow <= 0;
 	end else begin 
-		layer <= layer + 1;
+		layer <= layer + 1'b1;
 		if (layer == 5'b11111) overflow <= 1;
 		else overflow <= 0;
 	end

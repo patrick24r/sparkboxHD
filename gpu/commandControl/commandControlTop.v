@@ -7,10 +7,8 @@ module commandControlTop(
     input rst,
     input gpuBusyController, // Controller busy signal
     input frameRendering, // Controller frame rendering signal
-    input chipSelect, // Chip Select I pin
     input outputEnable, // Output enable I pin
     input commandClk, // Command Clock I pin
-    input [15:0] inputCommand, // Command I pins
     input [15:0] dataFromGpu, // Data from GPU for chip reads
     inout [15:0] dataInOut, // Data I/O pins
     output readyBusy, // RDY/#BSY O pin, 1 = ready, 0 = busy
@@ -99,16 +97,11 @@ module commandControlTop(
 // Intermediary wires between interface and buffer
 wire [15:0] gpuCommandInt;
 wire [15:0] gpuDataInt;
-wire gpuBusyInt; // 1 = GPU busy
-
-assign readyBusy = !gpuBusyInt;
 
 // Instantiate I/O level command interface
 commandInterface inst_commandInterface(
-    chipSelect,
     outputEnable,
     commandClk,
-    inputCommand,
     dataFromGpu,
     dataInOut,
     gpuCommandInt,
@@ -126,7 +119,7 @@ commandBuffer inst_commandBuffer(
     gpuCommandInt,
     gpuDataInt, 
     dataFromGpu,
-    gpuBusyInt,
+    !readyBusy,
     gpuCommand,
     gpuData
 );

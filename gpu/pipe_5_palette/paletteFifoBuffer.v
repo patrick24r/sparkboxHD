@@ -26,7 +26,7 @@ assign size = nextAddr - beginAddr;
 
 
 initial begin
-    for (i = 0; i < BUFFER_DEPTH; i++) buffer[i] = 0;
+    for (i = 0; i < BUFFER_DEPTH; i=i+1) buffer[i] = 0;
     beginAddr = 0;
     nextAddr = 0;
 end
@@ -36,14 +36,14 @@ end
 // if writing is enabled and not under reset and won't overflow
 always @(posedge clk_pipe or negedge reset) begin
     if (!reset) begin
-        for (i = 0; i < BUFFER_DEPTH; i++) buffer[i] <= 0;
+        for (i = 0; i < BUFFER_DEPTH; i=i+1) buffer[i] <= 0;
         nextAddr <= 0;
     end else begin
         if (nextAddr + 1 == beginAddr || !writeEn) begin
             nextAddr <= nextAddr;
         end else begin
             buffer[nextAddr] <= dataIn;
-            nextAddr <= nextAddr + 1;
+            nextAddr <= nextAddr + 1'b1;
         end
         i <= 0;
     end
@@ -59,7 +59,7 @@ always @(posedge clk_hdmi or negedge reset) begin
     end else begin 
         if (!empty) begin
             dataOut <= buffer[beginAddr];
-            beginAddr <= beginAddr + 1;
+            beginAddr <= beginAddr + 1'b1;
         end else begin
             beginAddr <= beginAddr;
             dataOut <= 0;

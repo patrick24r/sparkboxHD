@@ -3,7 +3,7 @@ module commandInterface(
     input outputEnable, // Output enable pin
     input commandClk, // Clock pin
     input [15:0] dataFromGpu, // Data from GPU for chip reads
-    inout reg [15:0] dataInOut, // Data pins
+    inout [15:0] dataInOut, // Data pins
     output reg [15:0] commandToGpu, // Command from interface to GPU
     output reg [15:0] dataToGpu // Data from interface to GPU
 );
@@ -15,7 +15,6 @@ reg cmd_state; // Accept ommand or data next
 reg [15:0] cmdSave; // Save command
 
 initial begin
-    dataInOut = 16'bZ;
     commandToGpu = 16'd0;
     dataToGpu = 16'd0;
 	 cmd_state = STATE_CMD_NEXT;

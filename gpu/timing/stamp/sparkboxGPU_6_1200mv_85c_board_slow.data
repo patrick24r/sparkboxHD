@@ -1,0 +1,406 @@
+/*
+ Copyright (C) 2018  Intel Corporation. All rights reserved.
+ Your use of Intel Corporation's design tools, logic functions 
+ and other software and tools, and its AMPP partner logic 
+ functions, and any output files from any of the foregoing 
+ (including device programming or simulation files), and any 
+ associated documentation or information are expressly subject 
+ to the terms and conditions of the Intel Program License 
+ Subscription Agreement, the Intel Quartus Prime License Agreement,
+ the Intel FPGA IP License Agreement, or other applicable license
+ agreement, including, without limitation, that your use is for
+ the sole purpose of programming logic devices manufactured by
+ Intel and sold by Intel or its authorized distributors.  Please
+ refer to the applicable agreement for further details.
+*/
+MODELDATA
+/*MODELDATA HEADER*/
+/*
+ This file contains Slow Corner delays for the design using part EP4CE22F17C6
+ with speed grade 6, core voltage 1.2V, and temperature 85 Celsius
+
+*/
+DESIGN "sparkboxGPU";
+TIMESCALE "1ns";
+
+
+
+
+
+TIMINGDATA
+
+ARCDATA
+pos_bufferEmpty__clk_12mhz__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("3.569");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("3.569");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_bufferEmpty__clk_12mhz__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-1.094");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-1.094");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clk_12mhz__dclk__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.844");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.844");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clk_12mhz__dclk__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.445");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.445");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clk_12mhz__den__delay:
+CELL_RISE( scalar ) {
+VALUES ("6.274");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("6.274");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clk_12mhz__hsync__delay:
+CELL_RISE( scalar ) {
+VALUES ("6.235");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("6.235");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clk_12mhz__vsync__delay:
+CELL_RISE( scalar ) {
+VALUES ("6.092");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("6.092");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.198__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.844");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.844");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.212__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.859");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.859");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.214__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.861");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.861");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.296__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.925");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.925");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.227__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.858");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.858");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.266__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.903");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.903");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.206__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.853");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.853");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.307__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.929");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.929");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.269__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.906");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.906");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.228__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.878");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.878");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.258__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.897");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.897");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.205__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.853");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.853");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.209__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.856");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.856");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.256__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.895");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.895");
+}
+
+ENDARCDATA
+
+ARCDATA
+___5.974__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.596");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.596");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.208__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.855");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.855");
+}
+
+ENDARCDATA
+
+ARCDATA
+___3.880__delay:
+CELL_RISE( scalar ) {
+VALUES ("3.728");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("3.728");
+}
+
+ENDARCDATA
+
+ARCDATA
+___3.879__delay:
+CELL_RISE( scalar ) {
+VALUES ("3.709");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("3.709");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.201__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.849");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.849");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.311__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.960");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.960");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.346__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.974");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.974");
+}
+
+ENDARCDATA
+
+ARCDATA
+___4.204__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.015");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.015");
+}
+
+ENDARCDATA
+
+ARCDATA
+___4.163__delay:
+CELL_RISE( scalar ) {
+VALUES ("3.978");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("3.978");
+}
+
+ENDARCDATA
+
+ARCDATA
+___5.887__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.502");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.502");
+}
+
+ENDARCDATA
+
+ENDTIMINGDATA
+
+ENDMODELDATA

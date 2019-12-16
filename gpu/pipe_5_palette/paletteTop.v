@@ -1,6 +1,6 @@
 module paletteTop(
     input clk_pipe, // Pipeline clock
-	input clk_pixelReq, // Pixel request pulse for hdmi
+	input clk_pixelReq, // Pixel request pulse (12 Mhz)
     input rst,
     input writeEn,
     input [4:0] controllerLayer, // Selects layer for read/write
@@ -13,7 +13,14 @@ module paletteTop(
 	input [10:0] yPosition, // Used to ensure no repeat pixel is found
     output [15:0] controllerReadData, // Controller read data
     output [23:0] pipeReadData, // RGB 888 formatted color data for output
-    output [23:0] hdmiReadData, // RGB 888 formated color data for HDMi
+    output [7:0] red, // red lcd pins
+	 output [7:0] green, // green lcd pins
+	 output [7:0] blue, // blue lcd pins
+	 output dclk, // Data clk lcd pin
+	 output disp, // Display enable lcd pin
+	 output hsync, // hsync lcd pin
+	 output vsync, // vsync lcd pin
+	 output den, // data enable lcd pn
     output [7:0] bufferSize, // Current size of pixel data buffer
     output bufferEmpty, // 1 = pixel buffer empty
     output bufferFull, // 1 = pixel buffer full
@@ -22,6 +29,7 @@ module paletteTop(
 
 // Determine if a found pixel has new X/Y coordinates
 wire pixelFound;
+wire [23:0] hdmiReadData;
 reg [10:0] prevX;
 reg [10:0] prevY;
 
@@ -71,5 +79,19 @@ paletteFifoBuffer inst_paletteBuffer(
 );
 
 
+// Uses fifo buffer output to control 
+lcdPixelWriter inst_lcdInterface(
+	!clk_pixelReq,
+	bufferEmpty,
+	hdmiReadData,
+	red,
+	green,
+	blue,
+	dclk,
+	disp,
+	hsync,
+	vsync,
+	den
+);
 
 endmodule

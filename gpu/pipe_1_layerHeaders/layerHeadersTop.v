@@ -1,7 +1,5 @@
-//`include "layerHeaderInfo.v"
-
 module layerHeadersTop(
-    input clk, // Pipeline clock
+    input clk, // GPU clock, only used for writes
     input reset, // Reset
     input resetLayer, // Reset and clear an individual layer's data
     input [4:0] ctrlReadWriteLayer, // Controller port to r/w to given layer

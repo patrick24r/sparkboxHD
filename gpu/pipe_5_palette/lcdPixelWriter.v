@@ -9,7 +9,9 @@ module lcdPixelWriter(
 	output disp, // display enable
 	output reg hsync, // horizontal sync
 	output reg vsync, // vertical sync
-	output reg den // data enable pin
+	output reg den, // data enable pin
+	output reg unsigned [15:0] dclk_counter,
+	output reg unsigned [15:0] hclk_counter
 );
 
 /* NOTES: hsync and vsync hardware pins are pulled to vcc, with
@@ -19,8 +21,8 @@ module lcdPixelWriter(
 
 
 parameter 
-	STATE_PRERENDER = 'h0,
-	STATE_RENDER = 'h1;
+	STATE_PRERENDER = 1'h0,
+	STATE_RENDER = 1'h1;
 	
 
 // Timing parameters
@@ -38,10 +40,10 @@ parameter
 
 reg state;
 
-reg unsigned [15:0] dclk_counter;
-reg unsigned [15:0] hclk_counter;
+// reg unsigned [15:0] dclk_counter;
+// reg unsigned [15:0] hclk_counter;
 
-reg bufferWasEmpty;
+reg dclk_en;
 
 // Initialize internal registers to prepare for a frame
 initial begin
@@ -51,7 +53,6 @@ initial begin
 	hsync = 1'd1;
 	vsync = 1'd1;
 	den = 1'd0;
-	bufferWasEmpty = 1'd1;
 end
 
 
@@ -59,57 +60,48 @@ end
 assign red = rgb[23:16];
 assign green = rgb[15:8];
 assign blue = rgb[7:0];
-// Always want the output clock to be the input clock unless
-// the pixel buffer is empty or not rendering
-assign dclk = (clk_12mhz && state == STATE_RENDER && !bufferWasEmpty);
+assign dclk = clk_12mhz && dclk_en;
 assign disp = 1'b1;
 
-// Inputs update on positive clk_12mhz
-always @(clk_12mhz) begin
-	if (clk_12mhz) begin
-		// Positive edge
-		case (state)
+// Inputs update on negative clk_12mhz
+always @(negedge clk_12mhz or posedge bufferEmpty) begin
+	// Always want the output clock to be the input clock unless
+	// the pixel buffer is empty or not rendering
+	dclk_en <= (state == STATE_RENDER && !bufferEmpty);
+end
+
+// Outputs update on positive clk_12mhz
+always @(posedge clk_12mhz) begin
+	// Positive edge (hsync, vsync, den)
+	case (state)
 		
-		STATE_PRERENDER: begin
-			hsync <= 1'b1;
-			vsync <= 1'b1;
-			den <= 1'b0;
+	STATE_PRERENDER: begin
+		hsync <= 1'b1;
+		vsync <= 1'b1;
+		den <= 1'b0;
+		
+		dclk_counter <= 16'd0;
+		hclk_counter <= 16'd0;
+		// Determine state update
+		if (!bufferEmpty) state <= STATE_RENDER;
+		else state <= STATE_PRERENDER;
+	end
+		
+	STATE_RENDER: begin
+		hsync <= dclk_counter != THFP;
+		vsync <= hclk_counter != TVFP;
+		den <= (dclk_counter >= THFP + THBP && hclk_counter >= TVFP + TVBP);
+		
+		// Determine if dclk counter is rolling over
+		if (bufferEmpty) dclk_counter <= dclk_counter;
+		else begin
+			if (dclk_counter != THFP + HOR_PIX + THBP - 1'b1)
+				dclk_counter <= dclk_counter + 1'b1;
+			else dclk_counter <= 16'd0;	
 		end
-		
-		STATE_RENDER: begin
-			hsync <= dclk_counter != THFP;
-			vsync <= hclk_counter != TVFP;
-			den <= (dclk_counter >= THFP + THBP && hclk_counter >= TVFP + TVBP);
-		end
-		
-		endcase
-		// Determine state updates on negative edge
-		state <= state;
-		bufferWasEmpty <= bufferWasEmpty;
-		
-		hclk_counter <= hclk_counter;
-		dclk_counter <= dclk_counter;
-	end else begin
-		// Negative edge
-		case (state)
-		
-		STATE_PRERENDER: begin
-			dclk_counter <= 16'd0;
-			hclk_counter <= 16'd0;
-			// Determine state updates on negative edge
-			if (!bufferEmpty) state <= STATE_RENDER;
-			else state <= STATE_PRERENDER;
-		end
-		
-		STATE_RENDER: begin
-			// Determine if dclk counter is rolling over
-			if (bufferEmpty) dclk_counter <= dclk_counter;
-			else begin
-				if (dclk_counter != THFP + HOR_PIX + THBP - 1'b1)
-					dclk_counter <= dclk_counter + 1'b1;
-				else dclk_counter <= 16'd0;	
-			end
-			// Determine if hclk counter is rolling over
+		// Increment hclk_counter on dclk_counter rolling over
+		if (dclk_counter != THFP + HOR_PIX + THBP - 1'b1) hclk_counter <= hclk_counter;
+		else begin
 			if (hclk_counter != TVFP + VER_PIX + TVBP - 1'b1) begin
 				hclk_counter <= hclk_counter + 1'b1;
 				state <= state;
@@ -118,19 +110,16 @@ always @(clk_12mhz) begin
 				hclk_counter <= 16'd0;
 				state <= STATE_PRERENDER;
 			end
-			
 		end
-		
-		endcase
-		
-		// Save buffer empty status
-		// NOTE: this means rgb must update on clk_12mhz falling edges
-		bufferWasEmpty <= bufferEmpty;
-		// Following registers only updated on rising edges
-		hsync <= hsync;
-		vsync <= vsync;
-		den <= den;
 	end
+		
+	default: begin
+		hsync <= 1'b1;
+		vsync <= 1'b1;
+		den <= 1'b0;
+	end
+		
+	endcase
 end
 
 endmodule

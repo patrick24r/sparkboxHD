@@ -32,11 +32,11 @@ TIMINGDATA
 ARCDATA
 pos_bufferEmpty__clk_12mhz__setup:
 RISE_CONSTRAINT( scalar ) {
-VALUES ("3.595");
+VALUES ("2.826");
 }
 
 FALL_CONSTRAINT( scalar ) {
-VALUES ("3.595");
+VALUES ("2.826");
 }
 
 ENDARCDATA
@@ -44,11 +44,11 @@ ENDARCDATA
 ARCDATA
 pos_bufferEmpty__clk_12mhz__hold:
 RISE_CONSTRAINT( scalar ) {
-VALUES ("-1.394");
+VALUES ("-1.793");
 }
 
 FALL_CONSTRAINT( scalar ) {
-VALUES ("-1.394");
+VALUES ("-1.793");
 }
 
 ENDARCDATA
@@ -56,11 +56,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk__delay:
 CELL_RISE( scalar ) {
-VALUES ("8.222");
+VALUES ("7.158");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("8.222");
+VALUES ("7.158");
 }
 
 ENDARCDATA
@@ -68,11 +68,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.047");
+VALUES ("5.449");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.047");
+VALUES ("5.449");
 }
 
 ENDARCDATA
@@ -80,11 +80,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[0]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.426");
+VALUES ("6.604");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.426");
+VALUES ("6.604");
 }
 
 ENDARCDATA
@@ -92,11 +92,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[1]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.902");
+VALUES ("8.006");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.902");
+VALUES ("8.006");
 }
 
 ENDARCDATA
@@ -104,11 +104,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[2]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.159");
+VALUES ("6.488");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.159");
+VALUES ("6.488");
 }
 
 ENDARCDATA
@@ -116,11 +116,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[3]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.913");
+VALUES ("6.635");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.913");
+VALUES ("6.635");
 }
 
 ENDARCDATA
@@ -128,11 +128,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[4]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.274");
+VALUES ("5.605");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.274");
+VALUES ("5.605");
 }
 
 ENDARCDATA
@@ -140,11 +140,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[5]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.832");
+VALUES ("6.661");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.832");
+VALUES ("6.661");
 }
 
 ENDARCDATA
@@ -152,11 +152,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[6]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.401");
+VALUES ("6.891");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.401");
+VALUES ("6.891");
 }
 
 ENDARCDATA
@@ -164,11 +164,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[7]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.341");
+VALUES ("6.184");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.341");
+VALUES ("6.184");
 }
 
 ENDARCDATA
@@ -176,11 +176,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[8]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.694");
+VALUES ("7.026");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.694");
+VALUES ("7.026");
 }
 
 ENDARCDATA
@@ -188,11 +188,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[9]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.464");
+VALUES ("6.015");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.464");
+VALUES ("6.015");
 }
 
 ENDARCDATA
@@ -200,11 +200,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[10]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.823");
+VALUES ("5.847");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.823");
+VALUES ("5.847");
 }
 
 ENDARCDATA
@@ -212,11 +212,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[11]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.763");
+VALUES ("6.234");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.763");
+VALUES ("6.234");
 }
 
 ENDARCDATA
@@ -224,11 +224,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[12]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.841");
+VALUES ("5.811");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.841");
+VALUES ("5.811");
 }
 
 ENDARCDATA
@@ -236,11 +236,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[13]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.263");
+VALUES ("5.621");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.263");
+VALUES ("5.621");
 }
 
 ENDARCDATA
@@ -248,11 +248,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[14]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.829");
+VALUES ("6.481");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.829");
+VALUES ("6.481");
 }
 
 ENDARCDATA
@@ -260,11 +260,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__dclk_counter[15]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.150");
+VALUES ("6.069");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.150");
+VALUES ("6.069");
 }
 
 ENDARCDATA
@@ -272,11 +272,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__den__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.670");
+VALUES ("6.655");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.670");
+VALUES ("6.655");
 }
 
 ENDARCDATA
@@ -284,11 +284,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[0]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.411");
+VALUES ("6.024");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.411");
+VALUES ("6.024");
 }
 
 ENDARCDATA
@@ -296,11 +296,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[1]__delay:
 CELL_RISE( scalar ) {
-VALUES ("8.744");
+VALUES ("5.862");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("8.744");
+VALUES ("5.862");
 }
 
 ENDARCDATA
@@ -308,11 +308,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[2]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.376");
+VALUES ("6.419");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.376");
+VALUES ("6.419");
 }
 
 ENDARCDATA
@@ -320,11 +320,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[3]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.226");
+VALUES ("6.571");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.226");
+VALUES ("6.571");
 }
 
 ENDARCDATA
@@ -332,11 +332,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[4]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.636");
+VALUES ("7.860");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.636");
+VALUES ("7.860");
 }
 
 ENDARCDATA
@@ -344,11 +344,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[5]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.511");
+VALUES ("6.813");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.511");
+VALUES ("6.813");
 }
 
 ENDARCDATA
@@ -356,11 +356,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[6]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.679");
+VALUES ("5.759");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.679");
+VALUES ("5.759");
 }
 
 ENDARCDATA
@@ -368,11 +368,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[7]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.927");
+VALUES ("6.167");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.927");
+VALUES ("6.167");
 }
 
 ENDARCDATA
@@ -380,11 +380,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[8]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.627");
+VALUES ("6.694");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.627");
+VALUES ("6.694");
 }
 
 ENDARCDATA
@@ -392,11 +392,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[9]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.301");
+VALUES ("6.653");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.301");
+VALUES ("6.653");
 }
 
 ENDARCDATA
@@ -404,11 +404,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[10]__delay:
 CELL_RISE( scalar ) {
-VALUES ("8.050");
+VALUES ("6.207");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("8.050");
+VALUES ("6.207");
 }
 
 ENDARCDATA
@@ -416,11 +416,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[11]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.451");
+VALUES ("6.570");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.451");
+VALUES ("6.570");
 }
 
 ENDARCDATA
@@ -428,11 +428,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[12]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.638");
+VALUES ("6.337");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.638");
+VALUES ("6.337");
 }
 
 ENDARCDATA
@@ -440,11 +440,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[13]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.828");
+VALUES ("6.051");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.828");
+VALUES ("6.051");
 }
 
 ENDARCDATA
@@ -452,11 +452,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[14]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.470");
+VALUES ("6.398");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.470");
+VALUES ("6.398");
 }
 
 ENDARCDATA
@@ -464,11 +464,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hclk_counter[15]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.444");
+VALUES ("6.691");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.444");
+VALUES ("6.691");
 }
 
 ENDARCDATA
@@ -476,11 +476,11 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__hsync__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.669");
+VALUES ("6.315");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.669");
+VALUES ("6.315");
 }
 
 ENDARCDATA
@@ -488,17 +488,17 @@ ENDARCDATA
 ARCDATA
 pos_clk_12mhz__vsync__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.951");
+VALUES ("6.413");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.951");
+VALUES ("6.413");
 }
 
 ENDARCDATA
 
 ARCDATA
-_7.140__delay:
+_7.772__delay:
 CELL_RISE( scalar ) {
 VALUES ("");
 }
@@ -510,253 +510,73 @@ VALUES ("");
 ENDARCDATA
 
 ARCDATA
-___3.877__delay:
+___3.876__delay:
 CELL_RISE( scalar ) {
-VALUES ("3.723");
+VALUES ("3.722");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("3.723");
+VALUES ("3.722");
 }
 
 ENDARCDATA
 
 ARCDATA
-___6.208__delay:
+___6.238__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.855");
+VALUES ("5.887");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.855");
+VALUES ("5.887");
 }
 
 ENDARCDATA
 
 ARCDATA
-___3.880__delay:
+___3.874__delay:
 CELL_RISE( scalar ) {
-VALUES ("3.728");
+VALUES ("3.704");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("3.728");
+VALUES ("3.704");
 }
 
 ENDARCDATA
 
 ARCDATA
-___3.879__delay:
+___3.882__delay:
 CELL_RISE( scalar ) {
-VALUES ("3.709");
+VALUES ("3.731");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("3.709");
+VALUES ("3.731");
 }
 
 ENDARCDATA
 
 ARCDATA
-___6.302__delay:
+___6.199__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.949");
+VALUES ("5.847");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.949");
+VALUES ("5.847");
 }
 
 ENDARCDATA
 
 ARCDATA
-___6.212__delay:
+___6.244__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.859");
+VALUES ("5.883");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.859");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.198__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.844");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.844");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.209__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.856");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.856");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.269__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.906");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.906");
-}
-
-ENDARCDATA
-
-ARCDATA
-___5.879__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.496");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.496");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.198__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.844");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.844");
-}
-
-ENDARCDATA
-
-ARCDATA
-___5.974__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.596");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.596");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.233__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.882");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.882");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.307__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.929");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.929");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.223__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.870");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.870");
-}
-
-ENDARCDATA
-
-ARCDATA
-___3.792__delay:
-CELL_RISE( scalar ) {
-VALUES ("3.629");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("3.629");
-}
-
-ENDARCDATA
-
-ARCDATA
-___5.974__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.596");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.596");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.215__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.861");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.861");
-}
-
-ENDARCDATA
-
-ARCDATA
-___5.974__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.596");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.596");
-}
-
-ENDARCDATA
-
-ARCDATA
-___7.508__delay:
-CELL_RISE( scalar ) {
-VALUES ("7.048");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("7.048");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.205__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.853");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.853");
+VALUES ("5.883");
 }
 
 ENDARCDATA
@@ -774,25 +594,205 @@ VALUES ("5.595");
 ENDARCDATA
 
 ARCDATA
-___6.268__delay:
+___6.250__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.915");
+VALUES ("5.888");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.915");
+VALUES ("5.888");
 }
 
 ENDARCDATA
 
 ARCDATA
-___6.296__delay:
+___6.215__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.925");
+VALUES ("5.861");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.925");
+VALUES ("5.861");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.203__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.850");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.850");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.198__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.844");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.844");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.313__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.962");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.962");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.214__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.864");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.864");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.311__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.935");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.935");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.225__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.872");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.872");
+}
+
+ENDARCDATA
+
+ARCDATA
+___3.881__delay:
+CELL_RISE( scalar ) {
+VALUES ("3.708");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("3.708");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.266__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.903");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.903");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.213__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.859");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.859");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.307__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.954");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.954");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.212__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.858");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.858");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.268__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.921");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.921");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.313__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.962");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.962");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.272__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.909");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.909");
+}
+
+ENDARCDATA
+
+ARCDATA
+___6.348__delay:
+CELL_RISE( scalar ) {
+VALUES ("5.967");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("5.967");
 }
 
 ENDARCDATA

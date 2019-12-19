@@ -27,11 +27,11 @@ parameter
 
 // Timing parameters
 parameter 
-	THBP = 'd43, // horizontal back porch
+	THBP = 'd1, // 'd43, // horizontal back porch
 	HOR_PIX = 'd480, // screen width (pixels)
 	THFP = 'd2, // horizontal front porch
 	THW = 'd1, // hsync width (dclk cycles)
-	TVBP = 'd12, // vertical back porch
+	TVBP = 'd1, // 'd12, // vertical back porch
 	VER_PIX = 'd272, // screen height (pixels)
 	TVFP = 'd1, // vertical front porch
 	TVW = 'd1; // vsync width (hclk cycles)

@@ -2,71 +2,29 @@
 
 Layer::Layer(layertype_t type, std::string initString)
 {
-  FRESULT error;
-  uint8_t textRead[SPRITE_HEADER_BYTES];
-  uint8_t numBytesRead;
-
   layerType = type;
 
   // Save user input string to class property
   layerString = initString;
 
   // Set palette to PALETTE_SIZE elements of all 0's
+  palette.resize(0);
   palette.resize(PALETTE_SIZE, 0);
 
-  // Read from disk for sprite header data
+  // Set the default values and layer flags according to layer type
   if (layerType == SPRITE) {
-    /********* SPRITE *********/
-
-    // Import sprite header data from fatfs file system
-    error = f_open(&file, textString, FA_READ);
-
-    // If an error occured, set sprite fields to 0
-    if (error) {
-      spriteHeight = 0;
-      spriteWidth = 0;
-      numberOfFrames = 0;
-      return;
-    }
-
-    // Read sprite header - includes palette, number of frames, width, height
-    error = f_read(&file, textRead, SPRITE_HEADER_BYTES, &numBytesRead);
-    f_close(&file);
-
-    if (error || numBytesRead != SPRITE_HEADER_BYTES) {
-      // Set sprite fields to 0 to fields to indicate error
-      f_close(&file);
-      spriteHeight = 0;
-      spriteWidth = 0;
-      numberOfFrames = 0;
-      return;
-    }
-
-    // This is the only place these properties should be touched:
-    // height
-    // width
-    // numberOfFrames
-    spriteHeight = (uint16_t)(textRead[] | (textRead[] << 8));
-    spriteWidth = (uint16_t)(textRead[] | (textRead[] << 8));
-    numberOfFrames = (uint8_t)(textRead[]);
-
-    // Set palette colors to data read from file
-    setPalette((uint32_t*)(textRead + PALETTE_OFFSET_CHAR), PALETTE_SIZE);
-
-
-    // Initilize layer flags
-    // By default, sprites are animated and visible
+    // By default, sprites are visible and animated
     layerFlags = 0b1111;
-
+    xVelocity = 0;
+    yVelocity = 0;
+    currentFrameNumber = 0;
   } else {
-    /********* TEXT *********/
+    // By default, text is visible 
     // By default, text layers are visible
     layerFlags = 0b0101;
-
     // All characters visible on initialization
-    numberOfVisibleCharacters = textString.size();
-
-    // Default width, height, and font
+    numberOfVisibleCharacters = layerString.size();
+    // Default font width, font height, and font selection
     fontWidth = 64;
     fontHeight = 128;
     fontSelection = ARIAL;
@@ -136,9 +94,8 @@ uint16_t Layer::getyPosition(void);
 // Set the layer width
 void Layer::setWidth(uint16_t newWidth)
 {
-  // User may only set font width,
-  // sprite width is defined in the sprite file
   if (layerType == TEXT) fontWidth = newWidth;
+  else spriteWidth = newWidth;
 }
 
 // Get the layer width
@@ -151,9 +108,8 @@ uint16_t Layer::getWidth(void)
 // Set the layer height
 void Layer::setHeight(uint16_t newHeight)
 {
-  // User may only set font width,
-  // sprite height is defined in the sprite file
   if (layerType == TEXT) fontHeight = newHeight;
+  else spriteHeight = newHeight;
 }
 
 // Get the layer height
@@ -230,6 +186,12 @@ uint8_t Layer::getNumberOfFrames(void)
 {
   if (layerType == SPRITE) return numberOfFrames;
   else return NULL;
+}
+
+// Set the number of frames
+void Layer::setNumberOfFrames(uint16_t newFrames)
+{
+  if (layerType == SPRITE) numberOfFrames = newFrames;
 }
 
 // Set the current frame number with bounds checking

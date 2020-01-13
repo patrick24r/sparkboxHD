@@ -30,769 +30,97 @@ TIMESCALE "1ns";
 TIMINGDATA
 
 ARCDATA
-pos_bufferEmpty__clk_12mhz__setup:
-RISE_CONSTRAINT( scalar ) {
-VALUES ("2.826");
-}
-
-FALL_CONSTRAINT( scalar ) {
-VALUES ("2.826");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_bufferEmpty__clk_12mhz__hold:
-RISE_CONSTRAINT( scalar ) {
-VALUES ("-1.793");
-}
-
-FALL_CONSTRAINT( scalar ) {
-VALUES ("-1.793");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk__delay:
+pos_CLOCK_50__LED[0]__delay:
 CELL_RISE( scalar ) {
-VALUES ("7.158");
+VALUES ("8.141");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("7.158");
+VALUES ("8.141");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk__delay:
+pos_CLOCK_50__LED[1]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.449");
+VALUES ("7.969");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.449");
+VALUES ("7.969");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[0]__delay:
+pos_CLOCK_50__LED[2]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.604");
+VALUES ("8.094");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.604");
+VALUES ("8.094");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[1]__delay:
+pos_CLOCK_50__LED[3]__delay:
 CELL_RISE( scalar ) {
-VALUES ("8.006");
+VALUES ("8.003");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("8.006");
+VALUES ("8.003");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[2]__delay:
+pos_CLOCK_50__LED[4]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.488");
+VALUES ("8.144");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.488");
+VALUES ("8.144");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[3]__delay:
+pos_CLOCK_50__LED[5]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.635");
+VALUES ("9.051");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.635");
+VALUES ("9.051");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[4]__delay:
+pos_CLOCK_50__LED[6]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.605");
+VALUES ("8.480");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.605");
+VALUES ("8.480");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clk_12mhz__dclk_counter[5]__delay:
+pos_CLOCK_50__LED[7]__delay:
 CELL_RISE( scalar ) {
-VALUES ("6.661");
+VALUES ("8.743");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("6.661");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[6]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.891");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.891");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[7]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.184");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.184");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[8]__delay:
-CELL_RISE( scalar ) {
-VALUES ("7.026");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("7.026");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[9]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.015");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.015");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[10]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.847");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.847");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[11]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.234");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.234");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[12]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.811");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.811");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[13]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.621");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.621");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[14]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.481");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.481");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__dclk_counter[15]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.069");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.069");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__den__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.655");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.655");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[0]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.024");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.024");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[1]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.862");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.862");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[2]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.419");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.419");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[3]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.571");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.571");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[4]__delay:
-CELL_RISE( scalar ) {
-VALUES ("7.860");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("7.860");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[5]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.813");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.813");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[6]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.759");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.759");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[7]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.167");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.167");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[8]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.694");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.694");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[9]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.653");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.653");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[10]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.207");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.207");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[11]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.570");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.570");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[12]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.337");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.337");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[13]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.051");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.051");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[14]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.398");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.398");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hclk_counter[15]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.691");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.691");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__hsync__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.315");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.315");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clk_12mhz__vsync__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.413");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.413");
-}
-
-ENDARCDATA
-
-ARCDATA
-_7.772__delay:
-CELL_RISE( scalar ) {
-VALUES ("");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("");
-}
-
-ENDARCDATA
-
-ARCDATA
-___3.876__delay:
-CELL_RISE( scalar ) {
-VALUES ("3.722");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("3.722");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.238__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.887");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.887");
-}
-
-ENDARCDATA
-
-ARCDATA
-___3.874__delay:
-CELL_RISE( scalar ) {
-VALUES ("3.704");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("3.704");
-}
-
-ENDARCDATA
-
-ARCDATA
-___3.882__delay:
-CELL_RISE( scalar ) {
-VALUES ("3.731");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("3.731");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.199__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.847");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.847");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.244__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.883");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.883");
-}
-
-ENDARCDATA
-
-ARCDATA
-___5.973__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.595");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.595");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.250__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.888");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.888");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.215__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.861");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.861");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.203__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.850");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.850");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.198__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.844");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.844");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.313__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.962");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.962");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.214__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.864");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.864");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.311__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.935");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.935");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.225__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.872");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.872");
-}
-
-ENDARCDATA
-
-ARCDATA
-___3.881__delay:
-CELL_RISE( scalar ) {
-VALUES ("3.708");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("3.708");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.266__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.903");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.903");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.213__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.859");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.859");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.307__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.954");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.954");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.212__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.858");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.858");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.268__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.921");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.921");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.313__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.962");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.962");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.272__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.909");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.909");
-}
-
-ENDARCDATA
-
-ARCDATA
-___6.348__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.967");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.967");
+VALUES ("8.743");
 }
 
 ENDARCDATA

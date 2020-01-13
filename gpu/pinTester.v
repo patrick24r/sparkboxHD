@@ -1,7 +1,5 @@
 module pinTester(
 	input CLOCK_50,
-	//input KEY[0],
-	//input KEY[1],
 	output reg [7:0] LED
 );
 

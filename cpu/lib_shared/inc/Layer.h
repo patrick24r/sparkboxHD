@@ -1,33 +1,28 @@
 #pragma once
 #include "allPeripherals.h"
 
-#define PALETTE_SIZE 32
-#define PALETTE_OFFSET_BYTES 128
-#define SPRITE_HEADER_BYTES (PALETTE_OFFSET_BYTES + (PALETTE_SIZE * 4))
+/* ------------ CLASS SPECIFIC ENUMERATIONS ------------- */
+enum layertype_t : uint8_t {
+    TEXT = 0,
+    SPRITE = 1
+};
 
+enum visibility_t : uint8_t {
+    INVISIBLE = 0,
+    VISIBLE = 1
+};
+
+enum font_t : uint16_t {
+    ARIAL,
+    TIMESNEWROMAN,
+    COURIER
+};
 
 // This class is a container for any and all layer header information 
 class Layer {
 public:
     Layer(layertype_t type, std::string initString);
     ~Layer();
-
-    /* ------------ CLASS SPECIFIC ENUMERATIONS ------------- */
-    enum layertype_t : uint8_t {
-        TEXT = 0,
-        SPRITE = 1
-    };
-
-    enum visibility_t : uint8_t {
-        INVISIBLE = 0,
-        VISIBLE = 1
-    };
-
-    enum font_t : uint16_t {
-        ARIAL,
-        TIMESNEWROMAN,
-        COURIER
-    };
 
     /*--------------- GENERIC METHODS ------------------------*/
     /* These methods apply for both sprites and text layers */
@@ -47,8 +42,8 @@ public:
     void setHeight(uint16_t newHeight);
     uint16_t getHeight(void);
 
-    void setVisible(uint8_t visible);
-    uint8_t getVisible(void);
+    void setVisible(visibility_t visible);
+    visibility_t getVisible(void);
 
     void setLayerID(uint8_t layerID);
     uint8_t getLayerID(void);
@@ -64,6 +59,7 @@ public:
     /*--------------------- SPRITE METHODS ----------------------*/
     /* These methods apply for only sprite layers */
     uint16_t getNumberOfFrames(void);
+    void setNumberOfFrames(uint16_t newFrames);
 
     void setCurrentFrameNumber(uint8_t frame);
     uint8_t getCurrentFrameNumber(void);
@@ -88,7 +84,7 @@ public:
     uint16_t getNumberOfVisibleCharacters(void);
 
     void setFont(font_t selection);
-    Font getFont(void);
+    font_t getFont(void);
 
     void setFontPaletteSelection(uint8_t paletteIndex);
     uint8_t getFontPaletteSelection(void);
@@ -103,7 +99,6 @@ private:
     uint16_t layerFlags; // Layer flags
 
     /*--------------- SPRITE PROPERTIES ------------------------*/
-    FIL file; // File object
     int16_t xVelocity; // Pixels / frame
     int16_t yVelocity; // Pixels / frame
     uint16_t spriteWidth; // Pixels, read from sprite header

@@ -4,10 +4,6 @@
 #include "allPeripherals.h"
 #include "Layer.h"
 
-#define MAX_LAYER_COUNT 256
-#define MAX_ACTIVE_LAYERS 32
-#define SPRITE_BUFFER_SIZE 2048
-
 class SparkboxGpu
 {
 public:
@@ -65,39 +61,16 @@ public:
   void resetAll(void);
   void startFrameUpdate(void);
 
-  // Additional functions
+  // Determine if the GPU is busy or not
   uint8_t isBusy(void);
   void waitUntilFree(void);
 
-  // Add or remove layers
-  int32_t addAllSprites(std::string rootDirectory);
-  int32_t addSprite(std::string file);
-  uint8_t addText(std::string textString);
-
-  // Layer synchronozation functions between GPU and CPU
-  void synchronizeActiveLayers(void);
-  void writeActiveLayers(void);
-
-  void smartUpdateLayerHeadersFromGpu(void);
-  void updateLayerHeadersFromGpu(void);
-  void updateLayerHeadersFromCpu(void);
-
-  void updateLayerPalettesFromCpu(void);
-
-  // Select up to 32 of the 256 total layers to be active
-  // The user may select multiple instances of imported layers as active layers
   std::vector<Layer> activeLayers;
 
   // Send raw commands to the GPU
   // Only use if you really know what you're doing
   uint16_t sendRawCommand(uint16_t command, uint16_t data);
 private:
-  // Hold up to 256 total layers
-  std::vector<Layer> importedLayers;
-  
-  // Keep track of the total memory required for all layers
-  uint32_t totalImportedFileSizeBytes;
-
   // Send GPU command functions
   uint16_t sendGpuCommand(uint16_t command);
   uint16_t sendGpuCommand(uint16_t command, uint16_t data);

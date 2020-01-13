@@ -29,6 +29,8 @@ public:
   SparkboxAudio audio;
   // Sparkbox controller interface handle
   SparkboxController controller;
+  // Sparkbox fatfs interface handle
+  SparkboxFatfs fatfs;
 private:
   /* Sparkbox private methods */
 

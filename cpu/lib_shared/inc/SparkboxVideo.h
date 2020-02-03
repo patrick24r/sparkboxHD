@@ -4,9 +4,7 @@
 #include "Layer.h"
 
 #define MAX_LAYER_COUNT 256
-#define MAX_ACTIVE_LAYERS 32
 #define SPRITE_BUFFER_SIZE 2048
-#define PALETTE_SIZE 32
 #define PALETTE_OFFSET_BYTES 128
 #define SPRITE_HEADER_BYTES (PALETTE_OFFSET_BYTES + (PALETTE_SIZE * 4))
 
@@ -17,8 +15,6 @@ public:
 
   int32_t loadAllSprites(std::string directory);
   int32_t addSprite(std::string filePath);
-  void syncAllVideo();
-
   
   // Add layers to the layer bank
   int32_t addAllSprites(std::string rootDirectory);
@@ -28,14 +24,16 @@ public:
   // Get layers in layer bank to make active
   Layer getLayerAt(uint8_t layerID);
 
-  // Layer synchronozation functions between GPU and CPU
-  void synchronizeActiveLayers(void);
+  // Layer synchronization functions between GPU and CPU
+  void syncAllVideo(void);
   void writeActiveLayers(void);
 
   void smartUpdateLayerHeadersFromGpu(void);
   void updateLayerHeadersFromGpu(void);
   void updateLayerHeadersFromCpu(void);
   void updateLayerPalettesFromCpu(void);
+
+  void updateFrame(void);
 
   // Select up to 32 of the 256 total layers to be active
   // The user may have multiple instances of layers in the bank
@@ -46,5 +44,6 @@ private:
 
   // Keep track of the total bytes written to the GPU RAM
   uint32_t totalImportedFileSizeBytes;
+  // Kep the GPU handle private for now
   SparkboxGpu gpu;
 }

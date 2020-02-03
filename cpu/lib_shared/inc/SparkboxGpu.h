@@ -4,6 +4,9 @@
 #include "allPeripherals.h"
 #include "Layer.h"
 
+#define PALETTE_SIZE 32
+#define MAX_ACTIVE_LAYERS 32
+
 class SparkboxGpu
 {
 public:

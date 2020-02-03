@@ -2,6 +2,8 @@
 
 void SparkboxVideo::SparkboxVideo()
 {
+  gpu = SparkboxGpu();
+
   // Reset total bytes imported to 0
   totalImportedFileSizeBytes = 0;
 
@@ -22,10 +24,11 @@ uint8_t SparkboxVideo::loadAllSprites(std::string directory)
   
 }
 
-/* 
+/*!
  * Import an individual sprite from disk into CPU and GPU
- * @param 
- * @retval
+ * @param File path of he sprite file on disk
+ * @retval The layer ID of the just added sprite. Also the index of the
+ *         just added sprite in the layer bank
  * TODO : Map fatfs error codes to negative numbers so successful return 
  * values can be the layer ID number of the just-added sprite
  */ 
@@ -40,22 +43,49 @@ int32_t SparkboxVideo::addSprite(std::string filePath)
   // Initialize new sprite
   Layer newLayer = Layer(SPRITE, filePath);
 
+  // Check if the layer bank is already full
+  if (layerBank.size() >= MAX_LAYER_COUNT) {
+    return ERR_TOO_MANY_LAYERS;
+  }
+
+  // Verify that the file exists
+  error = f_stat(filePath.c_str, &fileInfo);
+  if (error) {
+    return (int32_t)(error);
+  }
+
+  // Make sure file is not a directory
+  if (fileInfo.fattrib & AM_DIR) {
+    return ERR_NOT_A_FILE;
+  }
+
+  // If file size cannot be added to Sparkbox GPU, do not import it
+  if (fileInfo.fsize - SPRITE_HEADER_BYTES + totalImportedFileSizeBytes > MAX_LEVEL_STORAGE) {
+    return ERR_NOT_ENOUGH_GPU_MEMORY;
+  }
+
+  // Verify file size is larger than just the header
+  if (fileInfo.fsize <= SPRITE_HEADER_BYTES) {
+    return ERR_INVALID_SPRITE_FILE;
+  }
+
   // Read from disk for sprite data
   // Import sprite header data from fatfs file system
-  error = f_open(&file, layerString, FA_READ);
-
+  error = f_open(&file, filePath.c_str, FA_READ);
   if (error) {
     // Error opening the file
-    return (int32_t)(error);
+    return 0-(int32_t)(error);
   }
 
   // Read sprite header - includes palette, number of frames, width, height
   error = f_read(&file, textRead, SPRITE_HEADER_BYTES, &bytesRead);
-
-  if (error || bytesRead != SPRITE_HEADER_BYTES) {
+  if (error) {
     // Didn't read the sprite header correctly
     f_close(&file);
-    return ERR_SPRITE_HEADER_READ;
+    return 0-(int32_t)(error);
+  }
+  if (bytesRead != SPRITE_HEADER_BYTES) {
+    return VIDEO_SPRITE_HEADER_READ;
   }
 
   // This is the only place these properties should be touched
@@ -65,38 +95,6 @@ int32_t SparkboxVideo::addSprite(std::string filePath)
   // Set palette colors to data read from file
   newLayer.setPalette((uint32_t*)(textRead + PALETTE_OFFSET_CHAR), PALETTE_SIZE);
 
-  if (layerBank.size() == MAX_LAYER_COUNT) {
-    // Too many layers, can't add another
-    f_close(&file);
-    return ERR_TOO_MANY_LAYERS;
-  }
-
-  // Verify file size by getting file statistics
-  error = f_stat(filePath.c_str, &fileInfo);
-  if (error) {
-    f_close(&file);
-    return (int32_t)(error);
-  }
-
-  // If file size cannot be added to Sparkbox GPU, do not import it
-  if (fileInfo.fsize + totalImportedFileSizeBytes > MAX_LEVEL_STORAGE) {
-    f_close(&file);
-    return ERR_NOT_ENOUGH_GPU_MEMORY;
-  }
-
-  // Make sure file is not a directory
-  if (fileInfo.fattrib & AM_DIR) {
-    f_close(&file);
-    return ERR_NOT_A_FILE;
-  }
-
-  // Open file to read sprite data
-  error = f_open(&file, filePath.c_str, FA_READ);
-  if (error) {
-    f_close(&file);
-    return (int32_t)(error);
-  }
-
   // Move sprite data from disk to the GPU in chunks
   do {
     // Read data from the file system 
@@ -105,11 +103,11 @@ int32_t SparkboxVideo::addSprite(std::string filePath)
     // On file read error, close file and return error
     if (error) {
       f_close(&file);
-      return (int32_t)(error);
+      return 0-(int32_t)(error);
     }
 
     // Write data to GPU RAM 
-    writeRam(layerBank.back().getLayerID(), spriteDataBuffer, bytesRead / 2);
+    gpu.writeRam(layerBank.back().getLayerID(), spriteDataBuffer, bytesRead / 2);
 
     // If the bytes read != requested bytes, we hit the end of the file
   } while (bytesRead == SPRITE_BUFFER_SIZE);
@@ -135,7 +133,7 @@ int32_t SparkboxVideo::addText(std::string textString)
   Layer newLayer = Layer(TEXT, textString);
 
   // Verify that the sprite can be added to the list
-  if (layers.size() == MAX_LAYER_COUNT) {
+  if (layers.size() >= MAX_LAYER_COUNT) {
     return ERR_TOO_MANY_LAYERS;
   }
 
@@ -164,8 +162,8 @@ Layer SparkboxVideo::getLayerAt(uint8_t layerID)
   return layerBank.at(layerID);
 }
 
-// Intelligently synchronize layer header data between GPU and CPU
-void SparkboxGpu::synchronizeActiveLayers(void)
+// Synchronize all video information between CPU and GPU
+void SparkboxVideo::syncAllVideo(void)
 {
   // Read layer header data from GPU that may have been changed
   smartUpdateLayerHeadersFromGpu();
@@ -176,7 +174,7 @@ void SparkboxGpu::synchronizeActiveLayers(void)
 
 // Write all active layer data to the GPU, using active layer
 // data as the source of truth
-void SparkboxGpu::writeActiveLayers(void)
+void SparkboxVideo::writeActiveLayers(void)
 {
   // Write layer headers
   updateLayerHeadersFromCpu();
@@ -187,7 +185,7 @@ void SparkboxGpu::writeActiveLayers(void)
 
 // Update fields from GPU, but only some fields
 // Only update fields the GPU may change internally
-void SparkboxGpu::smartUpdateLayerHeadersFromGpu(void)
+void SparkboxVideo::smartUpdateLayerHeadersFromGpu(void)
 {
   uint16_t gpuReadData;
   Layer iterLayer;
@@ -200,15 +198,15 @@ void SparkboxGpu::smartUpdateLayerHeadersFromGpu(void)
     if (iterLayer.getLayerType() == TEXT) continue;
 
     // Update the current frame number (in the case the sprite is animated)
-    gpuReadData = readLayerHeaders(i,7) >> 8;
+    gpuReadData = gpu.readLayerHeaders(i,7) >> 8;
     iterLayer.setCurrentFrameNumber((uint8_t)gpuReadData);
 
     // Update the current x position (in the case xVelocity is nonzero)
-    gpuReadData = readLayerHeaders(i, 3);
+    gpuReadData = gpu.readLayerHeaders(i, 3);
     iterLayer.setxPosition((int16_t)gpuReadData);
 
     // Update the current y position (in the case yVelocity is nonzero)
-    gpuReadData = readLayerHeaders(i, 4);
+    gpuReadData = gpu.readLayerHeaders(i, 4);
     iterLayer.setyPosition((int16_t)gpuReadData);
 
     // Save changed layer back in same position
@@ -218,15 +216,19 @@ void SparkboxGpu::smartUpdateLayerHeadersFromGpu(void)
 
 // Update all layer header fields from GPU,
 // using GPU as source of truth
-void SparkboxGpu::updateLayerHeadersFromGpu(void)
+void SparkboxVideo::updateLayerHeadersFromGpu(void)
 {
   uint16_t gpuReadData;
   Layer iterLayer;
 
   for (uint8_t i = 0; i < activeLayers.size(); i++) { // Loop over each active layer
+
+    // Load the current saved layer
+    iterLayer = activeLayers.at(i);
+
     for (uint8_t j = 0; j < 8; j++) { // Loop over each layer header register
-      iterLayer = activeLayers.at(i);
-      gpuReadData = readLayerHeaders(i, j);
+      
+      gpuReadData = gpu.readLayerHeaders(i, j);
 
       switch (j) {
       case 0 : // Layer headers
@@ -269,14 +271,15 @@ void SparkboxGpu::updateLayerHeadersFromGpu(void)
       default :
         break;
       }
-
-      activeLayers.at(i) = iterLayer;
     }
+
+    // Write back the changed layer
+    activeLayers.at(i) = iterLayer;
   }
 }
 
 // Write all layer headers in CPU to GPU
-void SparkboxGpu::updateLayerHeadersFromCpu(void)
+void SparkboxVideo::updateLayerHeadersFromCpu(void)
 {
   uint16_t regValue;
 
@@ -285,18 +288,25 @@ void SparkboxGpu::updateLayerHeadersFromCpu(void)
       // Get the value of the layer register at index j based on layer data
       regValue = activelayers.at(i).getLayerRegisterValue(j);
       // Write the layer header to the GPU
-      writeLayerHeaders(i, j, regValue);
+      gpu.writeLayerHeaders(i, j, regValue);
     }
   }
 }
 
 // Overwrite palette data in GPU with palette data in this class
-void SparkboxGpu::updateLayerPalettesFromCpu(void)
+void SparkboxVideo::updateLayerPalettesFromCpu(void)
 {
   for (uint8_t i = 0; i < activeLayers.size(); i++) { // Loop over active layers
     for (uint j = 0; j < PALETTE_SIZE; j++) { // Loop over palette slots
       // Args: layer, palette slot, color data
-      writePalette(i, j, activeLayers.at(i).getPaletteAt(j));
+      gpu.writePalette(i, j, activeLayers.at(i).getPaletteAt(j));
     }
   }
+}
+
+// Update the current frame displayed on the screen
+void SparkboxVideo::updateFrame(void)
+{
+  gpu.startFrameUpdate();
+  syncAllVideo();
 }

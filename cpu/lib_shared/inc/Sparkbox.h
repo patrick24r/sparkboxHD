@@ -1,11 +1,9 @@
 #pragma once
-#include "allPeripherals.h"
-#include "Layer.h"
-#include "SparkboxGpu.h"
-#include "SparkboxAudio.h"
-#include "SparkboxController.h"
 #include <vector>
 #include <string>
+#include "SparkboxVideo.h"
+#include "SparkboxAudio.h"
+#include "SparkboxController.h"
 
 // Enumeration of all possible Sparkbox error codes
 enum errorCode_t : int32_t {

@@ -2,15 +2,13 @@
 
 Sparkbox::Sparkbox(std::string *levelDirectory)
 {
-  int32_t error;
-
   // Save the file path to the root directory of the current level
   rootLevelDirectory = *levelDirectory;
   
 
   // TODO: Have input arguments define pins maybe?
   // That would make this WAY more flexible
-  gpu = SparkboxGpu();
+  video = SparkboxVideo();
   audio = SparkboxAudio();
   controller = SparkboxController();
 }
@@ -27,3 +25,6 @@ int32_t Sparkbox::importLevel(void)
   gpu.addAllSprites(rootLevelDirectory);
   audio.addAllAudio(rootLevelDirectory);
 }
+
+int32_t initGpio(void);
+int32_t deinitGpio(void);

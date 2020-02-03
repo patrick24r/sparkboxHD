@@ -1,6 +1,9 @@
 #pragma once
 #include "allPeripherals.h"
+#include <string>
+#include <vector>
 
+#define MAX_PALETTE_SLOTS 31
 /* ------------ CLASS SPECIFIC ENUMERATIONS ------------- */
 enum layertype_t : uint8_t {
     TEXT = 0,

@@ -29,7 +29,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,22 +58,24 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED0_Pin GPIO_PIN_0
-#define LED0_GPIO_Port GPIOA
-#define LED1_Pin GPIO_PIN_1
-#define LED1_GPIO_Port GPIOA
-#define LED3_Pin GPIO_PIN_3
-#define LED3_GPIO_Port GPIOA
-#define LED4_Pin GPIO_PIN_4
-#define LED4_GPIO_Port GPIOA
-#define LED5_Pin GPIO_PIN_5
-#define LED5_GPIO_Port GPIOA
-#define LED6_Pin GPIO_PIN_6
-#define LED6_GPIO_Port GPIOA
-#define LED7_Pin GPIO_PIN_7
-#define LED7_GPIO_Port GPIOA
-#define Detect_SDIO_Pin GPIO_PIN_8
-#define Detect_SDIO_GPIO_Port GPIOA
+#define LED0_Pin GPIO_PIN_12
+#define LED0_GPIO_Port GPIOB
+#define LED1_Pin GPIO_PIN_13
+#define LED1_GPIO_Port GPIOB
+#define LED2_Pin GPIO_PIN_14
+#define LED2_GPIO_Port GPIOB
+#define LED3_Pin GPIO_PIN_15
+#define LED3_GPIO_Port GPIOB
+#define SDIO_Detect_Pin GPIO_PIN_13
+#define SDIO_Detect_GPIO_Port GPIOD
+#define I2C_EN0_Pin GPIO_PIN_8
+#define I2C_EN0_GPIO_Port GPIOB
+#define I2C_EN1_Pin GPIO_PIN_9
+#define I2C_EN1_GPIO_Port GPIOB
+#define I2C_EN2_Pin GPIO_PIN_0
+#define I2C_EN2_GPIO_Port GPIOE
+#define I2C_EN3_Pin GPIO_PIN_1
+#define I2C_EN3_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

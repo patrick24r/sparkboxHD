@@ -1,0 +1,25 @@
+set_global_assignment -entity "flashLoader" -library "lib_flashLoader" -name IP_TOOL_NAME "Qsys"
+set_global_assignment -entity "flashLoader" -library "lib_flashLoader" -name IP_TOOL_VERSION "18.0"
+set_global_assignment -entity "flashLoader" -library "lib_flashLoader" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -library "lib_flashLoader" -name SPD_FILE [file join $::quartus(sip_path) "../flashLoader.spd"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "../../flashLoader.qsys"]
+
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "flashLoader.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_reset_controller.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_reset_synchronizer.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_reset_controller.sdc"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/intel_generic_serial_flash_interface_asmiblock.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0_qspi_inf_inst.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/inf_sc_fifo_ser_data.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_avalon_sc_fifo.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/qspi_inf_mux.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0_qspi_inf_inst_qspi_inf_mux_qspi_inf_mux.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_merlin_arbitrator.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/intel_generic_serial_flash_interface_cmd.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0_multiplexer.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0_merlin_demultiplexer_0.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/intel_generic_serial_flash_interface_addr.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/flashLoader_intel_generic_serial_flash_interface_top_0_xip_controller.sv"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/avst_fifo.v"]
+set_global_assignment -library "lib_flashLoader" -name MISC_FILE [file join $::quartus(sip_path) "submodules/intel_generic_serial_flash_interface_csr.sv"]

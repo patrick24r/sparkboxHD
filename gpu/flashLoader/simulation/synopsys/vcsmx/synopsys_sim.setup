@@ -1,0 +1,22 @@
+
+WORK > DEFAULT
+DEFAULT:                                    ./libraries/work/                                      
+work:                                       ./libraries/work/                                      
+qspi_inf_mux:                               ./libraries/qspi_inf_mux/                              
+avst_fifo:                                  ./libraries/avst_fifo/                                 
+inf_sc_fifo_ser_data:                       ./libraries/inf_sc_fifo_ser_data/                      
+rst_controller:                             ./libraries/rst_controller/                            
+qspi_inf_inst:                              ./libraries/qspi_inf_inst/                             
+serial_flash_inf_cmd_gen_inst:              ./libraries/serial_flash_inf_cmd_gen_inst/             
+multiplexer:                                ./libraries/multiplexer/                               
+merlin_demultiplexer_0:                     ./libraries/merlin_demultiplexer_0/                    
+xip_addr_adaption:                          ./libraries/xip_addr_adaption/                         
+xip_controller:                             ./libraries/xip_controller/                            
+csr_controller:                             ./libraries/csr_controller/                            
+intel_generic_serial_flash_interface_top_0: ./libraries/intel_generic_serial_flash_interface_top_0/
+altera_ver:                                 ./libraries/altera_ver/                                
+lpm_ver:                                    ./libraries/lpm_ver/                                   
+sgate_ver:                                  ./libraries/sgate_ver/                                 
+altera_mf_ver:                              ./libraries/altera_mf_ver/                             
+altera_lnsim_ver:                           ./libraries/altera_lnsim_ver/                          
+cycloneive_ver:                             ./libraries/cycloneive_ver/                            

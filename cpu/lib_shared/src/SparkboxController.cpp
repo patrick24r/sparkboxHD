@@ -6,21 +6,50 @@ SparkboxController::SparkboxController()
   // Reserve memory for each controller
   controllerData.reserve(MAX_CONTROLLERS);
 
-  // Initialize i2c, see HAL_I2C_MspInit() function for setup details
-  HAL_I2C_Init(&hi2c);
-  HAL_GPIO_Init(GPIOB, &gpioEn)
+  // Initialize GPIO pins for i2c enable
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin|I2C_EN1_Pin, GPIO_PIN_RESET);
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin|I2C_EN3_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : I2C_EN0_Pin I2C_EN1_Pin */
+  GPIO_InitStruct.Pin = I2C_EN0_Pin|I2C_EN1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : I2C_EN2_Pin I2C_EN3_Pin */
+  GPIO_InitStruct.Pin = I2C_EN2_Pin|I2C_EN3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  // Initialize i2c
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  HAL_I2C_Init(&hi2c1);
 
   // Synchronize all controllers
-  error = syncAllControllers();
+  syncAllControllers();
 }
 
 // Synchronize a single controller
 int32_t SparkboxController::syncSingleController(controllerSelect controller)
 {
-  uint8_t* startAddr; // DMA start address
-
-  // If under error, do nothing
-  if (error) return error;
+  uint8_t* startAddr; // i2c data address variable
+  int32_t error;
 
   // Bounds check the controller input
   if (controller >= MAX_CONTROLLERS) return INVALID_CONTROLLER;
@@ -54,6 +83,8 @@ int32_t SparkboxController::syncSingleController(controllerSelect controller)
 // Synchronize all controller data
 int32_t SparkboxController::syncAllControllers()
 {
+  int32_t error = 0;
+
   for (controllerSelect i = 0; i < MAX_CONTROLLERS && !error; i++) {
     // Checks to see if a controller is connected
     error = syncSingleController(i);
@@ -139,5 +170,32 @@ void SparkboxController::enableController(controllerSelect controller)
   // Bounds check the controller
   if (controller >= MAX_CONTROLLERS) return;
 
-  // Write to enable line pins
+  // Write to enable line pins - set only the enabeld pin
+  switch (controller) {
+    case 0: 
+      HAL_GPIO_WritePin(GPIOB, I2C_EN1_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin|I2C_EN3_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin, GPIO_PIN_SET);
+      break;
+    case 1: 
+      HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin|I2C_EN3_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOB, I2C_EN1_Pin, GPIO_PIN_SET);
+      break;
+    case 2: 
+      HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin|I2C_EN1_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN3_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin, GPIO_PIN_SET);
+      break;
+    case 3: 
+      HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin|I2C_EN1_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN3_Pin, GPIO_PIN_SET);
+      break;
+    default: 
+      HAL_GPIO_WritePin(GPIOB, I2C_EN0_Pin|I2C_EN1_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin|I2C_EN3_Pin, GPIO_PIN_RESET);
+      break;
+  }
+  
 }

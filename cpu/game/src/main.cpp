@@ -1,8 +1,15 @@
 #include "main.h"
 
-int32_t main(std::string *levelDirectory)
+// Global 
+Sparkbox *spk;
+
+int32_t main(void * arg)
 {
-  // Instantiate the SparkboxHD
-  Sparkbox spk = Sparkbox(*levelDirectory);
+  // Get pointer to sparkbox handle
+  spk = (Sparkbox*)arg;
+  // Link fatfs drivers
+  spk->linkFatFs();
+
+
 
 }

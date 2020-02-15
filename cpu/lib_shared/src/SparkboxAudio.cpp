@@ -2,6 +2,7 @@
 
 SparkboxAudio::SparkboxAudio(void)
 {
+  DAC_ChannelConfTypeDef sConfig = {0};
   // Generate a blank audio file that won't play to fill
   // the activeAudio vector
   AudioFile blankAudio = AudioFile((uint8_t*)void, 0);
@@ -32,13 +33,36 @@ SparkboxAudio::SparkboxAudio(void)
   audioBank.reserve(MAX_AUDIO_BANK_SIZE);
   totalImportedAudioBytes = 0;
 
-  // Initialize DACs
+  // Initialize DACs ---------------------------------------------------
+  hdac.Instance = DAC;
   HAL_DAC_Init(&hdac);
+  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+  /* DAC channel OUT1 config */
+  HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1);
+  /* DAC channel OUT2 config */
+  HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_2);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
 
-  // Initialize Timers
+  // Initialize Timers - both have base clocks of 84 MHz ----------------
+  // Timer 11 - 44.1kHz = (84e6 / 1905)
+  htim11.Instance = TIM11;
+  htim11.Init.Prescaler = 0;
+  htim11.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim11.Init.Period = 1904;
+  htim11.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim11.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  HAL_TIM_Base_Init(&htim11);
 
+  // Timer 14 - 48 kHz = (84e6 / 1750)
+  htim14.Instance = TIM14;
+  htim14.Init.Prescaler = 0;
+  htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim14.Init.Period = 1749;
+  htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  HAL_TIM_Base_Init(&htim14);
 }
 
 SparkboxAudio::~SparkboxAudio(void)

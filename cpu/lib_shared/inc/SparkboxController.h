@@ -2,6 +2,15 @@
 #include "allPeripherals.h"
 #include <vector>
 
+#define I2C_EN0_Pin GPIO_PIN_8
+#define I2C_EN0_GPIO_Port GPIOB
+#define I2C_EN1_Pin GPIO_PIN_9
+#define I2C_EN1_GPIO_Port GPIOB
+#define I2C_EN2_Pin GPIO_PIN_0
+#define I2C_EN2_GPIO_Port GPIOE
+#define I2C_EN3_Pin GPIO_PIN_1
+#define I2C_EN3_GPIO_Port GPIOE
+
 // Sparkbox signature - if a controller can't return this
 // the controller is deemed not connected
 #define CONTROLLER_ADDRESS (0x0C)
@@ -55,8 +64,6 @@ public:
     CONTROLLER_3 = 3
   };
 
-  int32_t error;
-
   // Update a single controller's fields
   int32_t syncSingleController(controllerSelect controller);
   // Update all connected controller fields
@@ -81,9 +88,9 @@ private:
   void enableController(controllerSelect controller);
 
   // I2C handle
-  I2C_HandleTypeDef hi2c;
+  I2C_HandleTypeDef hi2c1;
   // GPIO enable lines handle
-  GPIO_InitTypeDef gpioEn;
+  GPIO_InitTypeDef GPIO_InitStruct;
 
   // Bits specify which specific controllers are connected
   uint8_t connected; 

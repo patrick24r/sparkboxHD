@@ -1,0 +1,99 @@
+Info: Starting: Create simulation model
+Info: qsys-generate C:\sparkboxHD\gpu\flashLoader.qsys --simulation=VERILOG --allow-mixed-language-simulation --output-directory=C:\sparkboxHD\gpu\flashLoader\simulation --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading gpu/flashLoader.qsys
+Progress: Reading input file
+Progress: Adding intel_generic_serial_flash_interface_top_0 [intel_generic_serial_flash_interface_top 18.0]
+Progress: Parameterizing module intel_generic_serial_flash_interface_top_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: flashLoader: Generating flashLoader "flashLoader" for SIM_VERILOG
+Info: intel_generic_serial_flash_interface_top_0: "flashLoader" instantiated intel_generic_serial_flash_interface_top "intel_generic_serial_flash_interface_top_0"
+Info: csr_controller: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_csr "csr_controller"
+Info: avst_fifo: "Generating: avst_fifo"
+Info: xip_controller: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_xip "xip_controller"
+Info: xip_addr_adaption: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_addr "xip_addr_adaption"
+Info: merlin_demultiplexer_0: "intel_generic_serial_flash_interface_top_0" instantiated altera_merlin_demultiplexer "merlin_demultiplexer_0"
+Info: multiplexer: "intel_generic_serial_flash_interface_top_0" instantiated altera_merlin_multiplexer "multiplexer"
+Info: serial_flash_inf_cmd_gen_inst: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_cmd "serial_flash_inf_cmd_gen_inst"
+Info: qspi_inf_mux: "Generating: qspi_inf_mux"
+Info: inf_sc_fifo_ser_data: "Generating: inf_sc_fifo_ser_data"
+Info: qspi_inf_inst: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_if_ctrl "qspi_inf_inst"
+Info: rst_controller: "intel_generic_serial_flash_interface_top_0" instantiated altera_reset_controller "rst_controller"
+Info: avst_fifo: "xip_controller" instantiated intel_generic_serial_flash_interface_xip "avst_fifo"
+Info: qspi_inf_mux: "qspi_inf_inst" instantiated intel_generic_serial_flash_interface_if_ctrl "qspi_inf_mux"
+Info: inf_sc_fifo_ser_data: "qspi_inf_inst" instantiated intel_generic_serial_flash_interface_if_ctrl "inf_sc_fifo_ser_data"
+Info: avst_fifo: "avst_fifo" instantiated altera_avalon_sc_fifo "avst_fifo"
+Info: qspi_inf_mux: "qspi_inf_mux" instantiated altera_merlin_multiplexer "qspi_inf_mux"
+Info: Reusing file C:/sparkboxHD/gpu/flashLoader/simulation/submodules/altera_merlin_arbitrator.sv
+Info: flashLoader: Done "flashLoader" with 15 modules, 19 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=C:\sparkboxHD\gpu\flashLoader\flashLoader.spd --output-directory=C:/sparkboxHD/gpu/flashLoader/simulation/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=C:\sparkboxHD\gpu\flashLoader\flashLoader.spd --output-directory=C:/sparkboxHD/gpu/flashLoader/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in C:/sparkboxHD/gpu/flashLoader/simulation/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in C:/sparkboxHD/gpu/flashLoader/simulation/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in C:/sparkboxHD/gpu/flashLoader/simulation/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in C:/sparkboxHD/gpu/flashLoader/simulation/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	12 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in C:/sparkboxHD/gpu/flashLoader/simulation/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under C:/sparkboxHD/gpu/flashLoader/simulation/.
+Info: Regenerate these scripts whenever you make any change to any Quartus-generated IP in your project.
+Info: Finished: Create Modelsim Project.
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate C:\sparkboxHD\gpu\flashLoader.qsys --block-symbol-file --output-directory=C:\sparkboxHD\gpu\flashLoader --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading gpu/flashLoader.qsys
+Progress: Reading input file
+Progress: Adding intel_generic_serial_flash_interface_top_0 [intel_generic_serial_flash_interface_top 18.0]
+Progress: Parameterizing module intel_generic_serial_flash_interface_top_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate C:\sparkboxHD\gpu\flashLoader.qsys --synthesis=VERILOG --greybox --output-directory=C:\sparkboxHD\gpu\flashLoader\synthesis --family="Cyclone IV E" --part=EP4CE22F17C6
+Progress: Loading gpu/flashLoader.qsys
+Progress: Reading input file
+Progress: Adding intel_generic_serial_flash_interface_top_0 [intel_generic_serial_flash_interface_top 18.0]
+Progress: Parameterizing module intel_generic_serial_flash_interface_top_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: flashLoader: Generating flashLoader "flashLoader" for QUARTUS_SYNTH
+Info: intel_generic_serial_flash_interface_top_0: "flashLoader" instantiated intel_generic_serial_flash_interface_top "intel_generic_serial_flash_interface_top_0"
+Info: csr_controller: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_csr "csr_controller"
+Info: avst_fifo: "Generating: avst_fifo"
+Info: xip_controller: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_xip "xip_controller"
+Info: xip_addr_adaption: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_addr "xip_addr_adaption"
+Info: merlin_demultiplexer_0: "intel_generic_serial_flash_interface_top_0" instantiated altera_merlin_demultiplexer "merlin_demultiplexer_0"
+Info: multiplexer: "intel_generic_serial_flash_interface_top_0" instantiated altera_merlin_multiplexer "multiplexer"
+Info: serial_flash_inf_cmd_gen_inst: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_cmd "serial_flash_inf_cmd_gen_inst"
+Info: qspi_inf_mux: "Generating: qspi_inf_mux"
+Info: inf_sc_fifo_ser_data: "Generating: inf_sc_fifo_ser_data"
+Info: qspi_inf_inst: "intel_generic_serial_flash_interface_top_0" instantiated intel_generic_serial_flash_interface_if_ctrl "qspi_inf_inst"
+Info: rst_controller: "intel_generic_serial_flash_interface_top_0" instantiated altera_reset_controller "rst_controller"
+Info: avst_fifo: "xip_controller" instantiated intel_generic_serial_flash_interface_xip "avst_fifo"
+Info: qspi_inf_mux: "qspi_inf_inst" instantiated intel_generic_serial_flash_interface_if_ctrl "qspi_inf_mux"
+Info: inf_sc_fifo_ser_data: "qspi_inf_inst" instantiated intel_generic_serial_flash_interface_if_ctrl "inf_sc_fifo_ser_data"
+Info: avst_fifo: "avst_fifo" instantiated altera_avalon_sc_fifo "avst_fifo"
+Info: qspi_inf_mux: "qspi_inf_mux" instantiated altera_merlin_multiplexer "qspi_inf_mux"
+Info: Reusing file C:/sparkboxHD/gpu/flashLoader/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: flashLoader: Done "flashLoader" with 15 modules, 19 files
+Info: Generating third-party timing and resource estimation model ...
+Info: Done generating third-party timing and resource estimation model.
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

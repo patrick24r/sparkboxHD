@@ -54,6 +54,8 @@ private:
 
   // Handle to DAC peripheral for initialization
   DAC_HandleTypeDef hdac;
+  TIM_HandleTypeDef htim11;
+  TIM_HandleTypeDef htim14;
 
   // Add different supported audio file formats,
   // converting to unsigned 8 or 16 bit mono or stereo audio

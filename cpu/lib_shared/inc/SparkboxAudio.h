@@ -2,11 +2,13 @@
 #include "allPeripherals.h"
 #include "AudioFile.h"
 #include <vector>
+#include <queue>
 
 #define MAX_AUDIO_CHANNELS 4
 #define MAX_AUDIO_BANK_SIZE 256
 #define AUDIO_START_ADDR 0x70000000UL
 #define AUDIO_MAX_SIZE_BYTES 0x0FFFFFFFUL
+#define AUDIO_BUFFER_SIZE_BYTES 1024UL
 
 class SparkboxAudio
 {
@@ -52,10 +54,17 @@ private:
   // Buffer of audio sample rate counters
   std::vector<uint8_t> rateCounter;
 
-  // Handle to DAC peripheral for initialization
+  // Queue of channels that have a request for audio data
+  std::queue<uint8_t> audioDataRequestQueue;
+
+  // Buffers of active audio
+  std::vector<std::vector<uint8_t>> audioDataBuffers;
+
+  // Handle to peripherals for initialization
   DAC_HandleTypeDef hdac;
   TIM_HandleTypeDef htim11;
   TIM_HandleTypeDef htim14;
+  DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 
   // Add different supported audio file formats,
   // converting to unsigned 8 or 16 bit mono or stereo audio

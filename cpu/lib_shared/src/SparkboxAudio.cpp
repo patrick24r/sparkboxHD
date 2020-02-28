@@ -33,6 +33,12 @@ SparkboxAudio::SparkboxAudio(void)
   audioBank.reserve(MAX_AUDIO_BANK_SIZE);
   totalImportedAudioBytes = 0;
 
+  // Reserve memory for local audio data buffers
+  audioDataBuffers.reserve(MAX_AUDIO_BANK_SIZE);
+  for (uint8_t i = 0; i < MAX_AUDIO_BANK_SIZE; i++) {
+    audioDataBuffers.at(i).reserve(AUDIO_BUFFER_SIZE_BYTES);
+  }
+
   // Initialize DACs ---------------------------------------------------
   hdac.Instance = DAC;
   HAL_DAC_Init(&hdac);
@@ -63,6 +69,25 @@ SparkboxAudio::SparkboxAudio(void)
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   HAL_TIM_Base_Init(&htim14);
+
+  // Initialize DMA stream ---------------------------------------------
+  __HAL_RCC_DMA2_CLK_ENABLE();
+  hdma_memtomem_dma2_stream0.Instance = DMA2_Stream0;
+  hdma_memtomem_dma2_stream0.Init.Channel = DMA_CHANNEL_0;
+  hdma_memtomem_dma2_stream0.Init.Direction = DMA_MEMORY_TO_MEMORY;
+  hdma_memtomem_dma2_stream0.Init.PeriphInc = DMA_PINC_ENABLE;
+  hdma_memtomem_dma2_stream0.Init.MemInc = DMA_MINC_ENABLE;
+  hdma_memtomem_dma2_stream0.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+  hdma_memtomem_dma2_stream0.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+  hdma_memtomem_dma2_stream0.Init.Mode = DMA_NORMAL;
+  hdma_memtomem_dma2_stream0.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+  hdma_memtomem_dma2_stream0.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+  hdma_memtomem_dma2_stream0.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+  hdma_memtomem_dma2_stream0.Init.MemBurst = DMA_MBURST_SINGLE;
+  hdma_memtomem_dma2_stream0.Init.PeriphBurst = DMA_PBURST_SINGLE;
+  HAL_DMA_Init(&hdma_memtomem_dma2_stream0);
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
 
 SparkboxAudio::~SparkboxAudio(void)
@@ -143,13 +168,13 @@ int32_t SparkboxAudio::rewindAudio(uint8_t audioChannel, int32_t numberOfSamples
 
 int32_t skipAudio(uint8_t audioChannel, float numberOfSeconds)
 {
-  int32_t samplesSkipped = (int32_t)(activeAudio.at(audioChannel).sampleRate * 
+  int32_t samplesSkipped = (int32_t)(activeAudio.at(audioChannel).sampleRate *
     numberOfSeconds);
 
   return skipAudio(audioChannel, samplesSkipped);
 }
 
-/*! 
+/*!
  * \brief Skip a number of samples on one audio channel. Negative numbers
  * will skip backwards and positive numbers will skip forwards
  * @param audioChannel The audio channel
@@ -165,7 +190,7 @@ int32_t skipAudio(uint8_t audioChannel, int32_t numberOfSamples)
   nextSampleIndex = (int32_t)(activeAudio.at(audioChannel).nextSample);
 
   // If for some reason the audio file has ove 2 billion samples this
-  // error will be called. With a file this large, this should error on memory 
+  // error will be called. With a file this large, this should error on memory
   // limits
   if (nextSampleIndex < 0) return AUDIO_UNSUPPORTED_FILE;
 
@@ -179,7 +204,7 @@ int32_t skipAudio(uint8_t audioChannel, int32_t numberOfSamples)
   } else {
     newSampleIndex = (uint32_t)(numberOfSamples + nextSampleIndex);
   }
- 
+
   activeAudio.at(audioChannel).nextSample = newSampleIndex;
 
   return 0;
@@ -201,7 +226,7 @@ void setMasterVolume(float newVolume)
   // Coerce master volume to [0 1]
   if (newVolume < 0.0) masterVolume = 0.0;
   else if (newVolume > 1.0) masterVolume = 1.0;
-  else masterVolume = newVolume; 
+  else masterVolume = newVolume;
 }
 
 /*!
@@ -239,9 +264,9 @@ void SparkboxAudio::audioInterruptCallback(uint32_t itSampleRate)
 {
   // This function is called on any audio timer interrupt. As of now, 2 audio timers
   // are planned to be used - One triggering interrupts at 44.1kHz and one at 48kHz.
-  // If any of the 4 active audio channels have sample rates that are a fraction of 
+  // If any of the 4 active audio channels have sample rates that are a fraction of
   // one of those samle rates, this function manages getting new samples for that channel
-  // We need to be careful of unorthodox sample rates that are factors of both 44.1kHz 
+  // We need to be careful of unorthodox sample rates that are factors of both 44.1kHz
   // and 48 kHz, such as 300 Hz (gcd of 44.1k and 48k). This is an outlandishly low
   // sample rate and it's not allowed.
   uint32_t chSampleRate;
@@ -284,7 +309,7 @@ void SparkboxAudio::getNewSample(uint8_t channel)
     // Sample is valid, get sample data from storage
     if (file->bitsPerSample == BITS_PER_SAMPLE_16) totalBitShift++;
     if (file->numberOfChannels == CHANNEL_STEREO) totalBitShift++;
-    newSample = (uint32_t)(*((uint8_t*)(file->getDataAddress()) + 
+    newSample = (uint32_t)(*((uint8_t*)(file->getDataAddress()) +
       file->nextSample << totalBitShift));
 
     // Account for mono/stereo and 8/16 bit audio
@@ -318,7 +343,7 @@ void SparkboxAudio::getNewSample(uint8_t channel)
     // Need to individually address left and right channel
     for (LorR = 0; LorR < 2; LorR++) {
       if (LorR)
-        // Upper 16 bits 
+        // Upper 16 bits
         singleChannelSample = (uint16_t)(channelSamples.at(channelNum) >> 16);
       else {
         // Lower 16 bits
@@ -330,7 +355,7 @@ void SparkboxAudio::getNewSample(uint8_t channel)
   }
 
   // Write new samples to the DACs
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_L, sampleToDac[0]); 
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_L, sampleToDac[0]);
   HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_L, sampleToDac[1]);
 
   // Take care of the case where the waveform has finished playing

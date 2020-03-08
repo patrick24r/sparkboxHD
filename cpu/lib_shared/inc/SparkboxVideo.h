@@ -46,4 +46,4 @@ private:
   uint32_t totalImportedFileSizeBytes;
   // Kep the GPU handle private for now
   SparkboxGpu gpu;
-}
+};

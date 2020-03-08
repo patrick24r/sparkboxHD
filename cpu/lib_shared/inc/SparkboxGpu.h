@@ -78,4 +78,4 @@ private:
   uint16_t sendGpuCommand(uint16_t command);
   uint16_t sendGpuCommand(uint16_t command, uint16_t data);
 
-}
+};

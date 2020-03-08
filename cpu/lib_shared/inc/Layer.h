@@ -115,4 +115,4 @@ private:
     uint16_t fontHeight;
     font_t fontSelection;
     uint8_t fontPaletteSelection;
-}
+};

@@ -53,4 +53,4 @@ private:
   /* Sparkbox private properties */
   // Root directory of the current level
   std::string rootLevelDirectory;
-}
+};

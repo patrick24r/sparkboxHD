@@ -12,7 +12,7 @@ int32_t main()
 {
   // Default file paths to BIOS on disk
   std::string gameDirectory = "bios";
-  std::string levelDirectory = "init_game";
+  std::string levelDirectory = "_init";
 
   // Initialize the sparkbox and all peripherals
   // while allocating memory for all handles
@@ -36,10 +36,10 @@ bios_start:
     while (bios.validLevel(gameDirectory, levelDirectory) == SPK_OK) {
 
       // Load the level executable into flash memory
-      if (bios.loadLevel(gameDirectory, levelDirectory) == SPK_OK) {
+      if (bios.loadLevel(gameDirectory, levelDirectory) != SPK_OK) {
         // Error loading the level, display to user
         while(1);
-		// Will restart BIOS if error in future versions
+		// Will restart BIOS on error
 		goto bios_start;
       }
 

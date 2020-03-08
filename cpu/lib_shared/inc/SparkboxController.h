@@ -108,4 +108,4 @@ private:
   std::vector<uint64_t> controllerData;
 
     
-}
+};

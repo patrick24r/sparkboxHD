@@ -40,16 +40,8 @@ public:
   samplebit_t bitsPerSample;
   // Sample rate in samples / second
   uint32_t sampleRate;
-  // Index of the next sample to be played
-  uint32_t nextSample;
   // Path to the audio file on disk
   std::string filePath;
-  
-  // Is the file currently being played
-  uint8_t isPlaying;
-  // Number of times to repeat an audio file after playing it
-  // Any negative number is repeat forever
-  int32_t numberOfRepeats;
 
   // Return the start address to the sample data
   uint8_t * getDataAddress(void)
@@ -83,4 +75,4 @@ private:
   uint8_t *dataAddress;
   // Total number of samples
   uint32_t numberOfSamples;
-}
+};

@@ -16,6 +16,8 @@ std::string SparkboxBIOS::userSelectGame(void)
 
 	// Display options to user and let them pick
 
+  // If no new game is picked, return nothing
+
 	return newGameDir;
 }
 

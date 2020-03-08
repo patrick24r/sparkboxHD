@@ -1,6 +1,6 @@
 module paletteFifoBuffer(
-    input clk_pipe, // Input data clock
-    input clk_hdmi, // Output data clock
+    input clk_in, // Input data clock
+    input clk_out, // Output data clock
     input reset,
     input writeEn, // Enable write
     input [23:0] dataIn,
@@ -32,9 +32,9 @@ initial begin
 end
 
 
-// At positive edge of pipeline clock, clock in new data
+// At positive edge of input clock, clock in new data
 // if writing is enabled and not under reset and won't overflow
-always @(posedge clk_pipe or negedge reset) begin
+always @(posedge clk_in or negedge reset) begin
     if (!reset) begin
         for (i = 0; i < BUFFER_DEPTH; i=i+1) buffer[i] <= 0;
         nextAddr <= 0;
@@ -50,9 +50,9 @@ always @(posedge clk_pipe or negedge reset) begin
     
 end
 
-// At positive edge of hdmi clock, clock out data if
+// At positive edge of output clock, clock out data if
 // the buffer is not empty
-always @(posedge clk_hdmi or negedge reset) begin
+always @(posedge clk_out or negedge reset) begin
     if (!reset) begin
         beginAddr <= 0;
         dataOut <= 0;

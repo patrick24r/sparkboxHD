@@ -1,6 +1,6 @@
 module paletteTop(
     input clk_pipe, // Pipeline clock
-	input clk_pixelReq, // Pixel request pulse (12 Mhz)
+    input clk_lcd, // LCD clock, 15 MHz max
     input rst,
     input writeEn,
     input [4:0] controllerLayer, // Selects layer for read/write
@@ -24,14 +24,15 @@ module paletteTop(
     output [7:0] bufferSize, // Current size of pixel data buffer
     output bufferEmpty, // 1 = pixel buffer empty
     output bufferFull, // 1 = pixel buffer full
-    output pixelFoundNew // 1 = non-transparent pixel exists, 0 = transparent pixel exists
+    output pixelFoundNew // 1 = non-transparent new x-y pixel found
 );
 
 // Determine if a found pixel has new X/Y coordinates
 wire pixelFound;
-wire [23:0] hdmiReadData;
+wire [23:0] lcdReadData;
 reg [10:0] prevX;
 reg [10:0] prevY;
+reg lcdNeedsData;
 
 initial begin
     prevX = ~11'd0;
@@ -41,13 +42,22 @@ end
 assign pixelFoundNew = (pixelFound && (prevX != xPosition || prevY != yPosition));
 
 // At next positive edge, save last x/y pair
-always @(posedge clk_pipe) begin
-    if (pixelFoundNew) begin
-        prevX <= xPosition;
-        prevY <= yPosition;
+always @(posedge clk_pipe or negedge rst) begin
+    if (!rst) begin
+        prevX <= 0;
+        prevY <= 0;
+    end else begin
+        if (pixelFoundNew) begin
+            prevX <= xPosition;
+            prevY <= yPosition;
+        end
     end
 end
 
+// Palette memory has asynchronous reads,
+// pipeline clock is used for writing
+// NOTE: THIS MEANS THE PIPELINE CLOCK TO THIS BLOCK
+// HAS TO BE ENABLED EVEN WHEN NOT RENDERING
 paletteMemControl inst_paletteMemCtrl(
    clk_pipe,
    rst,
@@ -59,7 +69,7 @@ paletteMemControl inst_paletteMemCtrl(
    pipeLayer,
    pipeColor,
    controllerReadData,
-   pipeReadData,
+   pipeReadData, // Data read for pipeline from palette memory
    pixelFound
 );
 
@@ -68,23 +78,26 @@ paletteMemControl inst_paletteMemCtrl(
 // and is new (no repeat pixels if 2+ layers exist on same pixel)
 paletteFifoBuffer inst_paletteBuffer(
     !clk_pipe,
-    clk_pixelReq,
+    (clk_lcd && lcdNeedsData),
     rst,
     pixelFoundNew,
-    pipeReadData,
-    hdmiReadData,
+    pipeReadData, // Data read for pipeline from palette memory
+    lcdReadData, // Data read for lcd from fifo buffer 
     bufferSize,
     bufferEmpty,
     bufferFull
 );
 
 
-// Uses fifo buffer output to control 
+// LCD Controller
 lcdPixelWriter inst_lcdInterface(
-	!clk_pixelReq,
-	bufferEmpty,
-	hdmiReadData,
-	red,
+	clk_lcd,
+    rst,
+	bufferEmpty, // 1 if buffer empty, no valid data
+	lcdReadData, // Data from fifo buffer to LCD
+    lcdNeedsData, // 1 if lcd needs valid data, 0 else
+    // ALL THE FOLLOWING SIGNALS ARE OUTPUT SIGNALS TO THE LCD
+	red, 
 	green,
 	blue,
 	dclk,

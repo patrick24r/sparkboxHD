@@ -5,7 +5,7 @@ module lcdTester(
 );
 
 parameter
-	SCREEN_COLOR = 24'h45c487,
+	SCREEN_COLOR = 24'h0b70b8,
 	CLOCK_DIV = 2;
 
 reg unsigned [7:0] clock_counter;
@@ -26,9 +26,11 @@ end
 
 
 lcdPixelWriter inst_lcdPixelWriter(
-	clock_adj, // 50 MHz clock
+	clock_adj, // 15 MHz clock
+	1'b1, // never reset
 	1'b0, // Buffer never empty, for test
 	SCREEN_COLOR, // RGB input
+	GPIO_1[32], // rgb color request
 	GPIO_0[7:0], // Red[7:0]
 	GPIO_0[23:16], // Green[7:0]
 	GPIO_0[15:8], // Blue[7:0]
@@ -36,9 +38,7 @@ lcdPixelWriter inst_lcdPixelWriter(
 	GPIO_0[25], // Display enable
 	GPIO_0[26], // hsync
 	GPIO_0[27], // vsync
-	GPIO_0[28], // data enable
-	GPIO_1[31:16], // dclk counter - debug only
-	GPIO_1[15:0] // hclk counter - debug only
+	GPIO_0[28] // data enable
 );
 
 endmodule

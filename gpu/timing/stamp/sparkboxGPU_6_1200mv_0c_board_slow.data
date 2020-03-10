@@ -30,445 +30,1141 @@ TIMESCALE "1ns";
 TIMINGDATA
 
 ARCDATA
-pos_clock_adj__GPIO_0[24]__delay:
-CELL_RISE( scalar ) {
-VALUES ("8.524");
+pos_mem_dq[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.137");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("8.524");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_0[24]__delay:
-CELL_RISE( scalar ) {
-VALUES ("");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.137");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_0[26]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.453");
+pos_mem_dq[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.138");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.453");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_0[27]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.191");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.191");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.138");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_0[28]__delay:
-CELL_RISE( scalar ) {
-VALUES ("7.366");
+pos_mem_dq[1]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.095");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("7.366");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[0]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.483");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.483");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.095");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[1]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.786");
+pos_mem_dq[1]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.094");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.786");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[2]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.774");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.774");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.094");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[3]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.322");
+pos_mem_dq[2]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.091");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.322");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[4]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.298");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.298");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.091");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[5]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.306");
+pos_mem_dq[2]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.093");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.306");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[6]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.193");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.193");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.093");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[7]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.111");
+pos_mem_dq[3]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.098");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.111");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[8]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.492");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.492");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.098");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[9]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.077");
+pos_mem_dq[3]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.096");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.077");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[10]__delay:
-CELL_RISE( scalar ) {
-VALUES ("7.148");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("7.148");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.096");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[11]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.122");
+pos_mem_dq[4]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.111");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.122");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[12]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.559");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.559");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.111");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[13]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.985");
+pos_mem_dq[4]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.112");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.985");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[14]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.889");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.889");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.112");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[15]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.096");
+pos_mem_dq[5]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.097");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("6.096");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[16]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.582");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.582");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.097");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[17]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.560");
+pos_mem_dq[5]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.097");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.560");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[18]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.335");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.335");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.097");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[19]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.578");
+pos_mem_dq[6]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.102");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.578");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[20]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.484");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.484");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.102");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[21]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.560");
+pos_mem_dq[6]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.104");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.560");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[22]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.622");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.622");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.104");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[23]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.876");
+pos_mem_dq[7]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.105");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.876");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[24]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.898");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.898");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.105");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[25]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.565");
+pos_mem_dq[7]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.105");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.565");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[26]__delay:
-CELL_RISE( scalar ) {
-VALUES ("6.594");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("6.594");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.105");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[27]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.457");
+pos_mem_dq[8]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.099");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.457");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[28]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.921");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.921");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.099");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[29]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.597");
+pos_mem_dq[8]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.100");
 }
 
-CELL_FALL( scalar ) {
-VALUES ("5.597");
-}
-
-ENDARCDATA
-
-ARCDATA
-pos_clock_adj__GPIO_1[30]__delay:
-CELL_RISE( scalar ) {
-VALUES ("5.810");
-}
-
-CELL_FALL( scalar ) {
-VALUES ("5.810");
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.100");
 }
 
 ENDARCDATA
 
 ARCDATA
-pos_clock_adj__GPIO_1[31]__delay:
+pos_mem_dq[9]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.086");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.086");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[9]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.087");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.087");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[10]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.113");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.113");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[10]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.116");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.116");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[11]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.096");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.096");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[11]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.097");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.097");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[12]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.115");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.115");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[12]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.115");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.115");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[13]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.106");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.106");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[13]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.108");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.108");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[14]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.080");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.080");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[14]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.081");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.081");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[15]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.086");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.086");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[15]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("1.085");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("1.085");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_clk[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_mimic__setup:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("0.870");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("0.870");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.914");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.914");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.915");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.915");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[1]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.874");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.874");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[1]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.873");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.873");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[2]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.870");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.870");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[2]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.871");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.871");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[3]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.876");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.876");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[3]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[4]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.889");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.889");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[4]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.890");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.890");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[5]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[5]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.875");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[6]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.880");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.880");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[6]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.882");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.882");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[7]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.883");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.883");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[7]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.883");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.883");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[8]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.877");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.877");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[8]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.878");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.878");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[9]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.865");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.865");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[9]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.866");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.866");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[10]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.891");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.891");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[10]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[11]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.874");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.874");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[11]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.876");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.876");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[12]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[12]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.893");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[13]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.884");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.884");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[13]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.886");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.886");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[14]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.859");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.859");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[14]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.860");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.860");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[15]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.864");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.864");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_dq[15]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_capture__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.864");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.864");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_mem_clk[0]__sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst|sdramController_phy_ddr_mimic__hold:
+RISE_CONSTRAINT( scalar ) {
+VALUES ("-0.660");
+}
+
+FALL_CONSTRAINT( scalar ) {
+VALUES ("-0.660");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_dqs[0]__delay:
 CELL_RISE( scalar ) {
-VALUES ("5.810");
+VALUES ("2.613");
 }
 
 CELL_FALL( scalar ) {
-VALUES ("5.810");
+VALUES ("2.613");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_dqs[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("2.587");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("2.587");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_dqs[1]__delay:
+CELL_RISE( scalar ) {
+VALUES ("2.613");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("2.613");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_dqs[1]__delay:
+CELL_RISE( scalar ) {
+VALUES ("2.587");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("2.587");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__test_status[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.446");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.446");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__test_status[1]__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.501");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.501");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__test_status[2]__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.353");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.353");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__test_status[3]__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.212");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.212");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__test_status[7]__delay:
+CELL_RISE( scalar ) {
+VALUES ("4.072");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("4.072");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.708");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.708");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[1]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.705");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.705");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[2]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.707");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.707");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[3]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.707");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.707");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[4]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[5]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[6]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.707");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.707");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[7]__delay:
+CELL_RISE( scalar ) {
+VALUES ("2.421");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("2.421");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[8]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.705");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.705");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[9]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[10]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[11]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.709");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.709");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_addr[12]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.707");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.707");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_ba[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.708");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.708");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_ba[1]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_cas_n__delay:
+CELL_RISE( scalar ) {
+VALUES ("2.426");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("2.426");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_cke[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.706");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.706");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_cs_n[0]__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.708");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.708");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_ras_n__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.707");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.707");
+}
+
+ENDARCDATA
+
+ARCDATA
+pos_clock_source__mem_we_n__delay:
+CELL_RISE( scalar ) {
+VALUES ("1.709");
+}
+
+CELL_FALL( scalar ) {
+VALUES ("1.709");
 }
 
 ENDARCDATA

@@ -41,8 +41,9 @@ end
 
 assign pixelFoundNew = (pixelFound && (prevX != xPosition || prevY != yPosition));
 
-// At next positive edge, save last x/y pair
-always @(posedge clk_pipe or negedge rst) begin
+// On the same edge we write to fifo buffer, save last x/y pair
+// Update the pair only if
+always @(negedge clk_pipe or negedge rst) begin
     if (!rst) begin
         prevX <= 0;
         prevY <= 0;
@@ -78,9 +79,10 @@ paletteMemControl inst_paletteMemCtrl(
 // and is new (no repeat pixels if 2+ layers exist on same pixel)
 paletteFifoBuffer inst_paletteBuffer(
     !clk_pipe,
-    (clk_lcd && lcdNeedsData),
+    clk_lcd,
     rst,
-    pixelFoundNew,
+	 lcdNeedsData, // Read enable
+    pixelFoundNew, // Write enable
     pipeReadData, // Data read for pipeline from palette memory
     lcdReadData, // Data read for lcd from fifo buffer 
     bufferSize,
@@ -92,11 +94,11 @@ paletteFifoBuffer inst_paletteBuffer(
 // LCD Controller
 lcdPixelWriter inst_lcdInterface(
 	clk_lcd,
-    rst,
+   rst,
 	bufferEmpty, // 1 if buffer empty, no valid data
 	lcdReadData, // Data from fifo buffer to LCD
-    lcdNeedsData, // 1 if lcd needs valid data, 0 else
-    // ALL THE FOLLOWING SIGNALS ARE OUTPUT SIGNALS TO THE LCD
+   lcdNeedsData, // 1 if lcd needs valid data, 0 else
+   // ALL THE FOLLOWING SIGNALS ARE OUTPUT SIGNALS TO THE LCD
 	red, 
 	green,
 	blue,

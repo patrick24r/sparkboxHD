@@ -1,0 +1,25 @@
+#Core: sdramController_phy - Instance: sdramController_inst|sdramController_controller_phy_inst|sdramController_phy_inst
+#Path, Setup Margin, Hold Margin
+"Address Command (Slow 1200mV 85C Model)",2.151,1.113
+"DQS vs CK (Slow 1200mV 85C Model)",1.418,1.325
+"Mimic (Slow 1200mV 85C Model)",1.460,
+"Phy (Slow 1200mV 85C Model)",0.972,0.293
+"Phy Reset (Slow 1200mV 85C Model)",1.954,0.897
+"Read Capture (Slow 1200mV 85C Model)",0.119,0.124
+"Write (Slow 1200mV 85C Model)",0.376,0.508
+ 
+"Address Command (Slow 1200mV 0C Model)",2.307,1.072
+"DQS vs CK (Slow 1200mV 0C Model)",1.429,1.354
+"Mimic (Slow 1200mV 0C Model)",1.554,
+"Phy (Slow 1200mV 0C Model)",1.416,0.290
+"Phy Reset (Slow 1200mV 0C Model)",2.327,0.809
+"Read Capture (Slow 1200mV 0C Model)",0.159,0.164
+"Write (Slow 1200mV 0C Model)",0.395,0.532
+ 
+"Address Command (Fast 1200mV 0C Model)",2.582,0.995
+"DQS vs CK (Fast 1200mV 0C Model)",1.473,1.396
+"Mimic (Fast 1200mV 0C Model)",1.807,
+"Phy (Fast 1200mV 0C Model)",1.807,0.142
+"Phy Reset (Fast 1200mV 0C Model)",3.638,0.491
+"Read Capture (Fast 1200mV 0C Model)",0.209,0.214
+"Write (Fast 1200mV 0C Model)",0.416,0.572

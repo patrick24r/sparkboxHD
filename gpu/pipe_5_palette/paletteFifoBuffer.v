@@ -2,6 +2,7 @@ module paletteFifoBuffer(
     input clk_in, // Input data clock
     input clk_out, // Output data clock
     input reset,
+	 input readEn, // Enable read
     input writeEn, // Enable write
     input [23:0] dataIn,
     output reg [23:0] dataOut,
@@ -39,11 +40,11 @@ always @(posedge clk_in or negedge reset) begin
         for (i = 0; i < BUFFER_DEPTH; i=i+1) buffer[i] <= 0;
         nextAddr <= 0;
     end else begin
-        if (nextAddr + 1 == beginAddr || !writeEn) begin
-            nextAddr <= nextAddr;
-        end else begin
-            buffer[nextAddr] <= dataIn;
+        if (!full && writeEn) begin
+				buffer[nextAddr] <= dataIn;
             nextAddr <= nextAddr + 1'b1;
+        end else begin
+            nextAddr <= nextAddr;
         end
         i <= 0;
     end
@@ -57,7 +58,7 @@ always @(posedge clk_out or negedge reset) begin
         beginAddr <= 0;
         dataOut <= 0;
     end else begin 
-        if (!empty) begin
+        if (!empty && readEn) begin
             dataOut <= buffer[beginAddr];
             beginAddr <= beginAddr + 1'b1;
         end else begin

@@ -4,7 +4,7 @@
 class SparkboxDmaRequest {
   SparkboxDmaRequest();
   
-  uint32_t transferFromAddress;
-  uint32_t transferToAddress;
+  uint8_t *transferFromAddress;
+  uint8_t *transferToAddress;
   uint32_t numberOfBytes;
 };

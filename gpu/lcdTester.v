@@ -5,7 +5,7 @@ module lcdTester(
 );
 
 parameter
-	SCREEN_COLOR = 24'h0b70b8,
+	SCREEN_COLOR = 24'hdea2d7,
 	CLOCK_DIV = 2;
 
 reg unsigned [7:0] clock_counter;

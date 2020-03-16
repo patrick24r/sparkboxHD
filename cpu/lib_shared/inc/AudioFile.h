@@ -36,7 +36,7 @@ public:
 
   // Mono audio - 1 channel, Stereo audio - 2 channels
   audiochannel_t numberOfChannels;
-  // Bits for a single sample's worth of audio data
+  // Bits for a single sample of a single channel
   samplebit_t bitsPerSample;
   // Sample rate in samples / second
   uint32_t sampleRate;
@@ -66,6 +66,12 @@ public:
     if (newVolume < 0.0) newVolume = 0.0;
     if (newVolume > 1.0) newVolume = 1.0;
     volume = newVolume;
+  }
+
+  // Get the number of bytes for a single sample (both channels)
+  uint32_t getBytesPerSample(void)
+  {
+    return (bitsPerSample >> 3) * numberOfChannels;
   }
 
 private:

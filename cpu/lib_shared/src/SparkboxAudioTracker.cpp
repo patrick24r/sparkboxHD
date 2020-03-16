@@ -30,7 +30,7 @@ SparkboxAudioTracker::SparkboxAudioTracker(uint32_t bufferSizeBytes)
 }
 
 // This function is used to reset all data from 
-void SparkboxAudioTracker::resetAllTrackers(void)
+void SparkboxAudioTracker::resetAllTracking(void)
 {
   // Set the audio file to not be playing
   isPlaying = 0;

@@ -111,18 +111,19 @@ int32_t SparkboxAudio::playAudio(uint8_t audioChannel, int32_t numberOfPlays)
   if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
 
   // Determine current status of the audio file
+  // If already playing, do nothing
 }
 
 int32_t SparkboxAudio::pauseAudio(uint8_t audioChannel)
 {
   if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
-  activeAudio.at(audioChannel).isPlaying = AUDIO_NOT_PLAYING;
+  audioTrackers.at(audioChannel).isPlaying = AUDIO_NOT_PLAYING;
 }
 
 int32_t resumeAudio(uint8_t audioChannel)
 {
   if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
-  activeAudio.at(audioChannel).isPlaying = AUDIO_PLAYING;
+  audioTrackers.at(audioChannel).isPlaying = AUDIO_PLAYING;
 }
 
 // Rewind audio called with no arguments, rewind to beginning
@@ -130,7 +131,11 @@ int32_t SparkboxAudio::rewindAudio(uint8_t audioChannel)
 {
   if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
 
-  activeAudio.at(audioChannel).nextSample = 0;
+  // Set the next external memory byte to read to be the first byte in the 
+  // audio stream. This does mean there is a delay between rewinding and actually
+  // hearing the rewound samples
+  audioTrackers.at(audioChannel).nextExternalByteToRead = 
+    audioTrackers.at(audioChannel).externalMemoryBuffer;
   return 0;
 }
 
@@ -160,18 +165,45 @@ int32_t skipAudio(uint8_t audioChannel, float numberOfSeconds)
  */
 int32_t skipAudio(uint8_t audioChannel, int32_t numberOfSamples)
 {
+  uint8_t *currentByteIndex; // The current byte index
+  int32_t numberOfBytesToSkip;
+  uint8_t *lastValidByteIndex;
 
+  if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
+
+  // Convert the number of samples to skip to the number of bytes to skip
+  numberOfBytesToSkip = numberOfSamples * activeAudio.at(audioChannel).getBytesPerSample();
+
+  // Find the current byte position
+  currentByteIndex = audioTrackers.at(audioChannel).nextExternalByteToRead;
+  // Identify the last valid byte index in the audio buffer
+  lastValidByteIndex = audioTrackers.at(audioChannel).externalMemoryBuffer + 
+    activeAudio.at(i).getBytesPerSample() * 
+    activeAudio.at(i).getNumberOfSamples;
+
+  // Skip the audio
+  currentByteIndex += numberOfBytesToSkip; 
+
+  // Coerce the skipped audio to within valid limits
+  if (currentByteIndex < audioTrackers.at(audioChannel).externalMemoryBuffer) {
+    currentByteIndex = audioTrackers.at(audioChannel).externalMemoryBuffer;
+  } else if (currentByteIndex > lastValidByteIndex) {
+    currentByteindex = lastValidByteIndex;
+  }
+
+  // Set the audio tracker to read the next sample
+  audioTrackers.at(audioChannel).nextExternalByteToRead = currentByteIndex;
   return 0;
 }
 
 void SparkboxAudio::setChannelVolume(uint8_t audioChannel, float newVolume)
 {
-  if (audioChannel >= activeAudio.size()) return AUDIO_INVALID_CHANNEL;
   activeAudio.at(audioChannel).setVolume(newVolume);
 }
 
 float getMasterVolume(void)
 {
+  if (audioChannel >= activeAudio.size()) return AUDIO_I
   return masterVolume;
 }
 
@@ -191,6 +223,13 @@ int32_t SparkboxAudio::setActiveAudio(uint8_t audioChannel, uint8_t audioID)
   if (audioID > audioBank.size()) return AUDIO_BANK_INVALID_ID;
   if (audioChannel > activeAudio.size()) return AUDIO_INVALID_CHANNEL;
   activeAudio.at(audioChannel) = audioBank.at(audioID);
+
+  // Reset the audio tracker on the given channel
+  audioTrackers.at(audioChannel).resetAllTracking();
+  // Set the external memory address variables
+  audioTrackers.at(audioChannel).externalMemoryBuffer = activeAudio.at(audioChannel).getDataAddress();
+  audioTrackers.at(audioChannel).nextExternalByteToRead = activeAudio.at(audioChannel).getDataAddress();
+  audioTrackers.at(audioChannel).nextInternalSampleToPlay = internalBufferFirstHalf;
 }
 
 AudioFile SparkboxAudio::getAudioBank(uint8_t audioID)
@@ -224,7 +263,7 @@ void SparkboxAudio::audioInterruptCallback(uint32_t itSampleRate)
   // and 48 kHz, such as 300 Hz (gcd of 44.1k and 48k). This is an outlandishly low
   // sample rate and it's not allowed.
   uint32_t chSampleRate;
-  uint8_t sampleIsNew = 0;
+  uint8_t sampleIsNew = false;
 
   // Only sample rates evenly divisible by timer interrupt frequencies are allowed
   for (uint8_t channel = 0; channel < activeAudio.size() && channel < MAX_AUDIO_CHANNELS; channel++) {
@@ -267,6 +306,7 @@ void SparkboxAudio::getNextSample(uint8_t channel)
 
   // Using audio tracker, identify the next sample in the internal data stream
   newSample = *(uint32_t*)(audioTrackers.at(channel).nextInternalSampleToPlay);
+  audioTrackers.at(channel).iterateNextSampleToPlay();
 
   // If an audio file just finished, update number of repeats
   if (audioTrackers.at(channel).) {
@@ -305,15 +345,61 @@ void SparkboxAudio::writeNewSampleDacs(void)
 
 
 void SparkboxAudio::dmaCompleteCallback(void)
-{
-  // DMA complete, if queue is not empty, begin next transfer(s)
+{ 
+  // Pop the transfer that was just completed
+  // Determine if the next half buffer is filled
+  // If queue is not empty, begin next transfer(s)
 }
 
 void SparkboxAudio::updateAudioStreams(void)
 {
-  // Add a request to the dma queue
-  // Add mmultiple requests to the queue in the case that
+  SparkboxDmaRequest req = SparkboxDmaRequest();
+  uint32_t totalBytesSetUp = 0;
+  uint8_t *bufferEndLocation;
+  // For each audio stream, determine if we need to 
+  // * Add a request to the dma queue
+  // * Add multiple requests to the queue in the case that
   // the file is ending and we need to transfer samples fromthe start of
   // the waveform
-  // Begin a dma transfer if no dma transfer is active
+  for (uint8_t i = 0; i < MAX_AUDIO_CHANNELS && i < activeAudio.size(); i++) {
+    // Track the total number of bytes set up to transfer in the dma queue
+    totalBytesSetUp = 0;
+    // If next half buffer is not filled, set up dma requests to fill it
+    while (!audioTrackers.at(i).nextHalfBufferFilled && totalBytesSetUp < audioTrackers.at(i).internalMemoryBuffer.size()) {
+      // Set up dma requests to fill the next half buffer
+      req.transferFromAddress = audioTrackers.at(i).nextExternalByteToRead;
+      if (audioTrackers.at(i).nextInternalSampleToPlay < audioTrackers.at(i).internalBufferSecondHalf) {
+        // Currently playing in the first half, transfer to second half
+        req.transferToAddress = audioTrackers.at(i).internalBufferSecondHalf;
+      } else {
+        // Currently playing samples in the second half, transfer to first half
+        req.transferToAddress = audioTrackers.at(i).internalBufferFirstHalf;
+      }
+
+      // Transfer the max amount of bytes - limited by half the buffer size and the audio file size
+      // whichever is less
+      req.numberOfBytes = audioTrackers.at(i).internalMemoryBuffer.size() >> 1;
+      bufferEndLocation = audioTrackers.at(i).externalMemoryBuffer + 
+        activeAudio.at(i).getBytesPerSample() * activeAudio.at(i).getNumberOfSamples();
+
+      if (req.numberOfBytes > bufferEndLocation - audioTrackers.at(i).nextExternalByteToRead + 1) {
+        req.numberOfBytes = bufferEndLocation - audioTrackers.at(i).nextExternalByteToRead;
+      }
+
+      totalBytesSetUp += req.numberOfBytes;
+
+      // Update the next address to read from external memory
+      audioTrackers.at(i).nextExternalByteToRead += req.numberOfBytes;
+      // Reset next external buffer location on overflow
+      if (audioTrackers.at(i).nextExternalByteToRead > bufferEndLocation) {
+        audioTrackers.at(i).nextExternalByteToRead = audioTrackers.at(i).externalMemoryBuffer;
+      }
+      // Add the dma request to the queue
+      channelDataRequests.push(req);
+    }
+  }
+  // Begin a dma transfer if no dma transfer is actived queue is not empty
+  if (channelDataRequests.empty() && ) {
+
+  }
 }

@@ -9,7 +9,7 @@ class SparkboxAudioTracker
   SparkboxAudioTracker(uint32_t bufferSizeBytes);
 
   // Resets all tracking information to begin playing the waveform from the start
-  void resetAllTrackers(void);
+  void resetAllTracking(void);
 
   // Is the file currently being played
   uint8_t isPlaying;
@@ -35,7 +35,7 @@ class SparkboxAudioTracker
   // next samples
   uint8_t currentHalfBufferReady;
   uint8_t nextHalfBufferFilled;
-  // Pointers to thw beginnning of the two sections of the internalMemoryBuffer
+  // Pointers to the beginnning of the two sections of the internalMemoryBuffer
   uint8_t *internalBufferFirstHalf;
   uint8_t *internalBufferSecondHalf;
 };

@@ -38,7 +38,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
-set_global_assignment -name TOP_LEVEL_ENTITY sdramController_example_top
+set_global_assignment -name TOP_LEVEL_ENTITY lcdTester
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:59:40  SEPTEMBER 15, 2019"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"

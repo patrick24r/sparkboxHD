@@ -2,6 +2,7 @@
 #include "allPeripherals.h"
 #include "AudioFile.h"
 #include "SparkboxAudioTracker.h"
+#include "SparkboxDmaRequest.h"
 #include <vector>
 #include <queue>
 
@@ -57,7 +58,7 @@ private:
   // Current active audio samples
   std::vector<uint32_t> activeSamples;
   // Queue of requests for dma to transfer data on a given channel
-  std::queue<uint8_t> channelDataRequests;
+  std::queue<SparkboxDmaRequest> channelDataRequests;
 
   // Master volume of the audio
   float masterVolume;

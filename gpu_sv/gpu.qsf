@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
-set_global_assignment -name TOP_LEVEL_ENTITY fpgaRamTester
+set_global_assignment -name TOP_LEVEL_ENTITY addressCalculationUnit
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "19.1.0 SP0.02STD"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "16:05:55  JUNE 30, 2020"
 set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 SP0.02std Lite Edition"
@@ -48,10 +48,10 @@ set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
-set_global_assignment -name EDA_SIMULATION_TOOL "<None>"
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim (SystemVerilog)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_RUN_TOOL_AUTOMATICALLY OFF -section_id eda_simulation
-set_global_assignment -name EDA_OUTPUT_DATA_FORMAT NONE -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "SYSTEMVERILOG HDL" -section_id eda_simulation
 set_global_assignment -name EDA_BOARD_DESIGN_TIMING_TOOL "Stamp (Timing)"
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT STAMP -section_id eda_board_design_timing
@@ -214,13 +214,25 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -entity lcdTester -section_id Top
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name SYSTEMVERILOG_FILE "unit tests/layerRegisters/simLayerHeaderTest.sv"
+set_global_assignment -name VECTOR_WAVEFORM_FILE "unit tests/pixelCounter/pipe_1_pixelCounter.vwf"
 set_global_assignment -name VERILOG_FILE ip/sdram/sdram_controller.v
 set_global_assignment -name SYSTEMVERILOG_FILE "unit tests/lcdPixelWriter/fpgaLcdTester.sv"
 set_global_assignment -name SYSTEMVERILOG_FILE interfaces/lcdBus.sv
 set_global_assignment -name SYSTEMVERILOG_FILE pipe_7_lcdController/lcdPixelWriter.sv
 set_global_assignment -name SYSTEMVERILOG_FILE "unit tests/lcdPixelWriter/simLcdTester.sv"
 set_global_assignment -name SYSTEMVERILOG_FILE "unit tests/sdram/fpgaRamTester.sv"
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_1_pixelCounter/pixelCounter.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_2_layerHeaders/layerRegisterMemory.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_2_layerHeaders/layerRegisters.sv
+set_global_assignment -name VECTOR_WAVEFORM_FILE "unit tests/layerRegisters/layerRegisters.vwf"
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_3_alu/addressCalculationUnit.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_3_alu/ramAddressCalc.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_3_alu/flashAddressCalc.sv
+set_global_assignment -name VECTOR_WAVEFORM_FILE "unit tests/alu/ramAddressCalc.vwf"
+set_global_assignment -name VECTOR_WAVEFORM_FILE "unit tests/alu/flashAddressCalc.vwf"
+set_global_assignment -name SYSTEMVERILOG_FILE pipe_3_alu/calculationUnitBase.sv
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

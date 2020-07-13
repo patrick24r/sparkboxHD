@@ -4,7 +4,6 @@ module ramAddressCalc
 )(
 	input clk,
 	input rst,
-	input newCalculation,
 	input isSprite, // 1 = sprite layer, 0 = text layer
 	input unsigned [7:0] frameNumber,
 	input unsigned [15:0] height,
@@ -34,7 +33,6 @@ end
 calculationUnitBase #(.CYCLES_TO_COMPLETE(CYCLES_TO_COMPLETE), .CALCULATION_WIDTH(27)) inst_ramCalcBase(
 	.clk,
 	.rst,
-	.newCalculation,
 	.calculation_i(addressCalcBytes),
 	.rdy,
 	.calculation_o(addressOffsetBytes)

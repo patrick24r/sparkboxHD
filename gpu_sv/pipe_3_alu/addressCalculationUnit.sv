@@ -4,16 +4,17 @@ module addressCalculationUnit
 	parameter VER_PIX = 'd272 // Screen height (pixels)
 )(
 	input clk, // 50 MHz clock maximum
-	input rst, // Remember to reset before each calculation
-	input newCalculation, // When high on clock edge, begins a new calculation
+	input pipeline_clk, // Pipeline clock
 	input [127:0] layerRegisters, // All registers for the 
 	input unsigned [X_DEPTH:0] xPixel, // x pixel position
 	input unsigned [Y_DEPTH:0] yPixel, // y pixel position
-	output logic rdy, // 1 = ALU 
+	output logic rdy, // 1 = ALU finished, ready for new pipeline data
 	
+	// Outputs used 
 	output logic unsigned [15:0] layerX,
 	output logic unsigned [15:0] layerY,
 	
+	// Outputs used to read memory
 	output logic [26:0] ramAddressOffsetBytes,
 	output logic [29:0] flashAddressOffsetBits
 	
@@ -70,8 +71,7 @@ end
 
 ramAddressCalc inst_ramCalc(
 	.clk,
-	.rst(rst),
-	.newCalculation,
+	.rst(!pipeline_clk), // reset the calculation for new pipe data
 	.isSprite(layerRegisters[1]),
 	.frameNumber(layerRegisters[127:120]),
 	.height(layerRegisters[47:32]),
@@ -84,8 +84,7 @@ ramAddressCalc inst_ramCalc(
 
 flashAddressCalc inst_flashAddr(
 	.clk,
-	.rst(rst),
-	.newCalculation,
+	.rst(!pipeline_clk), // reset the calculation for new pipe data
 	.drawnFontWidth(layerRegisters[31:16]),
 	.drawnFontHeight(layerRegisters[47:32]),
 	.layerX,

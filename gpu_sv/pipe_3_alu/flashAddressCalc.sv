@@ -7,7 +7,6 @@ module flashAddressCalc
 )(
 	input clk,
 	input rst,
-	input newCalculation,
 	input unsigned [15:0] drawnFontWidth, // Font width as drawn on screen
 	input unsigned [15:0] drawnFontHeight, // Font height as drawn on screen
 	input unsigned [15:0] layerX,
@@ -52,7 +51,6 @@ end
 calculationUnitBase #(.CYCLES_TO_COMPLETE(CYCLES_TO_COMPLETE), .CALCULATION_WIDTH(30)) inst_ramCalcBase(
 	.clk,
 	.rst,
-	.newCalculation,
 	.calculation_i(addressCalcBits),
 	.rdy,
 	.calculation_o(addressOffsetBits)

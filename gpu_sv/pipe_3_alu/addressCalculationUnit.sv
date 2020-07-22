@@ -4,7 +4,7 @@ module addressCalculationUnit
 	parameter VER_PIX = 'd272 // Screen height (pixels)
 )(
 	input clk, // 50 MHz clock maximum
-	input pipeline_clk, // Pipeline clock
+	input pipeline_clk_n, // Pipeline clock negated
 	input [127:0] layerRegisters, // All registers for the 
 	input unsigned [X_DEPTH:0] xPixel, // x pixel position
 	input unsigned [Y_DEPTH:0] yPixel, // y pixel position
@@ -71,7 +71,7 @@ end
 
 ramAddressCalc inst_ramCalc(
 	.clk,
-	.rst(!pipeline_clk), // reset the calculation for new pipe data
+	.rst(pipeline_clk_n), // reset the calculation for new pipe data
 	.isSprite(layerRegisters[1]),
 	.frameNumber(layerRegisters[127:120]),
 	.height(layerRegisters[47:32]),
@@ -84,7 +84,7 @@ ramAddressCalc inst_ramCalc(
 
 flashAddressCalc inst_flashAddr(
 	.clk,
-	.rst(!pipeline_clk), // reset the calculation for new pipe data
+	.rst(pipeline_clk_n), // reset the calculation for new pipe data
 	.drawnFontWidth(layerRegisters[31:16]),
 	.drawnFontHeight(layerRegisters[47:32]),
 	.layerX,

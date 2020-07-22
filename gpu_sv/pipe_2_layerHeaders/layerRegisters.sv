@@ -1,5 +1,5 @@
 module layerRegisters(
-	input clk, // Input clk (pipeline clock)
+	input pipeline_clk_n, // Input clk (pipeline clock negated)
 	input rst_n, // Master reset switch
 	input rst_layer_n, // Resets a layer specified by ctrl_layer
 	input unsigned [4:0] pipe_layer, // Layer the pipeline wants to read
@@ -34,7 +34,7 @@ generate
 	// Generate a memory module for each register
 	for (i=0; i < 8; i=i+1) begin : generate_layer_memory
 		layerRegisterMemory inst_layerMemory(
-			.clk(clk),
+			.clk(pipeline_clk_n),
 			.rst_n(rst_n),
 			
 			// Controller signals

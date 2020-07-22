@@ -49,7 +49,7 @@ end
 
 addressCalculationUnit test_alu(
 	.clk,
-	.pipeline_clk,
+	.pipeline_clk_n(!pipeline_clk),
 	.layerRegisters(registers),
 	.xPixel({4'd0,xPixel}),
 	.yPixel({4'd0,yPixel}),

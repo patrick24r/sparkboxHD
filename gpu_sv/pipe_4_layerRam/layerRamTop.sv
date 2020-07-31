@@ -15,7 +15,7 @@ module layerRamTop(
     input pipe_read_en,
 	 input [5:0] pipe_layer,
 	 input [7:0] pipe_layerId,
-    input [23:0] pipe_addr_bytes,
+    input [24:0] pipe_addr_bytes,
 
     // SDRAM interface
 	output [12:0] sdram_addr, // address
@@ -30,34 +30,50 @@ module layerRamTop(
 	output sdram_cs_n
 );
 
-logic [1:0] state;
-
 localparam STATE_IDLE = 0,
-	STATE_SDRAM_WRITE = 1,
-	STATE_SDRAM_READ = 2;
+	STATE_PRE_OP = 1,
+	STATE_CACHE_READ = 2,
+	STATE_CACHE_WRITE = 3,
+	STATE_SDRAM_WRITE = 4,
+	STATE_SDRAM_READ = 5;
 
+localparam CACHE_DEPTH = 32;
+	
 
+logic [2:0] state;
 logic [23:0] final_addr_words;
-logic [15:0] read_data_sdram;
+logic [15:0] read_data_sdram, read_data_cache;
+logic unsigned [6:0] sd_read_count;
 logic sdram_read_en, sdram_write_en, sdram_bsy, sdram_read_rdy;
+logic cache_write_en, cacheReadSuccess, cacheRst;
 
-// Table of sdram start addresses for each layer
-logic unsigned [23:0] sdramAddressStart [7:0];
+// Table of sdram start addresses for each layerID
+logic [24:0] sdramAddressStart [7:0];
 // For back-to-back controller writes/reads, keep track of the last place read/written
-logic unsigned [7:0] ctrl_nextLayerID;
-logic unsigned [23:0] ctrl_nextAddressOffset;
+logic [7:0] ctrl_nextLayerID;
+logic [23:0] ctrl_nextAddressOffset;
+
+initial begin
+	state = STATE_IDLE;
+	sd_read_count = 0;
+	for(int i = 0; i < $size(sdramAddressStart); i++) sdramAddressStart[i] = 0;
+	ctrl_nextLayerID = 0;
+	ctrl_nextAddressOffset = -1;
+end
+
 
 always_ff @(posedge clk_n or negedge rst) begin
 	if (!rst) begin
-		for(int i = 0; i < $size(sdramAddressStart); i++) sdramAddressStart[i] <= 0;
 		state <= STATE_IDLE;
+		sd_read_count <= 0;
+		for(int i = 0; i < $size(sdramAddressStart); i++) sdramAddressStart[i] <= 0;
 		ctrl_nextLayerID <= 0;
-		ctrl_nextAddressOffset <= 0;
+		ctrl_nextAddressOffset <= -1;
 	end else begin
 		case (state)
 			STATE_IDLE: begin
-				// Wait for new address from the pipeline
-				if (pipeline_clk) state <= STATE_SDRAM_READ;
+				// Wait for new read from the pipeline
+				if (pipeline_clk && pipe_read_en) state <= STATE_CACHE_READ;
 				// Or until the controller tries to read/write
 				else if (ctrl_write_en)
 					// Writing to SDRAM, support consecutive writes
@@ -71,8 +87,12 @@ always_ff @(posedge clk_n or negedge rst) begin
 				if (ctrl_read_en || ctrl_write_en) begin
 					ctrl_nextLayerID <= ctrl_layerId;
 					
+					// If writing to a new layer, save the new layer offset
 					if (ctrl_nextLayerID != ctrl_layerId) begin
-						if (ctrl_write_en) sdramAddressStart[ctrl_layerId] <= ctrl_nextAddressOffset;
+						if (ctrl_write_en) begin
+							sdramAddressStart[ctrl_layerId] <= sdramAddressStart[ctrl_nextLayerID] + 
+								ctrl_nextAddressOffset + 1;
+						end
 						ctrl_nextAddressOffset <= 0;
 					end else ctrl_nextAddressOffset <= ctrl_nextAddressOffset + 1;
 					
@@ -83,10 +103,28 @@ always_ff @(posedge clk_n or negedge rst) begin
 				
 			end
 			
+			STATE_CACHE_READ: begin
+				if (cacheReadSuccess) state <= STATE_IDLE;
+				else begin
+					// Whatever we're reading isn't in cache, read from SDRAM
+					state <= STATE_SDRAM_READ;
+				end
+			end
+			
 			STATE_SDRAM_READ: begin
 				// Read directly from SDRAM
-				if (sdram_read_rdy) state <= STATE_IDLE;
-				else state <= STATE_SDRAM_READ;
+				// If it's a pipeline read, fill the cache
+				// If it's a controller read, don't fill the cache
+				if (sdram_read_rdy && (sd_read_count + 1 == CACHE_DEPTH || ctrl_read_en)) begin
+					state <= STATE_IDLE;
+					sd_read_count <= 0;
+				end else if (sdram_read_rdy) begin
+					state <= STATE_SDRAM_READ;
+					sd_read_count <= sd_read_count + 1;
+				end else begin
+					state <= STATE_SDRAM_READ;
+					sd_read_count <= sd_read_count;
+				end
 			end
 			
 			STATE_SDRAM_WRITE: begin
@@ -108,6 +146,14 @@ always_comb begin
 	// ----- Module signals -----
 	// Only ready in the idle state
 	rdy <= (state == STATE_IDLE);
+	// Controller reads bypass the cache
+	read_data <= ctrl_read_en ? read_data_sdram : read_data_cache;
+	
+	// ----- Cache signals -----
+	// Reset the cache when controller is reading/writing to SDRAM or on actual rst
+	cacheRst <= (rst && !(state == STATE_SDRAM_WRITE || (state == STATE_SDRAM_READ && ctrl_read_en))); 
+	// Only writing to the cache when reading sdram for the pipeline
+	cache_write_en <= (state == STATE_SDRAM_READ && pipe_read_en && !ctrl_read_en);
 	
 	// ----- SDRAM signals -----
 	sdram_read_en <= state == STATE_SDRAM_READ; 
@@ -120,6 +166,22 @@ always_comb begin
 	
 end
 
+
+// SDRAM cache
+layerRamCache #(.CACHE_DEPTH(CACHE_DEPTH))
+inst_layerCache(
+	.clk(!clk_n),
+	.rst(cacheRst),
+	.write_en(cache_write_en),
+	.layer(pipe_layer),
+	.addr_words(final_addr_words),
+	.data_i(read_data_sdram), // Only ever write data from SDRAM
+	.data_o(read_data_cache),
+	.data_o_valid(cacheReadSuccess)
+);
+
+
+
 // SDRAM controller
 assign sdram_clk = clk_n;
 sdram_controller #(.CLK_FREQUENCY(50), .ROW_WIDTH(13), .COL_WIDTH(9), .BANK_WIDTH(2)) inst_sdram(
@@ -131,7 +193,7 @@ sdram_controller #(.CLK_FREQUENCY(50), .ROW_WIDTH(13), .COL_WIDTH(9), .BANK_WIDT
 .wr_data(ctrl_write_data), // write data
 .wr_enable(sdram_write_en), // write enable
 .rd_addr(final_addr_words), // read address, convert byte address to word address
-.rd_data(read_data), // read data
+.rd_data(read_data_sdram), // read data
 .rd_ready(sdram_read_rdy), // read data is ready
 .rd_enable(sdram_read_en), // read enable
 .busy(sdram_bsy), // busy flag

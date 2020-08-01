@@ -20,6 +20,7 @@ proc simTimestamp {} {
 after 2500 simTimestamp
 run -all
 quit -f
+
 </modelsim_script>
 <modelsim_script_timing>onerror {exit -code 1}
 vlib work
@@ -38,6 +39,7 @@ proc simTimestamp {} {
 after 2500 simTimestamp
 run -all
 quit -f
+
 </modelsim_script_timing>
 <hdl_lang>verilog</hdl_lang>
 </simulation_settings>*/
@@ -69,7 +71,7 @@ HEADER
 	VERSION = 1;
 	TIME_UNIT = ns;
 	DATA_OFFSET = 0.0;
-	DATA_DURATION = 1000.0;
+	DATA_DURATION = 2000.0;
 	SIMULATION_TIME = 0.0;
 	GRID_PHASE = 0.0;
 	GRID_PERIOD = 10.0;
@@ -1433,7 +1435,7 @@ TRANSITION_LIST("clk_n")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 50;
+			REPEAT = 100;
 			LEVEL 0 FOR 10.0;
 			LEVEL 1 FOR 10.0;
 		}
@@ -1445,7 +1447,7 @@ TRANSITION_LIST("ctrl_layerId[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1454,7 +1456,7 @@ TRANSITION_LIST("ctrl_layerId[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1463,7 +1465,7 @@ TRANSITION_LIST("ctrl_layerId[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1472,7 +1474,7 @@ TRANSITION_LIST("ctrl_layerId[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1481,7 +1483,7 @@ TRANSITION_LIST("ctrl_layerId[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1490,7 +1492,7 @@ TRANSITION_LIST("ctrl_layerId[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1501,7 +1503,7 @@ TRANSITION_LIST("ctrl_layerId[1]")
 		REPEAT = 1;
 		LEVEL 0 FOR 540.0;
 		LEVEL 1 FOR 140.0;
-		LEVEL 0 FOR 320.0;
+		LEVEL 0 FOR 1320.0;
 	}
 }
 
@@ -1512,7 +1514,7 @@ TRANSITION_LIST("ctrl_layerId[0]")
 		REPEAT = 1;
 		LEVEL 0 FOR 260.0;
 		LEVEL 1 FOR 280.0;
-		LEVEL 0 FOR 460.0;
+		LEVEL 0 FOR 1460.0;
 	}
 }
 
@@ -1522,7 +1524,12 @@ TRANSITION_LIST("ctrl_read_en")
 	{
 		REPEAT = 1;
 		LEVEL 0 FOR 680.0;
-		LEVEL 1 FOR 320.0;
+		LEVEL 1 FOR 260.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 140.0;
+		LEVEL 0 FOR 200.0;
+		LEVEL 1 FOR 380.0;
+		LEVEL 0 FOR 320.0;
 	}
 }
 
@@ -1531,7 +1538,7 @@ TRANSITION_LIST("ctrl_write_data[15]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1540,7 +1547,7 @@ TRANSITION_LIST("ctrl_write_data[14]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1549,7 +1556,7 @@ TRANSITION_LIST("ctrl_write_data[13]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1558,7 +1565,7 @@ TRANSITION_LIST("ctrl_write_data[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1567,7 +1574,7 @@ TRANSITION_LIST("ctrl_write_data[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1576,7 +1583,7 @@ TRANSITION_LIST("ctrl_write_data[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1585,7 +1592,7 @@ TRANSITION_LIST("ctrl_write_data[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1594,7 +1601,7 @@ TRANSITION_LIST("ctrl_write_data[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1603,7 +1610,7 @@ TRANSITION_LIST("ctrl_write_data[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1612,7 +1619,7 @@ TRANSITION_LIST("ctrl_write_data[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1625,8 +1632,7 @@ TRANSITION_LIST("ctrl_write_data[5]")
 		LEVEL 1 FOR 280.0;
 		LEVEL 0 FOR 140.0;
 		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 160.0;
-		LEVEL 1 FOR 40.0;
+		LEVEL 0 FOR 1200.0;
 	}
 }
 
@@ -1638,8 +1644,8 @@ TRANSITION_LIST("ctrl_write_data[4]")
 		LEVEL 0 FOR 260.0;
 		LEVEL 1 FOR 140.0;
 		LEVEL 0 FOR 140.0;
-		LEVEL 1 FOR 420.0;
-		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 260.0;
+		LEVEL 0 FOR 1200.0;
 	}
 }
 
@@ -1652,8 +1658,7 @@ TRANSITION_LIST("ctrl_write_data[3]")
 		LEVEL 1 FOR 140.0;
 		LEVEL 0 FOR 280.0;
 		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 160.0;
-		LEVEL 1 FOR 40.0;
+		LEVEL 0 FOR 1200.0;
 	}
 }
 
@@ -1664,7 +1669,7 @@ TRANSITION_LIST("ctrl_write_data[2]")
 		REPEAT = 1;
 		LEVEL 0 FOR 140.0;
 		LEVEL 1 FOR 260.0;
-		LEVEL 0 FOR 600.0;
+		LEVEL 0 FOR 1600.0;
 	}
 }
 
@@ -1677,9 +1682,7 @@ TRANSITION_LIST("ctrl_write_data[1]")
 		LEVEL 1 FOR 140.0;
 		LEVEL 0 FOR 280.0;
 		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 80.0;
-		LEVEL 1 FOR 80.0;
-		LEVEL 0 FOR 40.0;
+		LEVEL 0 FOR 1200.0;
 	}
 }
 
@@ -1692,9 +1695,7 @@ TRANSITION_LIST("ctrl_write_data[0]")
 		LEVEL 1 FOR 110.0;
 		LEVEL 0 FOR 540.0;
 		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 80.0;
-		LEVEL 1 FOR 80.0;
-		LEVEL 0 FOR 40.0;
+		LEVEL 0 FOR 1200.0;
 	}
 }
 
@@ -1713,7 +1714,7 @@ TRANSITION_LIST("ctrl_write_en")
 		LEVEL 1 FOR 120.0;
 		LEVEL 0 FOR 20.0;
 		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 340.0;
+		LEVEL 0 FOR 1340.0;
 	}
 }
 
@@ -1722,7 +1723,7 @@ TRANSITION_LIST("pipe_addr_bytes[24]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1731,7 +1732,7 @@ TRANSITION_LIST("pipe_addr_bytes[23]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1740,7 +1741,7 @@ TRANSITION_LIST("pipe_addr_bytes[22]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1749,7 +1750,7 @@ TRANSITION_LIST("pipe_addr_bytes[21]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1758,7 +1759,7 @@ TRANSITION_LIST("pipe_addr_bytes[20]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1767,7 +1768,7 @@ TRANSITION_LIST("pipe_addr_bytes[19]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1776,7 +1777,7 @@ TRANSITION_LIST("pipe_addr_bytes[18]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1785,7 +1786,7 @@ TRANSITION_LIST("pipe_addr_bytes[17]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1794,7 +1795,7 @@ TRANSITION_LIST("pipe_addr_bytes[16]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1803,7 +1804,7 @@ TRANSITION_LIST("pipe_addr_bytes[15]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1812,7 +1813,7 @@ TRANSITION_LIST("pipe_addr_bytes[14]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1821,7 +1822,7 @@ TRANSITION_LIST("pipe_addr_bytes[13]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1830,7 +1831,7 @@ TRANSITION_LIST("pipe_addr_bytes[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1839,7 +1840,7 @@ TRANSITION_LIST("pipe_addr_bytes[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1848,7 +1849,7 @@ TRANSITION_LIST("pipe_addr_bytes[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1857,7 +1858,7 @@ TRANSITION_LIST("pipe_addr_bytes[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1866,7 +1867,7 @@ TRANSITION_LIST("pipe_addr_bytes[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1875,7 +1876,7 @@ TRANSITION_LIST("pipe_addr_bytes[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1884,7 +1885,7 @@ TRANSITION_LIST("pipe_addr_bytes[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1893,7 +1894,7 @@ TRANSITION_LIST("pipe_addr_bytes[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1902,7 +1903,7 @@ TRANSITION_LIST("pipe_addr_bytes[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1911,7 +1912,7 @@ TRANSITION_LIST("pipe_addr_bytes[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1920,7 +1921,7 @@ TRANSITION_LIST("pipe_addr_bytes[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1929,7 +1930,7 @@ TRANSITION_LIST("pipe_addr_bytes[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1938,7 +1939,7 @@ TRANSITION_LIST("pipe_addr_bytes[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1947,7 +1948,7 @@ TRANSITION_LIST("pipe_layer[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1956,7 +1957,7 @@ TRANSITION_LIST("pipe_layer[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1965,7 +1966,7 @@ TRANSITION_LIST("pipe_layer[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1974,7 +1975,7 @@ TRANSITION_LIST("pipe_layer[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1983,7 +1984,7 @@ TRANSITION_LIST("pipe_layer[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -1992,7 +1993,7 @@ TRANSITION_LIST("pipe_layer[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2001,7 +2002,7 @@ TRANSITION_LIST("pipe_layerId[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2010,7 +2011,7 @@ TRANSITION_LIST("pipe_layerId[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2019,7 +2020,7 @@ TRANSITION_LIST("pipe_layerId[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2028,7 +2029,7 @@ TRANSITION_LIST("pipe_layerId[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2037,7 +2038,7 @@ TRANSITION_LIST("pipe_layerId[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2046,7 +2047,7 @@ TRANSITION_LIST("pipe_layerId[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2055,7 +2056,7 @@ TRANSITION_LIST("pipe_layerId[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2064,7 +2065,7 @@ TRANSITION_LIST("pipe_layerId[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2073,7 +2074,7 @@ TRANSITION_LIST("pipe_read_en")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2082,7 +2083,11 @@ TRANSITION_LIST("pipeline_clk")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 1160.0;
+		LEVEL 1 FOR 10.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL 1 FOR 10.0;
+		LEVEL 0 FOR 690.0;
 	}
 }
 
@@ -2091,7 +2096,7 @@ TRANSITION_LIST("rdy")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2100,7 +2105,7 @@ TRANSITION_LIST("read_data[15]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2109,7 +2114,7 @@ TRANSITION_LIST("read_data[14]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2118,7 +2123,7 @@ TRANSITION_LIST("read_data[13]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2127,7 +2132,7 @@ TRANSITION_LIST("read_data[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2136,7 +2141,7 @@ TRANSITION_LIST("read_data[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2145,7 +2150,7 @@ TRANSITION_LIST("read_data[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2154,7 +2159,7 @@ TRANSITION_LIST("read_data[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2163,7 +2168,7 @@ TRANSITION_LIST("read_data[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2172,7 +2177,7 @@ TRANSITION_LIST("read_data[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2181,7 +2186,7 @@ TRANSITION_LIST("read_data[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2190,7 +2195,7 @@ TRANSITION_LIST("read_data[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2199,7 +2204,7 @@ TRANSITION_LIST("read_data[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2208,7 +2213,7 @@ TRANSITION_LIST("read_data[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2217,7 +2222,7 @@ TRANSITION_LIST("read_data[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2226,7 +2231,7 @@ TRANSITION_LIST("read_data[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2235,7 +2240,7 @@ TRANSITION_LIST("read_data[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2244,7 +2249,7 @@ TRANSITION_LIST("rst")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 1 FOR 1000.0;
+		LEVEL 1 FOR 2000.0;
 	}
 }
 
@@ -2253,7 +2258,7 @@ TRANSITION_LIST("sdram_addr[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2262,7 +2267,7 @@ TRANSITION_LIST("sdram_addr[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2271,7 +2276,7 @@ TRANSITION_LIST("sdram_addr[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2280,7 +2285,7 @@ TRANSITION_LIST("sdram_addr[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2289,7 +2294,7 @@ TRANSITION_LIST("sdram_addr[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2298,7 +2303,7 @@ TRANSITION_LIST("sdram_addr[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2307,7 +2312,7 @@ TRANSITION_LIST("sdram_addr[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2316,7 +2321,7 @@ TRANSITION_LIST("sdram_addr[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2325,7 +2330,7 @@ TRANSITION_LIST("sdram_addr[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2334,7 +2339,7 @@ TRANSITION_LIST("sdram_addr[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2343,7 +2348,7 @@ TRANSITION_LIST("sdram_addr[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2352,7 +2357,7 @@ TRANSITION_LIST("sdram_addr[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2361,7 +2366,7 @@ TRANSITION_LIST("sdram_addr[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2370,7 +2375,7 @@ TRANSITION_LIST("sdram_ba[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2379,7 +2384,7 @@ TRANSITION_LIST("sdram_ba[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2388,7 +2393,7 @@ TRANSITION_LIST("sdram_cas_n")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2397,7 +2402,7 @@ TRANSITION_LIST("sdram_cke")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2406,7 +2411,7 @@ TRANSITION_LIST("sdram_clk")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2415,7 +2420,7 @@ TRANSITION_LIST("sdram_cs_n")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2426,7 +2431,9 @@ TRANSITION_LIST("sdram_dq[15]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2437,7 +2444,9 @@ TRANSITION_LIST("sdram_dq[14]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2448,7 +2457,9 @@ TRANSITION_LIST("sdram_dq[13]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2459,7 +2470,9 @@ TRANSITION_LIST("sdram_dq[12]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2470,7 +2483,9 @@ TRANSITION_LIST("sdram_dq[11]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2481,7 +2496,9 @@ TRANSITION_LIST("sdram_dq[10]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2492,7 +2509,9 @@ TRANSITION_LIST("sdram_dq[9]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2503,7 +2522,9 @@ TRANSITION_LIST("sdram_dq[8]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2514,7 +2535,9 @@ TRANSITION_LIST("sdram_dq[7]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2525,7 +2548,9 @@ TRANSITION_LIST("sdram_dq[6]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2536,7 +2561,9 @@ TRANSITION_LIST("sdram_dq[5]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2547,7 +2574,9 @@ TRANSITION_LIST("sdram_dq[4]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2558,7 +2587,9 @@ TRANSITION_LIST("sdram_dq[3]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2569,7 +2600,9 @@ TRANSITION_LIST("sdram_dq[2]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2580,7 +2613,9 @@ TRANSITION_LIST("sdram_dq[1]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 0 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 1 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2591,7 +2626,9 @@ TRANSITION_LIST("sdram_dq[0]")
 		REPEAT = 1;
 		LEVEL Z FOR 830.0;
 		LEVEL 1 FOR 110.0;
-		LEVEL Z FOR 60.0;
+		LEVEL Z FOR 40.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL Z FOR 890.0;
 	}
 }
 
@@ -2600,7 +2637,7 @@ TRANSITION_LIST("sdram_dqm[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2609,7 +2646,7 @@ TRANSITION_LIST("sdram_dqm[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2618,7 +2655,7 @@ TRANSITION_LIST("sdram_ras_n")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 
@@ -2627,7 +2664,7 @@ TRANSITION_LIST("sdram_we_n")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 2000.0;
 	}
 }
 

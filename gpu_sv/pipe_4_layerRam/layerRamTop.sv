@@ -37,13 +37,13 @@ localparam STATE_IDLE = 0,
 	STATE_SDRAM_WRITE = 4,
 	STATE_SDRAM_READ = 5;
 
-localparam CACHE_DEPTH = 32;
+localparam CACHE_DEPTH = 2;
 	
 
 logic [2:0] state;
 logic [23:0] final_addr_words;
 logic [15:0] read_data_sdram, read_data_cache;
-logic unsigned [6:0] sd_read_count;
+logic unsigned [$clog2(CACHE_DEPTH):0] sd_read_count; // Have one extra bit for comparing
 logic sdram_read_en, sdram_write_en, sdram_bsy, sdram_read_rdy;
 logic cache_write_en, cacheReadSuccess, cacheRst;
 
@@ -65,7 +65,6 @@ end
 always_ff @(posedge clk_n or negedge rst) begin
 	if (!rst) begin
 		state <= STATE_IDLE;
-		sd_read_count <= 0;
 		for(int i = 0; i < $size(sdramAddressStart); i++) sdramAddressStart[i] <= 0;
 		ctrl_nextLayerID <= 0;
 		ctrl_nextAddressOffset <= -1;
@@ -115,15 +114,12 @@ always_ff @(posedge clk_n or negedge rst) begin
 				// Read directly from SDRAM
 				// If it's a pipeline read, fill the cache
 				// If it's a controller read, don't fill the cache
-				if (sdram_read_rdy && (sd_read_count + 1 == CACHE_DEPTH || ctrl_read_en)) begin
+				if (sdram_read_rdy && ctrl_read_en) begin
 					state <= STATE_IDLE;
-					sd_read_count <= 0;
-				end else if (sdram_read_rdy) begin
-					state <= STATE_SDRAM_READ;
-					sd_read_count <= sd_read_count + 1;
+				end else if (sdram_read_rdy && sd_read_count == CACHE_DEPTH) begin
+					state <= STATE_CACHE_READ;
 				end else begin
 					state <= STATE_SDRAM_READ;
-					sd_read_count <= sd_read_count;
 				end
 			end
 			
@@ -138,6 +134,18 @@ always_ff @(posedge clk_n or negedge rst) begin
 			end
 			
 		endcase
+	end
+end
+
+// Write new data to the cache when reading it from sdram
+always_ff @(posedge sdram_read_rdy or negedge rst) begin
+	if (!rst) begin
+		sd_read_count <= 0;
+	end else begin
+		if (state == STATE_SDRAM_READ) begin
+			// Reading pipeline data from sdram to write to cache
+			sd_read_count <= sd_read_count + 1;
+		end else sd_read_count <= 0;
 	end
 end
 
@@ -156,13 +164,15 @@ always_comb begin
 	cache_write_en <= (state == STATE_SDRAM_READ && pipe_read_en && !ctrl_read_en);
 	
 	// ----- SDRAM signals -----
+	// TODO: This signal needs to pulse correctly.
+	// Pulse for each SDRAM read - once for ctrl, CACHE_DEPTH times for 
 	sdram_read_en <= state == STATE_SDRAM_READ; 
 	sdram_write_en <= state == STATE_SDRAM_WRITE;
 	
 	// Final read/write address in words
 	final_addr_words <= (ctrl_read_en || ctrl_write_en) ? 
 		sdramAddressStart[ctrl_nextLayerID] + ctrl_nextAddressOffset : // Controller final address (words)
-		sdramAddressStart[pipe_layerId] + (pipe_addr_bytes >> 1); // Pipeline final address (words)
+		sdramAddressStart[pipe_layerId] + (pipe_addr_bytes >> 1) + sd_read_count; // Pipeline final address (words)
 	
 end
 

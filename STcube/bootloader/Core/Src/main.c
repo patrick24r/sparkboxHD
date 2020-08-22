@@ -43,22 +43,13 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-DAC_HandleTypeDef hdac;
-
-I2C_HandleTypeDef hi2c1;
-
-RNG_HandleTypeDef hrng;
-
 SD_HandleTypeDef hsd;
 
 TIM_HandleTypeDef htim11;
 TIM_HandleTypeDef htim13;
 TIM_HandleTypeDef htim14;
 
-USART_HandleTypeDef husart1;
-
-DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
-NAND_HandleTypeDef hnand1;
+UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
@@ -67,15 +58,10 @@ NAND_HandleTypeDef hnand1;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
-static void MX_FSMC_Init(void);
-static void MX_I2C1_Init(void);
-static void MX_RNG_Init(void);
 static void MX_SDIO_SD_Init(void);
-static void MX_USART1_Init(void);
+static void MX_USART1_UART_Init(void);
 static void MX_TIM11_Init(void);
 static void MX_TIM14_Init(void);
-static void MX_DAC_Init(void);
 static void MX_TIM13_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -95,7 +81,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -115,16 +100,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_FSMC_Init();
-  MX_I2C1_Init();
-  MX_RNG_Init();
   MX_SDIO_SD_Init();
-  MX_USART1_Init();
+  MX_USART1_UART_Init();
   MX_FATFS_Init();
   MX_TIM11_Init();
   MX_TIM14_Init();
-  MX_DAC_Init();
   MX_TIM13_Init();
   /* USER CODE BEGIN 2 */
 
@@ -135,7 +115,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+    HAL_Delay(250);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+    HAL_Delay(250);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
+    HAL_Delay(250);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
+    HAL_Delay(250);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -181,110 +168,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief DAC Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_DAC_Init(void)
-{
-
-  /* USER CODE BEGIN DAC_Init 0 */
-
-  /* USER CODE END DAC_Init 0 */
-
-  DAC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN DAC_Init 1 */
-
-  /* USER CODE END DAC_Init 1 */
-  /** DAC Initialization 
-  */
-  hdac.Instance = DAC;
-  if (HAL_DAC_Init(&hdac) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** DAC channel OUT1 config 
-  */
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** DAC channel OUT2 config 
-  */
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN DAC_Init 2 */
-
-  /* USER CODE END DAC_Init 2 */
-
-}
-
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
-}
-
-/**
-  * @brief RNG Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_RNG_Init(void)
-{
-
-  /* USER CODE BEGIN RNG_Init 0 */
-
-  /* USER CODE END RNG_Init 0 */
-
-  /* USER CODE BEGIN RNG_Init 1 */
-
-  /* USER CODE END RNG_Init 1 */
-  hrng.Instance = RNG;
-  if (HAL_RNG_Init(&hrng) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN RNG_Init 2 */
-
-  /* USER CODE END RNG_Init 2 */
-
 }
 
 /**
@@ -413,7 +296,7 @@ static void MX_TIM14_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USART1_Init(void)
+static void MX_USART1_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART1_Init 0 */
@@ -423,59 +306,21 @@ static void MX_USART1_Init(void)
   /* USER CODE BEGIN USART1_Init 1 */
 
   /* USER CODE END USART1_Init 1 */
-  husart1.Instance = USART1;
-  husart1.Init.BaudRate = 9600;
-  husart1.Init.WordLength = USART_WORDLENGTH_8B;
-  husart1.Init.StopBits = USART_STOPBITS_1;
-  husart1.Init.Parity = USART_PARITY_NONE;
-  husart1.Init.Mode = USART_MODE_TX_RX;
-  husart1.Init.CLKPolarity = USART_POLARITY_LOW;
-  husart1.Init.CLKPhase = USART_PHASE_1EDGE;
-  husart1.Init.CLKLastBit = USART_LASTBIT_DISABLE;
-  if (HAL_USART_Init(&husart1) != HAL_OK)
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
-
-}
-
-/** 
-  * Enable DMA controller clock
-  * Configure DMA for memory to memory transfers
-  *   hdma_memtomem_dma2_stream0
-  */
-static void MX_DMA_Init(void) 
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMA2_CLK_ENABLE();
-
-  /* Configure DMA request hdma_memtomem_dma2_stream0 on DMA2_Stream0 */
-  hdma_memtomem_dma2_stream0.Instance = DMA2_Stream0;
-  hdma_memtomem_dma2_stream0.Init.Channel = DMA_CHANNEL_0;
-  hdma_memtomem_dma2_stream0.Init.Direction = DMA_MEMORY_TO_MEMORY;
-  hdma_memtomem_dma2_stream0.Init.PeriphInc = DMA_PINC_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-  hdma_memtomem_dma2_stream0.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-  hdma_memtomem_dma2_stream0.Init.Mode = DMA_NORMAL;
-  hdma_memtomem_dma2_stream0.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-  hdma_memtomem_dma2_stream0.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
-  hdma_memtomem_dma2_stream0.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
-  hdma_memtomem_dma2_stream0.Init.MemBurst = DMA_MBURST_SINGLE;
-  hdma_memtomem_dma2_stream0.Init.PeriphBurst = DMA_PBURST_SINGLE;
-  if (HAL_DMA_Init(&hdma_memtomem_dma2_stream0) != HAL_OK)
-  {
-    Error_Handler( );
-  }
-
-  /* DMA interrupt init */
-  /* DMA2_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
@@ -491,26 +336,25 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED0_Pin|LED1_Pin|LED2_Pin|LED3_Pin 
-                          |I2C_EN0_Pin|I2C_EN1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_GREEN_Pin|LED_ORANGE_Pin|LED_RED_Pin|LED_BLUE_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, I2C_EN2_Pin|I2C_EN3_Pin, GPIO_PIN_RESET);
+  /*Configure GPIO pin : BUTTON_USER_Pin */
+  GPIO_InitStruct.Pin = BUTTON_USER_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BUTTON_USER_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED0_Pin LED1_Pin LED2_Pin LED3_Pin 
-                           I2C_EN0_Pin I2C_EN1_Pin */
-  GPIO_InitStruct.Pin = LED0_Pin|LED1_Pin|LED2_Pin|LED3_Pin 
-                          |I2C_EN0_Pin|I2C_EN1_Pin;
+  /*Configure GPIO pins : LED_GREEN_Pin LED_ORANGE_Pin LED_RED_Pin LED_BLUE_Pin */
+  GPIO_InitStruct.Pin = LED_GREEN_Pin|LED_ORANGE_Pin|LED_RED_Pin|LED_BLUE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SDIO_Detect_Pin */
   GPIO_InitStruct.Pin = SDIO_Detect_Pin;
@@ -518,68 +362,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SDIO_Detect_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : I2C_EN2_Pin I2C_EN3_Pin */
-  GPIO_InitStruct.Pin = I2C_EN2_Pin|I2C_EN3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-}
-
-/* FSMC initialization function */
-static void MX_FSMC_Init(void)
-{
-
-  /* USER CODE BEGIN FSMC_Init 0 */
-
-  /* USER CODE END FSMC_Init 0 */
-
-  FSMC_NAND_PCC_TimingTypeDef ComSpaceTiming = {0};
-  FSMC_NAND_PCC_TimingTypeDef AttSpaceTiming = {0};
-
-  /* USER CODE BEGIN FSMC_Init 1 */
-
-  /* USER CODE END FSMC_Init 1 */
-
-  /** Perform the NAND1 memory initialization sequence
-  */
-  hnand1.Instance = FSMC_NAND_DEVICE;
-  /* hnand1.Init */
-  hnand1.Init.NandBank = FSMC_NAND_BANK2;
-  hnand1.Init.Waitfeature = FSMC_NAND_PCC_WAIT_FEATURE_ENABLE;
-  hnand1.Init.MemoryDataWidth = FSMC_NAND_PCC_MEM_BUS_WIDTH_16;
-  hnand1.Init.EccComputation = FSMC_NAND_ECC_DISABLE;
-  hnand1.Init.ECCPageSize = FSMC_NAND_ECC_PAGE_SIZE_256BYTE;
-  hnand1.Init.TCLRSetupTime = 0;
-  hnand1.Init.TARSetupTime = 0;
-  /* hnand1.Config */
-  hnand1.Config.PageSize = 0;
-  hnand1.Config.SpareAreaSize = 0;
-  hnand1.Config.BlockSize = 0;
-  hnand1.Config.BlockNbr = 0;
-  hnand1.Config.PlaneNbr = 0;
-  hnand1.Config.PlaneSize = 0;
-  hnand1.Config.ExtraCommandEnable = DISABLE;
-  /* ComSpaceTiming */
-  ComSpaceTiming.SetupTime = 252;
-  ComSpaceTiming.WaitSetupTime = 252;
-  ComSpaceTiming.HoldSetupTime = 252;
-  ComSpaceTiming.HiZSetupTime = 252;
-  /* AttSpaceTiming */
-  AttSpaceTiming.SetupTime = 252;
-  AttSpaceTiming.WaitSetupTime = 252;
-  AttSpaceTiming.HoldSetupTime = 252;
-  AttSpaceTiming.HiZSetupTime = 252;
-
-  if (HAL_NAND_Init(&hnand1, &ComSpaceTiming, &AttSpaceTiming) != HAL_OK)
-  {
-    Error_Handler( );
-  }
-
-  /* USER CODE BEGIN FSMC_Init 2 */
-
-  /* USER CODE END FSMC_Init 2 */
 }
 
 /* USER CODE BEGIN 4 */

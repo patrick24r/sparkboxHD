@@ -58,24 +58,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED0_Pin GPIO_PIN_12
-#define LED0_GPIO_Port GPIOB
-#define LED1_Pin GPIO_PIN_13
-#define LED1_GPIO_Port GPIOB
-#define LED2_Pin GPIO_PIN_14
-#define LED2_GPIO_Port GPIOB
-#define LED3_Pin GPIO_PIN_15
-#define LED3_GPIO_Port GPIOB
-#define SDIO_Detect_Pin GPIO_PIN_13
+#define BUTTON_USER_Pin GPIO_PIN_0
+#define BUTTON_USER_GPIO_Port GPIOA
+#define LED_GREEN_Pin GPIO_PIN_12
+#define LED_GREEN_GPIO_Port GPIOD
+#define LED_ORANGE_Pin GPIO_PIN_13
+#define LED_ORANGE_GPIO_Port GPIOD
+#define LED_RED_Pin GPIO_PIN_14
+#define LED_RED_GPIO_Port GPIOD
+#define LED_BLUE_Pin GPIO_PIN_15
+#define LED_BLUE_GPIO_Port GPIOD
+#define SDIO_Detect_Pin GPIO_PIN_3
 #define SDIO_Detect_GPIO_Port GPIOD
-#define I2C_EN0_Pin GPIO_PIN_8
-#define I2C_EN0_GPIO_Port GPIOB
-#define I2C_EN1_Pin GPIO_PIN_9
-#define I2C_EN1_GPIO_Port GPIOB
-#define I2C_EN2_Pin GPIO_PIN_0
-#define I2C_EN2_GPIO_Port GPIOE
-#define I2C_EN3_Pin GPIO_PIN_1
-#define I2C_EN3_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

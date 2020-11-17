@@ -1,14 +1,11 @@
 #include "main.h"
 
 // Global 
-Sparkbox *spk;
 
-int32_t main(void * arg)
+
+int32_t main(void)
 {
-  // Get pointer to sparkbox handle
-  spk = (Sparkbox*)arg;
-  // Link fatfs drivers
-  spk->linkFatFs();
+  return 0;
 
 
 

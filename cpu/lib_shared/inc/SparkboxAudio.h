@@ -18,8 +18,13 @@ class SparkboxAudio
   SparkboxAudio(void);
   ~SparkboxAudio();
 
+  // Add audio files from the sd card
   int32_t addAllAudio(std::string directory);
   int32_t addAudioFile(std::string filePath);
+
+  // Set which audio files are actively playing
+  int32_t setActiveAudio(uint8_t audioChannel, uint8_t audioID);
+  AudioFile getAudioBankFile(uint8_t audioID);
 
   // Audio controlling functions
   int32_t playAudio(uint8_t audioChannel);
@@ -34,25 +39,20 @@ class SparkboxAudio
   int32_t skipAudio(uint8_t audioChannel, float numberOfSeconds);
   int32_t skipAudio(uint8_t audioChannel, int32_t numberOfSamples);
 
+  // Volume control functions for individual channels
+  float getChannelVolume(uint8_t audioChannel);
   void setChannelVolume(uint8_t audioChannel, float newVolume);
-
+  // Volume control for all channels
   float getMasterVolume(void);
   void setMasterVolume(float newVolume);
-  int32_t setActiveAudio(uint8_t audioChannel, uint8_t audioID);
-  AudioFile getAudioBank(uint8_t audioID);
 
 private:
-  // Handle to DAC peripheral for initialization
-  DAC_HandleTypeDef hdac;
-  TIM_HandleTypeDef htim11;
-  TIM_HandleTypeDef htim14;
-
   // Keep track of the total imported audio sample size in bytes
   uint32_t totalImportedAudioBytes;
   // Bank of all imported audio file headers - Up to 256
   std::vector<AudioFile> audioBank;
-  // Contains up to 4 active audio file headers
-  std::vector<AudioFile> activeAudio;
+  // Contains IDs for each active audio stream
+  std::vector<uint8_t> activeAudio;
   // Container for all internal data to manage playing all audio
   std::vector<SparkboxAudioTracker> audioTrackers;
   // Current active audio samples
@@ -69,13 +69,9 @@ private:
   int32_t addMp3File(std::string filePath);
 
   // Audio interrupt callbacks and related functions
-  void audioInterruptCallback(uint32_t itSampleRate);
-  // Get the next sample from internal memory
-  void getNextSample(uint8_t channel);
-  // Write the active sample data to the DACs
-  void writeNewSampleDacs(void);
+  void timerInterruptCallback(void);
   // Audio DMA complete interrupt callback
   void dmaCompleteCallback(void);
-  // Update all audio data streams
-  void updateAudioStreams(void);
+  // Main audio thread function
+  void audioThreadFcn(void);
 };

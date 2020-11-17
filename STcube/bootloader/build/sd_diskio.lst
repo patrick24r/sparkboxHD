@@ -1,0 +1,1648 @@
+ARM GAS  /tmp/ccS5mxBM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"sd_diskio.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SD_CheckStatus,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	SD_CheckStatus:
+  26              	.LVL0:
+  27              	.LFB138:
+  28              		.file 1 "Src/sd_diskio.c"
+   1:Src/sd_diskio.c **** /* USER CODE BEGIN Header */
+   2:Src/sd_diskio.c **** /**
+   3:Src/sd_diskio.c ****   ******************************************************************************
+   4:Src/sd_diskio.c ****   * @file    sd_diskio.c
+   5:Src/sd_diskio.c ****   * @brief   SD Disk I/O driver
+   6:Src/sd_diskio.c ****   ******************************************************************************
+   7:Src/sd_diskio.c ****   * @attention
+   8:Src/sd_diskio.c ****   *
+   9:Src/sd_diskio.c ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  10:Src/sd_diskio.c ****   * All rights reserved.</center></h2>
+  11:Src/sd_diskio.c ****   *
+  12:Src/sd_diskio.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  13:Src/sd_diskio.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  14:Src/sd_diskio.c ****   * the License. You may obtain a copy of the License at:
+  15:Src/sd_diskio.c ****   *                             www.st.com/SLA0044
+  16:Src/sd_diskio.c ****   *
+  17:Src/sd_diskio.c ****   ******************************************************************************
+  18:Src/sd_diskio.c ****   */
+  19:Src/sd_diskio.c **** /* USER CODE END Header */
+  20:Src/sd_diskio.c **** 
+  21:Src/sd_diskio.c **** /* Note: code generation based on sd_diskio_dma_rtos_template_bspv1.c v2.1.4 
+  22:Src/sd_diskio.c ****    as FreeRTOS is enabled. */
+  23:Src/sd_diskio.c **** 
+  24:Src/sd_diskio.c **** /* USER CODE BEGIN firstSection */
+  25:Src/sd_diskio.c **** /* can be used to modify / undefine following code or add new definitions */
+  26:Src/sd_diskio.c **** /* USER CODE END firstSection*/
+  27:Src/sd_diskio.c **** 
+  28:Src/sd_diskio.c **** /* Includes ------------------------------------------------------------------*/
+  29:Src/sd_diskio.c **** #include "ff_gen_drv.h"
+  30:Src/sd_diskio.c **** #include "sd_diskio.h"
+ARM GAS  /tmp/ccS5mxBM.s 			page 2
+
+
+  31:Src/sd_diskio.c **** 
+  32:Src/sd_diskio.c **** #include <string.h>
+  33:Src/sd_diskio.c **** #include <stdio.h>
+  34:Src/sd_diskio.c **** 
+  35:Src/sd_diskio.c **** /* Private typedef -----------------------------------------------------------*/
+  36:Src/sd_diskio.c **** /* Private define ------------------------------------------------------------*/
+  37:Src/sd_diskio.c **** 
+  38:Src/sd_diskio.c **** #define QUEUE_SIZE         (uint32_t) 10
+  39:Src/sd_diskio.c **** #define READ_CPLT_MSG      (uint32_t) 1
+  40:Src/sd_diskio.c **** #define WRITE_CPLT_MSG     (uint32_t) 2
+  41:Src/sd_diskio.c **** /*
+  42:Src/sd_diskio.c **** ==================================================================
+  43:Src/sd_diskio.c **** enable the defines below to send custom rtos messages
+  44:Src/sd_diskio.c **** when an error or an abort occurs.
+  45:Src/sd_diskio.c **** Notice: depending on the HAL/SD driver the HAL_SD_ErrorCallback()
+  46:Src/sd_diskio.c **** may not be available.
+  47:Src/sd_diskio.c **** See BSP_SD_ErrorCallback() and BSP_SD_AbortCallback() below
+  48:Src/sd_diskio.c **** ==================================================================
+  49:Src/sd_diskio.c **** 
+  50:Src/sd_diskio.c **** #define RW_ERROR_MSG       (uint32_t) 3
+  51:Src/sd_diskio.c **** #define RW_ABORT_MSG       (uint32_t) 4
+  52:Src/sd_diskio.c **** */
+  53:Src/sd_diskio.c **** /*
+  54:Src/sd_diskio.c ****  * the following Timeout is useful to give the control back to the applications
+  55:Src/sd_diskio.c ****  * in case of errors in either BSP_SD_ReadCpltCallback() or BSP_SD_WriteCpltCallback()
+  56:Src/sd_diskio.c ****  * the value by default is as defined in the BSP platform driver otherwise 30 secs
+  57:Src/sd_diskio.c ****  */
+  58:Src/sd_diskio.c **** #define SD_TIMEOUT 30 * 1000
+  59:Src/sd_diskio.c **** 
+  60:Src/sd_diskio.c **** #define SD_DEFAULT_BLOCK_SIZE 512
+  61:Src/sd_diskio.c **** 
+  62:Src/sd_diskio.c **** /*
+  63:Src/sd_diskio.c ****  * Depending on the use case, the SD card initialization could be done at the
+  64:Src/sd_diskio.c ****  * application level: if it is the case define the flag below to disable
+  65:Src/sd_diskio.c ****  * the BSP_SD_Init() call in the SD_Initialize() and add a call to 
+  66:Src/sd_diskio.c ****  * BSP_SD_Init() elsewhere in the application.
+  67:Src/sd_diskio.c ****  */
+  68:Src/sd_diskio.c **** /* USER CODE BEGIN disableSDInit */
+  69:Src/sd_diskio.c **** /* #define DISABLE_SD_INIT */
+  70:Src/sd_diskio.c **** /* USER CODE END disableSDInit */
+  71:Src/sd_diskio.c **** 
+  72:Src/sd_diskio.c **** /* 
+  73:Src/sd_diskio.c ****  * when using cachable memory region, it may be needed to maintain the cache
+  74:Src/sd_diskio.c ****  * validity. Enable the define below to activate a cache maintenance at each
+  75:Src/sd_diskio.c ****  * read and write operation.
+  76:Src/sd_diskio.c ****  * Notice: This is applicable only for cortex M7 based platform.
+  77:Src/sd_diskio.c ****  */
+  78:Src/sd_diskio.c **** /* USER CODE BEGIN enableSDDmaCacheMaintenance */
+  79:Src/sd_diskio.c **** /* #define ENABLE_SD_DMA_CACHE_MAINTENANCE  1 */
+  80:Src/sd_diskio.c **** /* USER CODE BEGIN enableSDDmaCacheMaintenance */
+  81:Src/sd_diskio.c **** 
+  82:Src/sd_diskio.c **** /*
+  83:Src/sd_diskio.c **** * Some DMA requires 4-Byte aligned address buffer to correctly read/wite data,
+  84:Src/sd_diskio.c **** * in FatFs some accesses aren't thus we need a 4-byte aligned scratch buffer to correctly
+  85:Src/sd_diskio.c **** * transfer data
+  86:Src/sd_diskio.c **** */
+  87:Src/sd_diskio.c **** /* USER CODE BEGIN enableScratchBuffer */
+ARM GAS  /tmp/ccS5mxBM.s 			page 3
+
+
+  88:Src/sd_diskio.c **** /* #define ENABLE_SCRATCH_BUFFER */
+  89:Src/sd_diskio.c **** /* USER CODE END enableScratchBuffer */
+  90:Src/sd_diskio.c **** 
+  91:Src/sd_diskio.c **** /* Private variables ---------------------------------------------------------*/
+  92:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+  93:Src/sd_diskio.c **** #if defined (ENABLE_SD_DMA_CACHE_MAINTENANCE)
+  94:Src/sd_diskio.c **** ALIGN_32BYTES(static uint8_t scratch[BLOCKSIZE]); // 32-Byte aligned for cache maintenance
+  95:Src/sd_diskio.c **** #else
+  96:Src/sd_diskio.c **** __ALIGN_BEGIN static uint8_t scratch[BLOCKSIZE] __ALIGN_END;
+  97:Src/sd_diskio.c **** #endif
+  98:Src/sd_diskio.c **** #endif
+  99:Src/sd_diskio.c **** /* Disk status */
+ 100:Src/sd_diskio.c **** static volatile DSTATUS Stat = STA_NOINIT;
+ 101:Src/sd_diskio.c **** 
+ 102:Src/sd_diskio.c **** #if (osCMSIS <= 0x20000U)
+ 103:Src/sd_diskio.c **** static osMessageQId SDQueueID = NULL;
+ 104:Src/sd_diskio.c **** #else
+ 105:Src/sd_diskio.c **** static osMessageQueueId_t SDQueueID = NULL;
+ 106:Src/sd_diskio.c **** #endif
+ 107:Src/sd_diskio.c **** /* Private function prototypes -----------------------------------------------*/
+ 108:Src/sd_diskio.c **** static DSTATUS SD_CheckStatus(BYTE lun);
+ 109:Src/sd_diskio.c **** DSTATUS SD_initialize (BYTE);
+ 110:Src/sd_diskio.c **** DSTATUS SD_status (BYTE);
+ 111:Src/sd_diskio.c **** DRESULT SD_read (BYTE, BYTE*, DWORD, UINT);
+ 112:Src/sd_diskio.c **** #if _USE_WRITE == 1
+ 113:Src/sd_diskio.c **** DRESULT SD_write (BYTE, const BYTE*, DWORD, UINT);
+ 114:Src/sd_diskio.c **** #endif /* _USE_WRITE == 1 */
+ 115:Src/sd_diskio.c **** #if _USE_IOCTL == 1
+ 116:Src/sd_diskio.c **** DRESULT SD_ioctl (BYTE, BYTE, void*);
+ 117:Src/sd_diskio.c **** #endif  /* _USE_IOCTL == 1 */
+ 118:Src/sd_diskio.c **** 
+ 119:Src/sd_diskio.c **** const Diskio_drvTypeDef  SD_Driver =
+ 120:Src/sd_diskio.c **** {
+ 121:Src/sd_diskio.c ****   SD_initialize,
+ 122:Src/sd_diskio.c ****   SD_status,
+ 123:Src/sd_diskio.c ****   SD_read,
+ 124:Src/sd_diskio.c **** #if  _USE_WRITE == 1
+ 125:Src/sd_diskio.c ****   SD_write,
+ 126:Src/sd_diskio.c **** #endif /* _USE_WRITE == 1 */
+ 127:Src/sd_diskio.c **** 
+ 128:Src/sd_diskio.c **** #if  _USE_IOCTL == 1
+ 129:Src/sd_diskio.c ****   SD_ioctl,
+ 130:Src/sd_diskio.c **** #endif /* _USE_IOCTL == 1 */
+ 131:Src/sd_diskio.c **** };
+ 132:Src/sd_diskio.c **** 
+ 133:Src/sd_diskio.c **** /* USER CODE BEGIN beforeFunctionSection */
+ 134:Src/sd_diskio.c **** /* can be used to modify / undefine following code or add new code */
+ 135:Src/sd_diskio.c **** /* USER CODE END beforeFunctionSection */
+ 136:Src/sd_diskio.c **** 
+ 137:Src/sd_diskio.c **** /* Private functions ---------------------------------------------------------*/
+ 138:Src/sd_diskio.c **** 
+ 139:Src/sd_diskio.c **** static int SD_CheckStatusWithTimeout(uint32_t timeout)
+ 140:Src/sd_diskio.c **** {
+ 141:Src/sd_diskio.c ****   uint32_t timer;
+ 142:Src/sd_diskio.c ****   /* block until SDIO peripherial is ready again or a timeout occur */
+ 143:Src/sd_diskio.c **** #if (osCMSIS <= 0x20000U)
+ 144:Src/sd_diskio.c ****   timer = osKernelSysTick();
+ARM GAS  /tmp/ccS5mxBM.s 			page 4
+
+
+ 145:Src/sd_diskio.c ****   while( osKernelSysTick() - timer < timeout)
+ 146:Src/sd_diskio.c **** #else
+ 147:Src/sd_diskio.c ****   timer = osKernelGetTickCount();
+ 148:Src/sd_diskio.c ****   while( osKernelGetTickCount() - timer < timeout)
+ 149:Src/sd_diskio.c **** #endif
+ 150:Src/sd_diskio.c ****   {
+ 151:Src/sd_diskio.c ****     if (BSP_SD_GetCardState() == SD_TRANSFER_OK)
+ 152:Src/sd_diskio.c ****     {
+ 153:Src/sd_diskio.c ****       return 0;
+ 154:Src/sd_diskio.c ****     }
+ 155:Src/sd_diskio.c ****   }
+ 156:Src/sd_diskio.c **** 
+ 157:Src/sd_diskio.c ****   return -1;
+ 158:Src/sd_diskio.c **** }
+ 159:Src/sd_diskio.c **** 
+ 160:Src/sd_diskio.c **** static DSTATUS SD_CheckStatus(BYTE lun)
+ 161:Src/sd_diskio.c **** {
+  29              		.loc 1 161 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 161 1 is_stmt 0 view .LVU1
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+ 162:Src/sd_diskio.c ****   Stat = STA_NOINIT;
+  39              		.loc 1 162 3 is_stmt 1 view .LVU2
+  40              		.loc 1 162 8 is_stmt 0 view .LVU3
+  41 0002 074B     		ldr	r3, .L4
+  42 0004 0122     		movs	r2, #1
+  43 0006 1A70     		strb	r2, [r3]
+ 163:Src/sd_diskio.c **** 
+ 164:Src/sd_diskio.c ****   if(BSP_SD_GetCardState() == SD_TRANSFER_OK)
+  44              		.loc 1 164 3 is_stmt 1 view .LVU4
+  45              		.loc 1 164 6 is_stmt 0 view .LVU5
+  46 0008 FFF7FEFF 		bl	BSP_SD_GetCardState
+  47              	.LVL1:
+  48              		.loc 1 164 5 view .LVU6
+  49 000c 20B9     		cbnz	r0, .L2
+ 165:Src/sd_diskio.c ****   {
+ 166:Src/sd_diskio.c ****     Stat &= ~STA_NOINIT;
+  50              		.loc 1 166 5 is_stmt 1 view .LVU7
+  51              		.loc 1 166 10 is_stmt 0 view .LVU8
+  52 000e 044A     		ldr	r2, .L4
+  53 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  54 0012 03F0FE03 		and	r3, r3, #254
+  55 0016 1370     		strb	r3, [r2]
+  56              	.L2:
+ 167:Src/sd_diskio.c ****   }
+ 168:Src/sd_diskio.c **** 
+ 169:Src/sd_diskio.c ****   return Stat;
+  57              		.loc 1 169 3 is_stmt 1 view .LVU9
+  58              		.loc 1 169 10 is_stmt 0 view .LVU10
+  59 0018 014B     		ldr	r3, .L4
+  60 001a 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ARM GAS  /tmp/ccS5mxBM.s 			page 5
+
+
+ 170:Src/sd_diskio.c **** }
+  61              		.loc 1 170 1 view .LVU11
+  62 001c 08BD     		pop	{r3, pc}
+  63              	.L5:
+  64 001e 00BF     		.align	2
+  65              	.L4:
+  66 0020 00000000 		.word	.LANCHOR0
+  67              		.cfi_endproc
+  68              	.LFE138:
+  70              		.section	.text.SD_initialize,"ax",%progbits
+  71              		.align	1
+  72              		.global	SD_initialize
+  73              		.syntax unified
+  74              		.thumb
+  75              		.thumb_func
+  76              		.fpu fpv4-sp-d16
+  78              	SD_initialize:
+  79              	.LVL2:
+  80              	.LFB139:
+ 171:Src/sd_diskio.c ****  
+ 172:Src/sd_diskio.c **** /**
+ 173:Src/sd_diskio.c ****   * @brief  Initializes a Drive
+ 174:Src/sd_diskio.c ****   * @param  lun : not used
+ 175:Src/sd_diskio.c ****   * @retval DSTATUS: Operation status
+ 176:Src/sd_diskio.c ****   */
+ 177:Src/sd_diskio.c **** DSTATUS SD_initialize(BYTE lun)
+ 178:Src/sd_diskio.c **** {
+  81              		.loc 1 178 1 is_stmt 1 view -0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              		.loc 1 178 1 is_stmt 0 view .LVU13
+  86 0000 10B5     		push	{r4, lr}
+  87              	.LCFI1:
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 4, -8
+  90              		.cfi_offset 14, -4
+  91 0002 0446     		mov	r4, r0
+ 179:Src/sd_diskio.c **** Stat = STA_NOINIT; 
+  92              		.loc 1 179 1 is_stmt 1 view .LVU14
+  93              		.loc 1 179 6 is_stmt 0 view .LVU15
+  94 0004 164B     		ldr	r3, .L14
+  95 0006 0122     		movs	r2, #1
+  96 0008 1A70     		strb	r2, [r3]
+ 180:Src/sd_diskio.c **** 
+ 181:Src/sd_diskio.c ****   /*
+ 182:Src/sd_diskio.c ****    * check that the kernel has been started before continuing
+ 183:Src/sd_diskio.c ****    * as the osMessage API will fail otherwise
+ 184:Src/sd_diskio.c ****    */
+ 185:Src/sd_diskio.c **** #if (osCMSIS <= 0x20000U)
+ 186:Src/sd_diskio.c ****   if(osKernelRunning())
+ 187:Src/sd_diskio.c **** #else
+ 188:Src/sd_diskio.c ****   if(osKernelGetState() == osKernelRunning)
+  97              		.loc 1 188 3 is_stmt 1 view .LVU16
+  98              		.loc 1 188 6 is_stmt 0 view .LVU17
+  99 000a FFF7FEFF 		bl	osKernelGetState
+ 100              	.LVL3:
+ARM GAS  /tmp/ccS5mxBM.s 			page 6
+
+
+ 101              		.loc 1 188 5 view .LVU18
+ 102 000e 0228     		cmp	r0, #2
+ 103 0010 02D0     		beq	.L11
+ 104              	.L7:
+ 189:Src/sd_diskio.c **** #endif
+ 190:Src/sd_diskio.c ****   {
+ 191:Src/sd_diskio.c **** #if !defined(DISABLE_SD_INIT)
+ 192:Src/sd_diskio.c **** 
+ 193:Src/sd_diskio.c ****     if(BSP_SD_Init() == MSD_OK)
+ 194:Src/sd_diskio.c ****     {
+ 195:Src/sd_diskio.c ****       Stat = SD_CheckStatus(lun);
+ 196:Src/sd_diskio.c ****     }
+ 197:Src/sd_diskio.c **** 
+ 198:Src/sd_diskio.c **** #else
+ 199:Src/sd_diskio.c ****     Stat = SD_CheckStatus(lun);
+ 200:Src/sd_diskio.c **** #endif
+ 201:Src/sd_diskio.c **** 
+ 202:Src/sd_diskio.c ****     /*
+ 203:Src/sd_diskio.c ****     * if the SD is correctly initialized, create the operation queue
+ 204:Src/sd_diskio.c ****     * if not already created
+ 205:Src/sd_diskio.c ****     */
+ 206:Src/sd_diskio.c **** 
+ 207:Src/sd_diskio.c ****     if (Stat != STA_NOINIT)
+ 208:Src/sd_diskio.c ****     {
+ 209:Src/sd_diskio.c ****       if (SDQueueID == NULL)
+ 210:Src/sd_diskio.c ****       {
+ 211:Src/sd_diskio.c ****  #if (osCMSIS <= 0x20000U)
+ 212:Src/sd_diskio.c ****       osMessageQDef(SD_Queue, QUEUE_SIZE, uint16_t);
+ 213:Src/sd_diskio.c ****       SDQueueID = osMessageCreate (osMessageQ(SD_Queue), NULL);
+ 214:Src/sd_diskio.c **** #else
+ 215:Src/sd_diskio.c ****       SDQueueID = osMessageQueueNew(QUEUE_SIZE, 2, NULL);
+ 216:Src/sd_diskio.c **** #endif
+ 217:Src/sd_diskio.c ****       }
+ 218:Src/sd_diskio.c **** 
+ 219:Src/sd_diskio.c ****       if (SDQueueID == NULL)
+ 220:Src/sd_diskio.c ****       {
+ 221:Src/sd_diskio.c ****         Stat |= STA_NOINIT;
+ 222:Src/sd_diskio.c ****       }
+ 223:Src/sd_diskio.c ****     }
+ 224:Src/sd_diskio.c ****   }
+ 225:Src/sd_diskio.c **** 
+ 226:Src/sd_diskio.c ****   return Stat;
+ 105              		.loc 1 226 3 is_stmt 1 view .LVU19
+ 106              		.loc 1 226 10 is_stmt 0 view .LVU20
+ 107 0012 134B     		ldr	r3, .L14
+ 108 0014 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 227:Src/sd_diskio.c **** }
+ 109              		.loc 1 227 1 view .LVU21
+ 110 0016 10BD     		pop	{r4, pc}
+ 111              	.L11:
+ 193:Src/sd_diskio.c ****     {
+ 112              		.loc 1 193 5 is_stmt 1 view .LVU22
+ 193:Src/sd_diskio.c ****     {
+ 113              		.loc 1 193 8 is_stmt 0 view .LVU23
+ 114 0018 FFF7FEFF 		bl	BSP_SD_Init
+ 115              	.LVL4:
+ 193:Src/sd_diskio.c ****     {
+ARM GAS  /tmp/ccS5mxBM.s 			page 7
+
+
+ 116              		.loc 1 193 7 view .LVU24
+ 117 001c 88B1     		cbz	r0, .L12
+ 118              	.L8:
+ 207:Src/sd_diskio.c ****     {
+ 119              		.loc 1 207 5 is_stmt 1 view .LVU25
+ 207:Src/sd_diskio.c ****     {
+ 120              		.loc 1 207 14 is_stmt 0 view .LVU26
+ 121 001e 104B     		ldr	r3, .L14
+ 122 0020 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 123 0022 DBB2     		uxtb	r3, r3
+ 207:Src/sd_diskio.c ****     {
+ 124              		.loc 1 207 8 view .LVU27
+ 125 0024 012B     		cmp	r3, #1
+ 126 0026 F4D0     		beq	.L7
+ 209:Src/sd_diskio.c ****       {
+ 127              		.loc 1 209 7 is_stmt 1 view .LVU28
+ 209:Src/sd_diskio.c ****       {
+ 128              		.loc 1 209 21 is_stmt 0 view .LVU29
+ 129 0028 0E4B     		ldr	r3, .L14+4
+ 130 002a 1B68     		ldr	r3, [r3]
+ 209:Src/sd_diskio.c ****       {
+ 131              		.loc 1 209 10 view .LVU30
+ 132 002c 7BB1     		cbz	r3, .L13
+ 133              	.L9:
+ 219:Src/sd_diskio.c ****       {
+ 134              		.loc 1 219 7 is_stmt 1 view .LVU31
+ 219:Src/sd_diskio.c ****       {
+ 135              		.loc 1 219 21 is_stmt 0 view .LVU32
+ 136 002e 0D4B     		ldr	r3, .L14+4
+ 137 0030 1B68     		ldr	r3, [r3]
+ 219:Src/sd_diskio.c ****       {
+ 138              		.loc 1 219 10 view .LVU33
+ 139 0032 002B     		cmp	r3, #0
+ 140 0034 EDD1     		bne	.L7
+ 221:Src/sd_diskio.c ****       }
+ 141              		.loc 1 221 9 is_stmt 1 view .LVU34
+ 221:Src/sd_diskio.c ****       }
+ 142              		.loc 1 221 14 is_stmt 0 view .LVU35
+ 143 0036 0A4A     		ldr	r2, .L14
+ 144 0038 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 145 003a 43F00103 		orr	r3, r3, #1
+ 146 003e 1370     		strb	r3, [r2]
+ 147 0040 E7E7     		b	.L7
+ 148              	.L12:
+ 195:Src/sd_diskio.c ****     }
+ 149              		.loc 1 195 7 is_stmt 1 view .LVU36
+ 195:Src/sd_diskio.c ****     }
+ 150              		.loc 1 195 14 is_stmt 0 view .LVU37
+ 151 0042 2046     		mov	r0, r4
+ 152 0044 FFF7FEFF 		bl	SD_CheckStatus
+ 153              	.LVL5:
+ 195:Src/sd_diskio.c ****     }
+ 154              		.loc 1 195 12 view .LVU38
+ 155 0048 054B     		ldr	r3, .L14
+ 156 004a 1870     		strb	r0, [r3]
+ 157 004c E7E7     		b	.L8
+ 158              	.L13:
+ARM GAS  /tmp/ccS5mxBM.s 			page 8
+
+
+ 215:Src/sd_diskio.c **** #endif
+ 159              		.loc 1 215 7 is_stmt 1 view .LVU39
+ 215:Src/sd_diskio.c **** #endif
+ 160              		.loc 1 215 19 is_stmt 0 view .LVU40
+ 161 004e 0022     		movs	r2, #0
+ 162 0050 0221     		movs	r1, #2
+ 163 0052 0A20     		movs	r0, #10
+ 164 0054 FFF7FEFF 		bl	osMessageQueueNew
+ 165              	.LVL6:
+ 215:Src/sd_diskio.c **** #endif
+ 166              		.loc 1 215 17 view .LVU41
+ 167 0058 024B     		ldr	r3, .L14+4
+ 168 005a 1860     		str	r0, [r3]
+ 169 005c E7E7     		b	.L9
+ 170              	.L15:
+ 171 005e 00BF     		.align	2
+ 172              	.L14:
+ 173 0060 00000000 		.word	.LANCHOR0
+ 174 0064 00000000 		.word	.LANCHOR1
+ 175              		.cfi_endproc
+ 176              	.LFE139:
+ 178              		.section	.text.SD_status,"ax",%progbits
+ 179              		.align	1
+ 180              		.global	SD_status
+ 181              		.syntax unified
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.fpu fpv4-sp-d16
+ 186              	SD_status:
+ 187              	.LVL7:
+ 188              	.LFB140:
+ 228:Src/sd_diskio.c **** 
+ 229:Src/sd_diskio.c **** /**
+ 230:Src/sd_diskio.c ****   * @brief  Gets Disk Status
+ 231:Src/sd_diskio.c ****   * @param  lun : not used
+ 232:Src/sd_diskio.c ****   * @retval DSTATUS: Operation status
+ 233:Src/sd_diskio.c ****   */
+ 234:Src/sd_diskio.c **** DSTATUS SD_status(BYTE lun)
+ 235:Src/sd_diskio.c **** {
+ 189              		.loc 1 235 1 is_stmt 1 view -0
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193              		.loc 1 235 1 is_stmt 0 view .LVU43
+ 194 0000 08B5     		push	{r3, lr}
+ 195              	.LCFI2:
+ 196              		.cfi_def_cfa_offset 8
+ 197              		.cfi_offset 3, -8
+ 198              		.cfi_offset 14, -4
+ 236:Src/sd_diskio.c ****   return SD_CheckStatus(lun);
+ 199              		.loc 1 236 3 is_stmt 1 view .LVU44
+ 200              		.loc 1 236 10 is_stmt 0 view .LVU45
+ 201 0002 FFF7FEFF 		bl	SD_CheckStatus
+ 202              	.LVL8:
+ 237:Src/sd_diskio.c **** }
+ 203              		.loc 1 237 1 view .LVU46
+ 204 0006 08BD     		pop	{r3, pc}
+ARM GAS  /tmp/ccS5mxBM.s 			page 9
+
+
+ 205              		.cfi_endproc
+ 206              	.LFE140:
+ 208              		.section	.text.SD_CheckStatusWithTimeout,"ax",%progbits
+ 209              		.align	1
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 213              		.fpu fpv4-sp-d16
+ 215              	SD_CheckStatusWithTimeout:
+ 216              	.LVL9:
+ 217              	.LFB137:
+ 140:Src/sd_diskio.c ****   uint32_t timer;
+ 218              		.loc 1 140 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140:Src/sd_diskio.c ****   uint32_t timer;
+ 222              		.loc 1 140 1 is_stmt 0 view .LVU48
+ 223 0000 38B5     		push	{r3, r4, r5, lr}
+ 224              	.LCFI3:
+ 225              		.cfi_def_cfa_offset 16
+ 226              		.cfi_offset 3, -16
+ 227              		.cfi_offset 4, -12
+ 228              		.cfi_offset 5, -8
+ 229              		.cfi_offset 14, -4
+ 230 0002 0546     		mov	r5, r0
+ 141:Src/sd_diskio.c ****   /* block until SDIO peripherial is ready again or a timeout occur */
+ 231              		.loc 1 141 3 is_stmt 1 view .LVU49
+ 147:Src/sd_diskio.c ****   while( osKernelGetTickCount() - timer < timeout)
+ 232              		.loc 1 147 3 view .LVU50
+ 147:Src/sd_diskio.c ****   while( osKernelGetTickCount() - timer < timeout)
+ 233              		.loc 1 147 11 is_stmt 0 view .LVU51
+ 234 0004 FFF7FEFF 		bl	osKernelGetTickCount
+ 235              	.LVL10:
+ 147:Src/sd_diskio.c ****   while( osKernelGetTickCount() - timer < timeout)
+ 236              		.loc 1 147 11 view .LVU52
+ 237 0008 0446     		mov	r4, r0
+ 238              	.LVL11:
+ 148:Src/sd_diskio.c **** #endif
+ 239              		.loc 1 148 3 is_stmt 1 view .LVU53
+ 240              	.L19:
+ 148:Src/sd_diskio.c **** #endif
+ 241              		.loc 1 148 8 view .LVU54
+ 148:Src/sd_diskio.c **** #endif
+ 242              		.loc 1 148 10 is_stmt 0 view .LVU55
+ 243 000a FFF7FEFF 		bl	osKernelGetTickCount
+ 244              	.LVL12:
+ 148:Src/sd_diskio.c **** #endif
+ 245              		.loc 1 148 33 view .LVU56
+ 246 000e 001B     		subs	r0, r0, r4
+ 148:Src/sd_diskio.c **** #endif
+ 247              		.loc 1 148 8 view .LVU57
+ 248 0010 A842     		cmp	r0, r5
+ 249 0012 05D2     		bcs	.L24
+ 151:Src/sd_diskio.c ****     {
+ 250              		.loc 1 151 5 is_stmt 1 view .LVU58
+ 151:Src/sd_diskio.c ****     {
+ARM GAS  /tmp/ccS5mxBM.s 			page 10
+
+
+ 251              		.loc 1 151 9 is_stmt 0 view .LVU59
+ 252 0014 FFF7FEFF 		bl	BSP_SD_GetCardState
+ 253              	.LVL13:
+ 151:Src/sd_diskio.c ****     {
+ 254              		.loc 1 151 8 view .LVU60
+ 255 0018 0028     		cmp	r0, #0
+ 256 001a F6D1     		bne	.L19
+ 153:Src/sd_diskio.c ****     }
+ 257              		.loc 1 153 14 view .LVU61
+ 258 001c 0020     		movs	r0, #0
+ 259 001e 01E0     		b	.L18
+ 260              	.L24:
+ 157:Src/sd_diskio.c **** }
+ 261              		.loc 1 157 10 view .LVU62
+ 262 0020 4FF0FF30 		mov	r0, #-1
+ 263              	.L18:
+ 158:Src/sd_diskio.c **** 
+ 264              		.loc 1 158 1 view .LVU63
+ 265 0024 38BD     		pop	{r3, r4, r5, pc}
+ 158:Src/sd_diskio.c **** 
+ 266              		.loc 1 158 1 view .LVU64
+ 267              		.cfi_endproc
+ 268              	.LFE137:
+ 270              		.section	.text.SD_read,"ax",%progbits
+ 271              		.align	1
+ 272              		.global	SD_read
+ 273              		.syntax unified
+ 274              		.thumb
+ 275              		.thumb_func
+ 276              		.fpu fpv4-sp-d16
+ 278              	SD_read:
+ 279              	.LVL14:
+ 280              	.LFB141:
+ 238:Src/sd_diskio.c **** 
+ 239:Src/sd_diskio.c **** /* USER CODE BEGIN beforeReadSection */
+ 240:Src/sd_diskio.c **** /* can be used to modify previous code / undefine following code / add new code */
+ 241:Src/sd_diskio.c **** /* USER CODE END beforeReadSection */
+ 242:Src/sd_diskio.c **** /**
+ 243:Src/sd_diskio.c ****   * @brief  Reads Sector(s)
+ 244:Src/sd_diskio.c ****   * @param  lun : not used
+ 245:Src/sd_diskio.c ****   * @param  *buff: Data buffer to store read data
+ 246:Src/sd_diskio.c ****   * @param  sector: Sector address (LBA)
+ 247:Src/sd_diskio.c ****   * @param  count: Number of sectors to read (1..128)
+ 248:Src/sd_diskio.c ****   * @retval DRESULT: Operation result
+ 249:Src/sd_diskio.c ****   */
+ 250:Src/sd_diskio.c ****    
+ 251:Src/sd_diskio.c **** DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
+ 252:Src/sd_diskio.c **** {
+ 281              		.loc 1 252 1 is_stmt 1 view -0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 8
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              		.loc 1 252 1 is_stmt 0 view .LVU66
+ 286 0000 70B5     		push	{r4, r5, r6, lr}
+ 287              	.LCFI4:
+ 288              		.cfi_def_cfa_offset 16
+ 289              		.cfi_offset 4, -16
+ARM GAS  /tmp/ccS5mxBM.s 			page 11
+
+
+ 290              		.cfi_offset 5, -12
+ 291              		.cfi_offset 6, -8
+ 292              		.cfi_offset 14, -4
+ 293 0002 82B0     		sub	sp, sp, #8
+ 294              	.LCFI5:
+ 295              		.cfi_def_cfa_offset 24
+ 296 0004 0C46     		mov	r4, r1
+ 297 0006 1546     		mov	r5, r2
+ 298 0008 1E46     		mov	r6, r3
+ 253:Src/sd_diskio.c ****   DRESULT res = RES_ERROR;
+ 299              		.loc 1 253 3 is_stmt 1 view .LVU67
+ 300              	.LVL15:
+ 254:Src/sd_diskio.c ****   uint32_t timer;
+ 301              		.loc 1 254 3 view .LVU68
+ 255:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 256:Src/sd_diskio.c ****   osEvent event;
+ 257:Src/sd_diskio.c **** #else
+ 258:Src/sd_diskio.c ****   uint16_t event;
+ 302              		.loc 1 258 3 view .LVU69
+ 259:Src/sd_diskio.c ****   osStatus_t status;
+ 303              		.loc 1 259 3 view .LVU70
+ 260:Src/sd_diskio.c **** #endif
+ 261:Src/sd_diskio.c **** #if (ENABLE_SD_DMA_CACHE_MAINTENANCE == 1)
+ 262:Src/sd_diskio.c ****   uint32_t alignedAddr;
+ 263:Src/sd_diskio.c **** #endif
+ 264:Src/sd_diskio.c ****   /*
+ 265:Src/sd_diskio.c ****   * ensure the SDCard is ready for a new operation
+ 266:Src/sd_diskio.c ****   */
+ 267:Src/sd_diskio.c **** 
+ 268:Src/sd_diskio.c ****   if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0)
+ 304              		.loc 1 268 3 view .LVU71
+ 305              		.loc 1 268 7 is_stmt 0 view .LVU72
+ 306 000a 47F23050 		movw	r0, #30000
+ 307              	.LVL16:
+ 308              		.loc 1 268 7 view .LVU73
+ 309 000e FFF7FEFF 		bl	SD_CheckStatusWithTimeout
+ 310              	.LVL17:
+ 311              		.loc 1 268 6 view .LVU74
+ 312 0012 0028     		cmp	r0, #0
+ 313 0014 28DB     		blt	.L29
+ 269:Src/sd_diskio.c ****   {
+ 270:Src/sd_diskio.c ****     return res;
+ 271:Src/sd_diskio.c ****   }
+ 272:Src/sd_diskio.c **** 
+ 273:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+ 274:Src/sd_diskio.c ****   if (!((uint32_t)buff & 0x3))
+ 275:Src/sd_diskio.c ****   {
+ 276:Src/sd_diskio.c **** #endif
+ 277:Src/sd_diskio.c ****     /* Fast path cause destination buffer is correctly aligned */
+ 278:Src/sd_diskio.c ****     uint8_t ret = BSP_SD_ReadBlocks_DMA((uint32_t*)buff, (uint32_t)(sector), count);
+ 314              		.loc 1 278 5 is_stmt 1 view .LVU75
+ 315              		.loc 1 278 19 is_stmt 0 view .LVU76
+ 316 0016 3246     		mov	r2, r6
+ 317 0018 2946     		mov	r1, r5
+ 318 001a 2046     		mov	r0, r4
+ 319 001c FFF7FEFF 		bl	BSP_SD_ReadBlocks_DMA
+ 320              	.LVL18:
+ARM GAS  /tmp/ccS5mxBM.s 			page 12
+
+
+ 279:Src/sd_diskio.c **** 
+ 280:Src/sd_diskio.c ****     if (ret == MSD_OK) {
+ 321              		.loc 1 280 5 is_stmt 1 view .LVU77
+ 322              		.loc 1 280 8 is_stmt 0 view .LVU78
+ 323 0020 08B1     		cbz	r0, .L34
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 324              		.loc 1 253 11 view .LVU79
+ 325 0022 0120     		movs	r0, #1
+ 326              	.LVL19:
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 327              		.loc 1 253 11 view .LVU80
+ 328 0024 21E0     		b	.L26
+ 329              	.LVL20:
+ 330              	.L34:
+ 281:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 282:Src/sd_diskio.c ****     /* wait for a message from the queue or a timeout */
+ 283:Src/sd_diskio.c ****     event = osMessageGet(SDQueueID, SD_TIMEOUT);
+ 284:Src/sd_diskio.c **** 
+ 285:Src/sd_diskio.c ****     if (event.status == osEventMessage)
+ 286:Src/sd_diskio.c ****     {
+ 287:Src/sd_diskio.c ****       if (event.value.v == READ_CPLT_MSG)
+ 288:Src/sd_diskio.c ****       {
+ 289:Src/sd_diskio.c ****         timer = osKernelSysTick();
+ 290:Src/sd_diskio.c ****         /* block until SDIO IP is ready or a timeout occur */
+ 291:Src/sd_diskio.c ****         while(osKernelSysTick() - timer <SD_TIMEOUT)
+ 292:Src/sd_diskio.c **** #else
+ 293:Src/sd_diskio.c ****           status = osMessageQueueGet(SDQueueID, (void *)&event, NULL, SD_TIMEOUT);
+ 331              		.loc 1 293 11 is_stmt 1 view .LVU81
+ 332              		.loc 1 293 20 is_stmt 0 view .LVU82
+ 333 0026 47F23053 		movw	r3, #30000
+ 334 002a 0022     		movs	r2, #0
+ 335 002c 0DF10601 		add	r1, sp, #6
+ 336 0030 1048     		ldr	r0, .L37
+ 337              	.LVL21:
+ 338              		.loc 1 293 20 view .LVU83
+ 339 0032 0068     		ldr	r0, [r0]
+ 340 0034 FFF7FEFF 		bl	osMessageQueueGet
+ 341              	.LVL22:
+ 294:Src/sd_diskio.c ****           if ((status == osOK) && (event == READ_CPLT_MSG))
+ 342              		.loc 1 294 11 is_stmt 1 view .LVU84
+ 343              		.loc 1 294 14 is_stmt 0 view .LVU85
+ 344 0038 C8B9     		cbnz	r0, .L31
+ 345              		.loc 1 294 42 discriminator 1 view .LVU86
+ 346 003a BDF80630 		ldrh	r3, [sp, #6]
+ 347              		.loc 1 294 32 discriminator 1 view .LVU87
+ 348 003e 012B     		cmp	r3, #1
+ 349 0040 01D0     		beq	.L35
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 350              		.loc 1 253 11 view .LVU88
+ 351 0042 0120     		movs	r0, #1
+ 352              	.LVL23:
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 353              		.loc 1 253 11 view .LVU89
+ 354 0044 11E0     		b	.L26
+ 355              	.LVL24:
+ 356              	.L35:
+ 295:Src/sd_diskio.c ****           {
+ARM GAS  /tmp/ccS5mxBM.s 			page 13
+
+
+ 296:Src/sd_diskio.c ****             timer = osKernelGetTickCount();
+ 357              		.loc 1 296 13 is_stmt 1 view .LVU90
+ 358              		.loc 1 296 21 is_stmt 0 view .LVU91
+ 359 0046 FFF7FEFF 		bl	osKernelGetTickCount
+ 360              	.LVL25:
+ 361              		.loc 1 296 21 view .LVU92
+ 362 004a 0446     		mov	r4, r0
+ 363              	.LVL26:
+ 297:Src/sd_diskio.c ****             /* block until SDIO IP is ready or a timeout occur */
+ 298:Src/sd_diskio.c ****             while(osKernelGetTickCount() - timer <SD_TIMEOUT)
+ 364              		.loc 1 298 13 is_stmt 1 view .LVU93
+ 365              	.L27:
+ 366              		.loc 1 298 18 view .LVU94
+ 367              		.loc 1 298 19 is_stmt 0 view .LVU95
+ 368 004c FFF7FEFF 		bl	osKernelGetTickCount
+ 369              	.LVL27:
+ 370              		.loc 1 298 42 view .LVU96
+ 371 0050 001B     		subs	r0, r0, r4
+ 372              		.loc 1 298 18 view .LVU97
+ 373 0052 47F22F53 		movw	r3, #29999
+ 374 0056 9842     		cmp	r0, r3
+ 375 0058 04D8     		bhi	.L36
+ 299:Src/sd_diskio.c **** #endif
+ 300:Src/sd_diskio.c ****             {
+ 301:Src/sd_diskio.c ****               if (BSP_SD_GetCardState() == SD_TRANSFER_OK)
+ 376              		.loc 1 301 15 is_stmt 1 view .LVU98
+ 377              		.loc 1 301 19 is_stmt 0 view .LVU99
+ 378 005a FFF7FEFF 		bl	BSP_SD_GetCardState
+ 379              	.LVL28:
+ 380              		.loc 1 301 18 view .LVU100
+ 381 005e 0028     		cmp	r0, #0
+ 382 0060 F4D1     		bne	.L27
+ 383 0062 02E0     		b	.L26
+ 384              	.L36:
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 385              		.loc 1 253 11 view .LVU101
+ 386 0064 0120     		movs	r0, #1
+ 387 0066 00E0     		b	.L26
+ 388              	.LVL29:
+ 389              	.L29:
+ 270:Src/sd_diskio.c ****   }
+ 390              		.loc 1 270 12 view .LVU102
+ 391 0068 0120     		movs	r0, #1
+ 392              	.LVL30:
+ 393              	.L26:
+ 302:Src/sd_diskio.c ****               {
+ 303:Src/sd_diskio.c ****                 res = RES_OK;
+ 304:Src/sd_diskio.c **** #if (ENABLE_SD_DMA_CACHE_MAINTENANCE == 1)
+ 305:Src/sd_diskio.c ****                 /*
+ 306:Src/sd_diskio.c ****                 the SCB_InvalidateDCache_by_Addr() requires a 32-Byte aligned address,
+ 307:Src/sd_diskio.c ****                 adjust the address and the D-Cache size to invalidate accordingly.
+ 308:Src/sd_diskio.c ****                 */
+ 309:Src/sd_diskio.c ****                 alignedAddr = (uint32_t)buff & ~0x1F;
+ 310:Src/sd_diskio.c ****                 SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)b
+ 311:Src/sd_diskio.c **** #endif
+ 312:Src/sd_diskio.c ****                 break;
+ 313:Src/sd_diskio.c ****               }
+ARM GAS  /tmp/ccS5mxBM.s 			page 14
+
+
+ 314:Src/sd_diskio.c ****             }
+ 315:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 316:Src/sd_diskio.c ****           }
+ 317:Src/sd_diskio.c ****         }
+ 318:Src/sd_diskio.c **** #else
+ 319:Src/sd_diskio.c ****       }
+ 320:Src/sd_diskio.c **** #endif
+ 321:Src/sd_diskio.c ****     }
+ 322:Src/sd_diskio.c **** 
+ 323:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+ 324:Src/sd_diskio.c ****     }
+ 325:Src/sd_diskio.c ****     else
+ 326:Src/sd_diskio.c ****     {
+ 327:Src/sd_diskio.c ****       /* Slow path, fetch each sector a part and memcpy to destination buffer */
+ 328:Src/sd_diskio.c ****       int i;
+ 329:Src/sd_diskio.c **** 
+ 330:Src/sd_diskio.c ****       for (i = 0; i < count; i++)
+ 331:Src/sd_diskio.c ****       {
+ 332:Src/sd_diskio.c ****         ret = BSP_SD_ReadBlocks_DMA((uint32_t*)scratch, (uint32_t)sector++, 1);
+ 333:Src/sd_diskio.c ****         if (ret == MSD_OK )
+ 334:Src/sd_diskio.c ****         {
+ 335:Src/sd_diskio.c ****           /* wait until the read is successful or a timeout occurs */
+ 336:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 337:Src/sd_diskio.c ****           /* wait for a message from the queue or a timeout */
+ 338:Src/sd_diskio.c ****           event = osMessageGet(SDQueueID, SD_TIMEOUT);
+ 339:Src/sd_diskio.c **** 
+ 340:Src/sd_diskio.c ****           if (event.status == osEventMessage)
+ 341:Src/sd_diskio.c ****           {
+ 342:Src/sd_diskio.c ****             if (event.value.v == READ_CPLT_MSG)
+ 343:Src/sd_diskio.c ****             {
+ 344:Src/sd_diskio.c ****               timer = osKernelSysTick();
+ 345:Src/sd_diskio.c ****               /* block until SDIO IP is ready or a timeout occur */
+ 346:Src/sd_diskio.c ****               while(osKernelSysTick() - timer <SD_TIMEOUT)
+ 347:Src/sd_diskio.c **** #else
+ 348:Src/sd_diskio.c ****                 status = osMessageQueueGet(SDQueueID, (void *)&event, NULL, SD_TIMEOUT);
+ 349:Src/sd_diskio.c ****               if ((status == osOK) && (event == READ_CPLT_MSG))
+ 350:Src/sd_diskio.c ****               {
+ 351:Src/sd_diskio.c ****                 timer = osKernelGetTickCount();
+ 352:Src/sd_diskio.c ****                 /* block until SDIO IP is ready or a timeout occur */
+ 353:Src/sd_diskio.c ****                 ret = MSD_ERROR;
+ 354:Src/sd_diskio.c ****                 while(osKernelGetTickCount() - timer < SD_TIMEOUT)
+ 355:Src/sd_diskio.c **** #endif
+ 356:Src/sd_diskio.c ****                 {
+ 357:Src/sd_diskio.c ****                   ret = BSP_SD_GetCardState();
+ 358:Src/sd_diskio.c **** 
+ 359:Src/sd_diskio.c ****                   if (ret == MSD_OK)
+ 360:Src/sd_diskio.c ****                   {
+ 361:Src/sd_diskio.c ****                     break;
+ 362:Src/sd_diskio.c ****                   }
+ 363:Src/sd_diskio.c ****                 }
+ 364:Src/sd_diskio.c **** 
+ 365:Src/sd_diskio.c ****                 if (ret != MSD_OK)
+ 366:Src/sd_diskio.c ****                 {
+ 367:Src/sd_diskio.c ****                   break;
+ 368:Src/sd_diskio.c ****                 }
+ 369:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 370:Src/sd_diskio.c ****               }
+ARM GAS  /tmp/ccS5mxBM.s 			page 15
+
+
+ 371:Src/sd_diskio.c ****             }
+ 372:Src/sd_diskio.c **** #else
+ 373:Src/sd_diskio.c ****           }
+ 374:Src/sd_diskio.c **** #endif
+ 375:Src/sd_diskio.c **** #if (ENABLE_SD_DMA_CACHE_MAINTENANCE == 1)
+ 376:Src/sd_diskio.c ****           /*
+ 377:Src/sd_diskio.c ****           *
+ 378:Src/sd_diskio.c ****           * invalidate the scratch buffer before the next read to get the actual data instead of th
+ 379:Src/sd_diskio.c ****           */
+ 380:Src/sd_diskio.c ****           SCB_InvalidateDCache_by_Addr((uint32_t*)scratch, BLOCKSIZE);
+ 381:Src/sd_diskio.c **** #endif
+ 382:Src/sd_diskio.c ****           memcpy(buff, scratch, BLOCKSIZE);
+ 383:Src/sd_diskio.c ****           buff += BLOCKSIZE;
+ 384:Src/sd_diskio.c ****         }
+ 385:Src/sd_diskio.c ****         else
+ 386:Src/sd_diskio.c ****         {
+ 387:Src/sd_diskio.c ****           break;
+ 388:Src/sd_diskio.c ****         }
+ 389:Src/sd_diskio.c ****       }
+ 390:Src/sd_diskio.c **** 
+ 391:Src/sd_diskio.c ****       if ((i == count) && (ret == MSD_OK ))
+ 392:Src/sd_diskio.c ****         res = RES_OK;
+ 393:Src/sd_diskio.c ****     }
+ 394:Src/sd_diskio.c **** #endif
+ 395:Src/sd_diskio.c ****   return res;
+ 396:Src/sd_diskio.c **** }
+ 394              		.loc 1 396 1 view .LVU103
+ 395 006a 02B0     		add	sp, sp, #8
+ 396              	.LCFI6:
+ 397              		.cfi_remember_state
+ 398              		.cfi_def_cfa_offset 16
+ 399              		@ sp needed
+ 400 006c 70BD     		pop	{r4, r5, r6, pc}
+ 401              	.LVL31:
+ 402              	.L31:
+ 403              	.LCFI7:
+ 404              		.cfi_restore_state
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 405              		.loc 1 253 11 view .LVU104
+ 406 006e 0120     		movs	r0, #1
+ 407              	.LVL32:
+ 253:Src/sd_diskio.c ****   uint32_t timer;
+ 408              		.loc 1 253 11 view .LVU105
+ 409 0070 FBE7     		b	.L26
+ 410              	.L38:
+ 411 0072 00BF     		.align	2
+ 412              	.L37:
+ 413 0074 00000000 		.word	.LANCHOR1
+ 414              		.cfi_endproc
+ 415              	.LFE141:
+ 417              		.section	.text.SD_write,"ax",%progbits
+ 418              		.align	1
+ 419              		.global	SD_write
+ 420              		.syntax unified
+ 421              		.thumb
+ 422              		.thumb_func
+ 423              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccS5mxBM.s 			page 16
+
+
+ 425              	SD_write:
+ 426              	.LVL33:
+ 427              	.LFB142:
+ 397:Src/sd_diskio.c ****  
+ 398:Src/sd_diskio.c **** 
+ 399:Src/sd_diskio.c **** /* USER CODE BEGIN beforeWriteSection */
+ 400:Src/sd_diskio.c **** /* can be used to modify previous code / undefine following code / add new code */
+ 401:Src/sd_diskio.c **** /* USER CODE END beforeWriteSection */
+ 402:Src/sd_diskio.c **** /**
+ 403:Src/sd_diskio.c ****   * @brief  Writes Sector(s)
+ 404:Src/sd_diskio.c ****   * @param  lun : not used
+ 405:Src/sd_diskio.c ****   * @param  *buff: Data to be written
+ 406:Src/sd_diskio.c ****   * @param  sector: Sector address (LBA)
+ 407:Src/sd_diskio.c ****   * @param  count: Number of sectors to write (1..128)
+ 408:Src/sd_diskio.c ****   * @retval DRESULT: Operation result
+ 409:Src/sd_diskio.c ****   */
+ 410:Src/sd_diskio.c **** #if _USE_WRITE == 1
+ 411:Src/sd_diskio.c ****    
+ 412:Src/sd_diskio.c **** DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
+ 413:Src/sd_diskio.c **** {
+ 428              		.loc 1 413 1 is_stmt 1 view -0
+ 429              		.cfi_startproc
+ 430              		@ args = 0, pretend = 0, frame = 8
+ 431              		@ frame_needed = 0, uses_anonymous_args = 0
+ 432              		.loc 1 413 1 is_stmt 0 view .LVU107
+ 433 0000 70B5     		push	{r4, r5, r6, lr}
+ 434              	.LCFI8:
+ 435              		.cfi_def_cfa_offset 16
+ 436              		.cfi_offset 4, -16
+ 437              		.cfi_offset 5, -12
+ 438              		.cfi_offset 6, -8
+ 439              		.cfi_offset 14, -4
+ 440 0002 82B0     		sub	sp, sp, #8
+ 441              	.LCFI9:
+ 442              		.cfi_def_cfa_offset 24
+ 443 0004 0C46     		mov	r4, r1
+ 444 0006 1546     		mov	r5, r2
+ 445 0008 1E46     		mov	r6, r3
+ 414:Src/sd_diskio.c ****   DRESULT res = RES_ERROR;
+ 446              		.loc 1 414 3 is_stmt 1 view .LVU108
+ 447              	.LVL34:
+ 415:Src/sd_diskio.c ****   uint32_t timer;
+ 448              		.loc 1 415 3 view .LVU109
+ 416:Src/sd_diskio.c **** 
+ 417:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 418:Src/sd_diskio.c ****   osEvent event;
+ 419:Src/sd_diskio.c **** #else
+ 420:Src/sd_diskio.c ****   uint16_t event;
+ 449              		.loc 1 420 3 view .LVU110
+ 421:Src/sd_diskio.c ****   osStatus_t status;
+ 450              		.loc 1 421 3 view .LVU111
+ 422:Src/sd_diskio.c **** #endif
+ 423:Src/sd_diskio.c **** 
+ 424:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+ 425:Src/sd_diskio.c ****   int32_t ret;
+ 426:Src/sd_diskio.c **** #endif
+ 427:Src/sd_diskio.c **** 
+ARM GAS  /tmp/ccS5mxBM.s 			page 17
+
+
+ 428:Src/sd_diskio.c ****   /*
+ 429:Src/sd_diskio.c ****   * ensure the SDCard is ready for a new operation
+ 430:Src/sd_diskio.c ****   */
+ 431:Src/sd_diskio.c **** 
+ 432:Src/sd_diskio.c ****   if (SD_CheckStatusWithTimeout(SD_TIMEOUT) < 0)
+ 451              		.loc 1 432 3 view .LVU112
+ 452              		.loc 1 432 7 is_stmt 0 view .LVU113
+ 453 000a 47F23050 		movw	r0, #30000
+ 454              	.LVL35:
+ 455              		.loc 1 432 7 view .LVU114
+ 456 000e FFF7FEFF 		bl	SD_CheckStatusWithTimeout
+ 457              	.LVL36:
+ 458              		.loc 1 432 6 view .LVU115
+ 459 0012 0028     		cmp	r0, #0
+ 460 0014 28DB     		blt	.L43
+ 433:Src/sd_diskio.c ****   {
+ 434:Src/sd_diskio.c ****     return res;
+ 435:Src/sd_diskio.c ****   }
+ 436:Src/sd_diskio.c **** 
+ 437:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+ 438:Src/sd_diskio.c ****   if (!((uint32_t)buff & 0x3))
+ 439:Src/sd_diskio.c ****   {
+ 440:Src/sd_diskio.c **** #endif
+ 441:Src/sd_diskio.c **** #if (ENABLE_SD_DMA_CACHE_MAINTENANCE == 1)
+ 442:Src/sd_diskio.c ****   uint32_t alignedAddr;
+ 443:Src/sd_diskio.c ****   /*
+ 444:Src/sd_diskio.c ****     the SCB_CleanDCache_by_Addr() requires a 32-Byte aligned address
+ 445:Src/sd_diskio.c ****     adjust the address and the D-Cache size to clean accordingly.
+ 446:Src/sd_diskio.c ****   */
+ 447:Src/sd_diskio.c ****   alignedAddr = (uint32_t)buff & ~0x1F;
+ 448:Src/sd_diskio.c ****   SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, count*BLOCKSIZE + ((uint32_t)buff - alignedAddr))
+ 449:Src/sd_diskio.c **** #endif
+ 450:Src/sd_diskio.c **** 
+ 451:Src/sd_diskio.c ****   if(BSP_SD_WriteBlocks_DMA((uint32_t*)buff,
+ 461              		.loc 1 451 3 is_stmt 1 view .LVU116
+ 462              		.loc 1 451 6 is_stmt 0 view .LVU117
+ 463 0016 3246     		mov	r2, r6
+ 464 0018 2946     		mov	r1, r5
+ 465 001a 2046     		mov	r0, r4
+ 466 001c FFF7FEFF 		bl	BSP_SD_WriteBlocks_DMA
+ 467              	.LVL37:
+ 468              		.loc 1 451 5 view .LVU118
+ 469 0020 08B1     		cbz	r0, .L48
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 470              		.loc 1 414 11 view .LVU119
+ 471 0022 0120     		movs	r0, #1
+ 472 0024 21E0     		b	.L40
+ 473              	.L48:
+ 452:Src/sd_diskio.c ****                            (uint32_t) (sector),
+ 453:Src/sd_diskio.c ****                            count) == MSD_OK)
+ 454:Src/sd_diskio.c ****   {
+ 455:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 456:Src/sd_diskio.c ****     /* Get the message from the queue */
+ 457:Src/sd_diskio.c ****     event = osMessageGet(SDQueueID, SD_TIMEOUT);
+ 458:Src/sd_diskio.c **** 
+ 459:Src/sd_diskio.c ****     if (event.status == osEventMessage)
+ 460:Src/sd_diskio.c ****     {
+ARM GAS  /tmp/ccS5mxBM.s 			page 18
+
+
+ 461:Src/sd_diskio.c ****       if (event.value.v == WRITE_CPLT_MSG)
+ 462:Src/sd_diskio.c ****       {
+ 463:Src/sd_diskio.c **** #else
+ 464:Src/sd_diskio.c ****     status = osMessageQueueGet(SDQueueID, (void *)&event, NULL, SD_TIMEOUT);
+ 474              		.loc 1 464 5 is_stmt 1 view .LVU120
+ 475              		.loc 1 464 14 is_stmt 0 view .LVU121
+ 476 0026 47F23053 		movw	r3, #30000
+ 477 002a 0022     		movs	r2, #0
+ 478 002c 0DF10601 		add	r1, sp, #6
+ 479 0030 1048     		ldr	r0, .L51
+ 480 0032 0068     		ldr	r0, [r0]
+ 481 0034 FFF7FEFF 		bl	osMessageQueueGet
+ 482              	.LVL38:
+ 465:Src/sd_diskio.c ****     if ((status == osOK) && (event == WRITE_CPLT_MSG))
+ 483              		.loc 1 465 5 is_stmt 1 view .LVU122
+ 484              		.loc 1 465 8 is_stmt 0 view .LVU123
+ 485 0038 C8B9     		cbnz	r0, .L45
+ 486              		.loc 1 465 36 discriminator 1 view .LVU124
+ 487 003a BDF80630 		ldrh	r3, [sp, #6]
+ 488              		.loc 1 465 26 discriminator 1 view .LVU125
+ 489 003e 022B     		cmp	r3, #2
+ 490 0040 01D0     		beq	.L49
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 491              		.loc 1 414 11 view .LVU126
+ 492 0042 0120     		movs	r0, #1
+ 493              	.LVL39:
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 494              		.loc 1 414 11 view .LVU127
+ 495 0044 11E0     		b	.L40
+ 496              	.LVL40:
+ 497              	.L49:
+ 466:Src/sd_diskio.c ****     {
+ 467:Src/sd_diskio.c **** #endif
+ 468:Src/sd_diskio.c ****  #if (osCMSIS < 0x20000U)
+ 469:Src/sd_diskio.c ****         timer = osKernelSysTick();
+ 470:Src/sd_diskio.c ****         /* block until SDIO IP is ready or a timeout occur */
+ 471:Src/sd_diskio.c ****         while(osKernelSysTick() - timer  < SD_TIMEOUT)
+ 472:Src/sd_diskio.c **** #else
+ 473:Src/sd_diskio.c ****         timer = osKernelGetTickCount();
+ 498              		.loc 1 473 9 is_stmt 1 view .LVU128
+ 499              		.loc 1 473 17 is_stmt 0 view .LVU129
+ 500 0046 FFF7FEFF 		bl	osKernelGetTickCount
+ 501              	.LVL41:
+ 502              		.loc 1 473 17 view .LVU130
+ 503 004a 0446     		mov	r4, r0
+ 504              	.LVL42:
+ 474:Src/sd_diskio.c ****         /* block until SDIO IP is ready or a timeout occur */
+ 475:Src/sd_diskio.c ****         while(osKernelGetTickCount() - timer  < SD_TIMEOUT)
+ 505              		.loc 1 475 9 is_stmt 1 view .LVU131
+ 506              	.L41:
+ 507              		.loc 1 475 14 view .LVU132
+ 508              		.loc 1 475 15 is_stmt 0 view .LVU133
+ 509 004c FFF7FEFF 		bl	osKernelGetTickCount
+ 510              	.LVL43:
+ 511              		.loc 1 475 38 view .LVU134
+ 512 0050 001B     		subs	r0, r0, r4
+ 513              		.loc 1 475 14 view .LVU135
+ARM GAS  /tmp/ccS5mxBM.s 			page 19
+
+
+ 514 0052 47F22F53 		movw	r3, #29999
+ 515 0056 9842     		cmp	r0, r3
+ 516 0058 04D8     		bhi	.L50
+ 476:Src/sd_diskio.c **** #endif
+ 477:Src/sd_diskio.c ****         {
+ 478:Src/sd_diskio.c ****           if (BSP_SD_GetCardState() == SD_TRANSFER_OK)
+ 517              		.loc 1 478 11 is_stmt 1 view .LVU136
+ 518              		.loc 1 478 15 is_stmt 0 view .LVU137
+ 519 005a FFF7FEFF 		bl	BSP_SD_GetCardState
+ 520              	.LVL44:
+ 521              		.loc 1 478 14 view .LVU138
+ 522 005e 0028     		cmp	r0, #0
+ 523 0060 F4D1     		bne	.L41
+ 524 0062 02E0     		b	.L40
+ 525              	.L50:
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 526              		.loc 1 414 11 view .LVU139
+ 527 0064 0120     		movs	r0, #1
+ 528 0066 00E0     		b	.L40
+ 529              	.LVL45:
+ 530              	.L43:
+ 434:Src/sd_diskio.c ****   }
+ 531              		.loc 1 434 12 view .LVU140
+ 532 0068 0120     		movs	r0, #1
+ 533              	.LVL46:
+ 534              	.L40:
+ 479:Src/sd_diskio.c ****           {
+ 480:Src/sd_diskio.c ****             res = RES_OK;
+ 481:Src/sd_diskio.c ****             break;
+ 482:Src/sd_diskio.c ****           }
+ 483:Src/sd_diskio.c ****         }
+ 484:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 485:Src/sd_diskio.c ****       }
+ 486:Src/sd_diskio.c ****     }
+ 487:Src/sd_diskio.c **** #else
+ 488:Src/sd_diskio.c ****     }
+ 489:Src/sd_diskio.c **** #endif
+ 490:Src/sd_diskio.c ****   }
+ 491:Src/sd_diskio.c **** #if defined(ENABLE_SCRATCH_BUFFER)
+ 492:Src/sd_diskio.c ****   else {
+ 493:Src/sd_diskio.c ****     /* Slow path, fetch each sector a part and memcpy to destination buffer */
+ 494:Src/sd_diskio.c ****     int i;
+ 495:Src/sd_diskio.c **** 
+ 496:Src/sd_diskio.c **** #if (ENABLE_SD_DMA_CACHE_MAINTENANCE == 1)
+ 497:Src/sd_diskio.c ****     /*
+ 498:Src/sd_diskio.c ****      * invalidate the scratch buffer before the next write to get the actual data instead of the ca
+ 499:Src/sd_diskio.c ****      */
+ 500:Src/sd_diskio.c ****      SCB_InvalidateDCache_by_Addr((uint32_t*)scratch, BLOCKSIZE);
+ 501:Src/sd_diskio.c **** #endif
+ 502:Src/sd_diskio.c ****       for (i = 0; i < count; i++)
+ 503:Src/sd_diskio.c ****       {
+ 504:Src/sd_diskio.c ****         memcpy((void *)scratch, buff, BLOCKSIZE);
+ 505:Src/sd_diskio.c ****         buff += BLOCKSIZE;
+ 506:Src/sd_diskio.c **** 
+ 507:Src/sd_diskio.c ****         ret = BSP_SD_WriteBlocks_DMA((uint32_t*)scratch, (uint32_t)sector++, 1);
+ 508:Src/sd_diskio.c ****         if (ret == MSD_OK )
+ 509:Src/sd_diskio.c ****         {
+ARM GAS  /tmp/ccS5mxBM.s 			page 20
+
+
+ 510:Src/sd_diskio.c ****           /* wait until the read is successful or a timeout occurs */
+ 511:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 512:Src/sd_diskio.c ****           /* wait for a message from the queue or a timeout */
+ 513:Src/sd_diskio.c ****           event = osMessageGet(SDQueueID, SD_TIMEOUT);
+ 514:Src/sd_diskio.c **** 
+ 515:Src/sd_diskio.c ****           if (event.status == osEventMessage)
+ 516:Src/sd_diskio.c ****           {
+ 517:Src/sd_diskio.c ****             if (event.value.v == READ_CPLT_MSG)
+ 518:Src/sd_diskio.c ****             {
+ 519:Src/sd_diskio.c ****               timer = osKernelSysTick();
+ 520:Src/sd_diskio.c ****               /* block until SDIO IP is ready or a timeout occur */
+ 521:Src/sd_diskio.c ****               while(osKernelSysTick() - timer <SD_TIMEOUT)
+ 522:Src/sd_diskio.c **** #else
+ 523:Src/sd_diskio.c ****                 status = osMessageQueueGet(SDQueueID, (void *)&event, NULL, SD_TIMEOUT);
+ 524:Src/sd_diskio.c ****               if ((status == osOK) && (event == READ_CPLT_MSG))
+ 525:Src/sd_diskio.c ****               {
+ 526:Src/sd_diskio.c ****                 timer = osKernelGetTickCount();
+ 527:Src/sd_diskio.c ****                 /* block until SDIO IP is ready or a timeout occur */
+ 528:Src/sd_diskio.c ****                 ret = MSD_ERROR;
+ 529:Src/sd_diskio.c ****                 while(osKernelGetTickCount() - timer < SD_TIMEOUT)
+ 530:Src/sd_diskio.c **** #endif
+ 531:Src/sd_diskio.c ****                 {
+ 532:Src/sd_diskio.c ****                   ret = BSP_SD_GetCardState();
+ 533:Src/sd_diskio.c **** 
+ 534:Src/sd_diskio.c ****                   if (ret == MSD_OK)
+ 535:Src/sd_diskio.c ****                   {
+ 536:Src/sd_diskio.c ****                     break;
+ 537:Src/sd_diskio.c ****                   }
+ 538:Src/sd_diskio.c ****                 }
+ 539:Src/sd_diskio.c **** 
+ 540:Src/sd_diskio.c ****                 if (ret != MSD_OK)
+ 541:Src/sd_diskio.c ****                 {
+ 542:Src/sd_diskio.c ****                   break;
+ 543:Src/sd_diskio.c ****                 }
+ 544:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 545:Src/sd_diskio.c ****               }
+ 546:Src/sd_diskio.c ****             }
+ 547:Src/sd_diskio.c **** #else
+ 548:Src/sd_diskio.c ****           }
+ 549:Src/sd_diskio.c **** #endif
+ 550:Src/sd_diskio.c ****         }
+ 551:Src/sd_diskio.c ****         else
+ 552:Src/sd_diskio.c ****         {
+ 553:Src/sd_diskio.c ****           break;
+ 554:Src/sd_diskio.c ****         }
+ 555:Src/sd_diskio.c ****       }
+ 556:Src/sd_diskio.c **** 
+ 557:Src/sd_diskio.c ****       if ((i == count) && (ret == MSD_OK ))
+ 558:Src/sd_diskio.c ****         res = RES_OK;
+ 559:Src/sd_diskio.c ****     }
+ 560:Src/sd_diskio.c **** 
+ 561:Src/sd_diskio.c ****   }
+ 562:Src/sd_diskio.c **** #endif
+ 563:Src/sd_diskio.c **** 
+ 564:Src/sd_diskio.c ****   return res;
+ 565:Src/sd_diskio.c **** }
+ 535              		.loc 1 565 1 view .LVU141
+ARM GAS  /tmp/ccS5mxBM.s 			page 21
+
+
+ 536 006a 02B0     		add	sp, sp, #8
+ 537              	.LCFI10:
+ 538              		.cfi_remember_state
+ 539              		.cfi_def_cfa_offset 16
+ 540              		@ sp needed
+ 541 006c 70BD     		pop	{r4, r5, r6, pc}
+ 542              	.LVL47:
+ 543              	.L45:
+ 544              	.LCFI11:
+ 545              		.cfi_restore_state
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 546              		.loc 1 414 11 view .LVU142
+ 547 006e 0120     		movs	r0, #1
+ 548              	.LVL48:
+ 414:Src/sd_diskio.c ****   uint32_t timer;
+ 549              		.loc 1 414 11 view .LVU143
+ 550 0070 FBE7     		b	.L40
+ 551              	.L52:
+ 552 0072 00BF     		.align	2
+ 553              	.L51:
+ 554 0074 00000000 		.word	.LANCHOR1
+ 555              		.cfi_endproc
+ 556              	.LFE142:
+ 558              		.section	.text.SD_ioctl,"ax",%progbits
+ 559              		.align	1
+ 560              		.global	SD_ioctl
+ 561              		.syntax unified
+ 562              		.thumb
+ 563              		.thumb_func
+ 564              		.fpu fpv4-sp-d16
+ 566              	SD_ioctl:
+ 567              	.LVL49:
+ 568              	.LFB143:
+ 566:Src/sd_diskio.c ****  #endif /* _USE_WRITE == 1 */
+ 567:Src/sd_diskio.c **** 
+ 568:Src/sd_diskio.c **** /* USER CODE BEGIN beforeIoctlSection */
+ 569:Src/sd_diskio.c **** /* can be used to modify previous code / undefine following code / add new code */
+ 570:Src/sd_diskio.c **** /* USER CODE END beforeIoctlSection */
+ 571:Src/sd_diskio.c **** /**
+ 572:Src/sd_diskio.c ****   * @brief  I/O control operation
+ 573:Src/sd_diskio.c ****   * @param  lun : not used
+ 574:Src/sd_diskio.c ****   * @param  cmd: Control code
+ 575:Src/sd_diskio.c ****   * @param  *buff: Buffer to send/receive control data
+ 576:Src/sd_diskio.c ****   * @retval DRESULT: Operation result
+ 577:Src/sd_diskio.c ****   */
+ 578:Src/sd_diskio.c **** #if _USE_IOCTL == 1
+ 579:Src/sd_diskio.c **** DRESULT SD_ioctl(BYTE lun, BYTE cmd, void *buff)
+ 580:Src/sd_diskio.c **** {
+ 569              		.loc 1 580 1 is_stmt 1 view -0
+ 570              		.cfi_startproc
+ 571              		@ args = 0, pretend = 0, frame = 32
+ 572              		@ frame_needed = 0, uses_anonymous_args = 0
+ 573              		.loc 1 580 1 is_stmt 0 view .LVU145
+ 574 0000 30B5     		push	{r4, r5, lr}
+ 575              	.LCFI12:
+ 576              		.cfi_def_cfa_offset 12
+ 577              		.cfi_offset 4, -12
+ARM GAS  /tmp/ccS5mxBM.s 			page 22
+
+
+ 578              		.cfi_offset 5, -8
+ 579              		.cfi_offset 14, -4
+ 580 0002 89B0     		sub	sp, sp, #36
+ 581              	.LCFI13:
+ 582              		.cfi_def_cfa_offset 48
+ 581:Src/sd_diskio.c ****   DRESULT res = RES_ERROR;
+ 583              		.loc 1 581 3 is_stmt 1 view .LVU146
+ 584              	.LVL50:
+ 582:Src/sd_diskio.c ****   BSP_SD_CardInfo CardInfo;
+ 585              		.loc 1 582 3 view .LVU147
+ 583:Src/sd_diskio.c **** 
+ 584:Src/sd_diskio.c ****   if (Stat & STA_NOINIT) return RES_NOTRDY;
+ 586              		.loc 1 584 3 view .LVU148
+ 587              		.loc 1 584 12 is_stmt 0 view .LVU149
+ 588 0004 134B     		ldr	r3, .L63
+ 589 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 590              		.loc 1 584 6 view .LVU150
+ 591 0008 13F00104 		ands	r4, r3, #1
+ 592 000c 1DD1     		bne	.L60
+ 593 000e 0846     		mov	r0, r1
+ 594              	.LVL51:
+ 595              		.loc 1 584 6 view .LVU151
+ 596 0010 1546     		mov	r5, r2
+ 585:Src/sd_diskio.c **** 
+ 586:Src/sd_diskio.c ****   switch (cmd)
+ 597              		.loc 1 586 3 is_stmt 1 view .LVU152
+ 598 0012 0329     		cmp	r1, #3
+ 599 0014 1CD8     		bhi	.L61
+ 600 0016 DFE801F0 		tbb	[pc, r1]
+ 601              	.L56:
+ 602 001a 19       		.byte	(.L54-.L56)/2
+ 603 001b 02       		.byte	(.L58-.L56)/2
+ 604 001c 09       		.byte	(.L57-.L56)/2
+ 605 001d 10       		.byte	(.L55-.L56)/2
+ 606              		.p2align 1
+ 607              	.L58:
+ 587:Src/sd_diskio.c ****   {
+ 588:Src/sd_diskio.c ****   /* Make sure that no pending write process */
+ 589:Src/sd_diskio.c ****   case CTRL_SYNC :
+ 590:Src/sd_diskio.c ****     res = RES_OK;
+ 591:Src/sd_diskio.c ****     break;
+ 592:Src/sd_diskio.c **** 
+ 593:Src/sd_diskio.c ****   /* Get number of sectors on the disk (DWORD) */
+ 594:Src/sd_diskio.c ****   case GET_SECTOR_COUNT :
+ 595:Src/sd_diskio.c ****     BSP_SD_GetCardInfo(&CardInfo);
+ 608              		.loc 1 595 5 view .LVU153
+ 609 001e 6846     		mov	r0, sp
+ 610 0020 FFF7FEFF 		bl	BSP_SD_GetCardInfo
+ 611              	.LVL52:
+ 596:Src/sd_diskio.c ****     *(DWORD*)buff = CardInfo.LogBlockNbr;
+ 612              		.loc 1 596 5 view .LVU154
+ 613              		.loc 1 596 29 is_stmt 0 view .LVU155
+ 614 0024 069B     		ldr	r3, [sp, #24]
+ 615              		.loc 1 596 19 view .LVU156
+ 616 0026 2B60     		str	r3, [r5]
+ 597:Src/sd_diskio.c ****     res = RES_OK;
+ 617              		.loc 1 597 5 is_stmt 1 view .LVU157
+ARM GAS  /tmp/ccS5mxBM.s 			page 23
+
+
+ 618              	.LVL53:
+ 598:Src/sd_diskio.c ****     break;
+ 619              		.loc 1 598 5 view .LVU158
+ 597:Src/sd_diskio.c ****     res = RES_OK;
+ 620              		.loc 1 597 9 is_stmt 0 view .LVU159
+ 621 0028 2046     		mov	r0, r4
+ 622              		.loc 1 598 5 view .LVU160
+ 623 002a 0FE0     		b	.L54
+ 624              	.LVL54:
+ 625              	.L57:
+ 599:Src/sd_diskio.c **** 
+ 600:Src/sd_diskio.c ****   /* Get R/W sector size (WORD) */
+ 601:Src/sd_diskio.c ****   case GET_SECTOR_SIZE :
+ 602:Src/sd_diskio.c ****     BSP_SD_GetCardInfo(&CardInfo);
+ 626              		.loc 1 602 5 is_stmt 1 view .LVU161
+ 627 002c 6846     		mov	r0, sp
+ 628 002e FFF7FEFF 		bl	BSP_SD_GetCardInfo
+ 629              	.LVL55:
+ 603:Src/sd_diskio.c ****     *(WORD*)buff = CardInfo.LogBlockSize;
+ 630              		.loc 1 603 5 view .LVU162
+ 631              		.loc 1 603 28 is_stmt 0 view .LVU163
+ 632 0032 079B     		ldr	r3, [sp, #28]
+ 633              		.loc 1 603 18 view .LVU164
+ 634 0034 2B80     		strh	r3, [r5]	@ movhi
+ 604:Src/sd_diskio.c ****     res = RES_OK;
+ 635              		.loc 1 604 5 is_stmt 1 view .LVU165
+ 636              	.LVL56:
+ 605:Src/sd_diskio.c ****     break;
+ 637              		.loc 1 605 5 view .LVU166
+ 604:Src/sd_diskio.c ****     res = RES_OK;
+ 638              		.loc 1 604 9 is_stmt 0 view .LVU167
+ 639 0036 2046     		mov	r0, r4
+ 640              		.loc 1 605 5 view .LVU168
+ 641 0038 08E0     		b	.L54
+ 642              	.LVL57:
+ 643              	.L55:
+ 606:Src/sd_diskio.c **** 
+ 607:Src/sd_diskio.c ****   /* Get erase block size in unit of sector (DWORD) */
+ 608:Src/sd_diskio.c ****   case GET_BLOCK_SIZE :
+ 609:Src/sd_diskio.c ****     BSP_SD_GetCardInfo(&CardInfo);
+ 644              		.loc 1 609 5 is_stmt 1 view .LVU169
+ 645 003a 6846     		mov	r0, sp
+ 646 003c FFF7FEFF 		bl	BSP_SD_GetCardInfo
+ 647              	.LVL58:
+ 610:Src/sd_diskio.c ****     *(DWORD*)buff = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
+ 648              		.loc 1 610 5 view .LVU170
+ 649              		.loc 1 610 29 is_stmt 0 view .LVU171
+ 650 0040 079B     		ldr	r3, [sp, #28]
+ 651              		.loc 1 610 43 view .LVU172
+ 652 0042 5B0A     		lsrs	r3, r3, #9
+ 653              		.loc 1 610 19 view .LVU173
+ 654 0044 2B60     		str	r3, [r5]
+ 611:Src/sd_diskio.c ****     res = RES_OK;
+ 655              		.loc 1 611 5 is_stmt 1 view .LVU174
+ 656              	.LVL59:
+ 612:Src/sd_diskio.c ****     break;
+ 657              		.loc 1 612 5 view .LVU175
+ARM GAS  /tmp/ccS5mxBM.s 			page 24
+
+
+ 611:Src/sd_diskio.c ****     res = RES_OK;
+ 658              		.loc 1 611 9 is_stmt 0 view .LVU176
+ 659 0046 2046     		mov	r0, r4
+ 660              		.loc 1 612 5 view .LVU177
+ 661 0048 00E0     		b	.L54
+ 662              	.LVL60:
+ 663              	.L60:
+ 584:Src/sd_diskio.c **** 
+ 664              		.loc 1 584 33 view .LVU178
+ 665 004a 0320     		movs	r0, #3
+ 666              	.LVL61:
+ 667              	.L54:
+ 613:Src/sd_diskio.c **** 
+ 614:Src/sd_diskio.c ****   default:
+ 615:Src/sd_diskio.c ****     res = RES_PARERR;
+ 616:Src/sd_diskio.c ****   }
+ 617:Src/sd_diskio.c **** 
+ 618:Src/sd_diskio.c ****   return res;
+ 619:Src/sd_diskio.c **** }
+ 668              		.loc 1 619 1 view .LVU179
+ 669 004c 09B0     		add	sp, sp, #36
+ 670              	.LCFI14:
+ 671              		.cfi_def_cfa_offset 12
+ 672              		@ sp needed
+ 673 004e 30BD     		pop	{r4, r5, pc}
+ 674              	.LVL62:
+ 675              	.L61:
+ 615:Src/sd_diskio.c ****   }
+ 676              		.loc 1 615 9 view .LVU180
+ 677 0050 0420     		movs	r0, #4
+ 678 0052 FBE7     		b	.L54
+ 679              	.L64:
+ 680              		.align	2
+ 681              	.L63:
+ 682 0054 00000000 		.word	.LANCHOR0
+ 683              		.cfi_endproc
+ 684              	.LFE143:
+ 686              		.section	.text.BSP_SD_WriteCpltCallback,"ax",%progbits
+ 687              		.align	1
+ 688              		.global	BSP_SD_WriteCpltCallback
+ 689              		.syntax unified
+ 690              		.thumb
+ 691              		.thumb_func
+ 692              		.fpu fpv4-sp-d16
+ 694              	BSP_SD_WriteCpltCallback:
+ 695              	.LFB144:
+ 620:Src/sd_diskio.c **** #endif /* _USE_IOCTL == 1 */
+ 621:Src/sd_diskio.c **** 
+ 622:Src/sd_diskio.c **** /* USER CODE BEGIN afterIoctlSection */
+ 623:Src/sd_diskio.c **** /* can be used to modify previous code / undefine following code / add new code */
+ 624:Src/sd_diskio.c **** /* USER CODE END afterIoctlSection */
+ 625:Src/sd_diskio.c **** 
+ 626:Src/sd_diskio.c **** /* USER CODE BEGIN callbackSection */ 
+ 627:Src/sd_diskio.c **** /* can be used to modify / following code or add new code */
+ 628:Src/sd_diskio.c **** /* USER CODE END callbackSection */
+ 629:Src/sd_diskio.c **** /**
+ 630:Src/sd_diskio.c ****   * @brief Tx Transfer completed callbacks
+ARM GAS  /tmp/ccS5mxBM.s 			page 25
+
+
+ 631:Src/sd_diskio.c ****   * @param hsd: SD handle
+ 632:Src/sd_diskio.c ****   * @retval None
+ 633:Src/sd_diskio.c ****   */
+ 634:Src/sd_diskio.c **** void BSP_SD_WriteCpltCallback(void)
+ 635:Src/sd_diskio.c **** {
+ 696              		.loc 1 635 1 is_stmt 1 view -0
+ 697              		.cfi_startproc
+ 698              		@ args = 0, pretend = 0, frame = 8
+ 699              		@ frame_needed = 0, uses_anonymous_args = 0
+ 700 0000 00B5     		push	{lr}
+ 701              	.LCFI15:
+ 702              		.cfi_def_cfa_offset 4
+ 703              		.cfi_offset 14, -4
+ 704 0002 83B0     		sub	sp, sp, #12
+ 705              	.LCFI16:
+ 706              		.cfi_def_cfa_offset 16
+ 636:Src/sd_diskio.c ****   
+ 637:Src/sd_diskio.c ****   /*
+ 638:Src/sd_diskio.c ****    * No need to add an "osKernelRunning()" check here, as the SD_initialize()
+ 639:Src/sd_diskio.c ****    * is always called before any SD_Read()/SD_Write() call
+ 640:Src/sd_diskio.c ****    */
+ 641:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 642:Src/sd_diskio.c ****    osMessagePut(SDQueueID, WRITE_CPLT_MSG, 0);
+ 643:Src/sd_diskio.c **** #else
+ 644:Src/sd_diskio.c ****    const uint16_t msg = WRITE_CPLT_MSG;
+ 707              		.loc 1 644 4 view .LVU182
+ 708              		.loc 1 644 19 is_stmt 0 view .LVU183
+ 709 0004 0223     		movs	r3, #2
+ 710 0006 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 645:Src/sd_diskio.c ****    osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+ 711              		.loc 1 645 4 is_stmt 1 view .LVU184
+ 712 000a 0023     		movs	r3, #0
+ 713 000c 1A46     		mov	r2, r3
+ 714 000e 0DF10601 		add	r1, sp, #6
+ 715 0012 0348     		ldr	r0, .L67
+ 716 0014 0068     		ldr	r0, [r0]
+ 717 0016 FFF7FEFF 		bl	osMessageQueuePut
+ 718              	.LVL63:
+ 646:Src/sd_diskio.c **** #endif
+ 647:Src/sd_diskio.c **** }
+ 719              		.loc 1 647 1 is_stmt 0 view .LVU185
+ 720 001a 03B0     		add	sp, sp, #12
+ 721              	.LCFI17:
+ 722              		.cfi_def_cfa_offset 4
+ 723              		@ sp needed
+ 724 001c 5DF804FB 		ldr	pc, [sp], #4
+ 725              	.L68:
+ 726              		.align	2
+ 727              	.L67:
+ 728 0020 00000000 		.word	.LANCHOR1
+ 729              		.cfi_endproc
+ 730              	.LFE144:
+ 732              		.section	.text.BSP_SD_ReadCpltCallback,"ax",%progbits
+ 733              		.align	1
+ 734              		.global	BSP_SD_ReadCpltCallback
+ 735              		.syntax unified
+ 736              		.thumb
+ARM GAS  /tmp/ccS5mxBM.s 			page 26
+
+
+ 737              		.thumb_func
+ 738              		.fpu fpv4-sp-d16
+ 740              	BSP_SD_ReadCpltCallback:
+ 741              	.LFB145:
+ 648:Src/sd_diskio.c **** 
+ 649:Src/sd_diskio.c **** /**
+ 650:Src/sd_diskio.c ****   * @brief Rx Transfer completed callbacks
+ 651:Src/sd_diskio.c ****   * @param hsd: SD handle
+ 652:Src/sd_diskio.c ****   * @retval None
+ 653:Src/sd_diskio.c ****   */
+ 654:Src/sd_diskio.c **** void BSP_SD_ReadCpltCallback(void)
+ 655:Src/sd_diskio.c **** {
+ 742              		.loc 1 655 1 is_stmt 1 view -0
+ 743              		.cfi_startproc
+ 744              		@ args = 0, pretend = 0, frame = 8
+ 745              		@ frame_needed = 0, uses_anonymous_args = 0
+ 746 0000 00B5     		push	{lr}
+ 747              	.LCFI18:
+ 748              		.cfi_def_cfa_offset 4
+ 749              		.cfi_offset 14, -4
+ 750 0002 83B0     		sub	sp, sp, #12
+ 751              	.LCFI19:
+ 752              		.cfi_def_cfa_offset 16
+ 656:Src/sd_diskio.c ****   /*
+ 657:Src/sd_diskio.c ****    * No need to add an "osKernelRunning()" check here, as the SD_initialize()
+ 658:Src/sd_diskio.c ****    * is always called before any SD_Read()/SD_Write() call
+ 659:Src/sd_diskio.c ****    */
+ 660:Src/sd_diskio.c **** #if (osCMSIS < 0x20000U)
+ 661:Src/sd_diskio.c ****    osMessagePut(SDQueueID, READ_CPLT_MSG, 0);
+ 662:Src/sd_diskio.c **** #else
+ 663:Src/sd_diskio.c ****    const uint16_t msg = READ_CPLT_MSG;
+ 753              		.loc 1 663 4 view .LVU187
+ 754              		.loc 1 663 19 is_stmt 0 view .LVU188
+ 755 0004 0123     		movs	r3, #1
+ 756 0006 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 664:Src/sd_diskio.c ****    osMessageQueuePut(SDQueueID, (const void *)&msg, NULL, 0);
+ 757              		.loc 1 664 4 is_stmt 1 view .LVU189
+ 758 000a 0023     		movs	r3, #0
+ 759 000c 1A46     		mov	r2, r3
+ 760 000e 0DF10601 		add	r1, sp, #6
+ 761 0012 0348     		ldr	r0, .L71
+ 762 0014 0068     		ldr	r0, [r0]
+ 763 0016 FFF7FEFF 		bl	osMessageQueuePut
+ 764              	.LVL64:
+ 665:Src/sd_diskio.c **** #endif
+ 666:Src/sd_diskio.c **** }
+ 765              		.loc 1 666 1 is_stmt 0 view .LVU190
+ 766 001a 03B0     		add	sp, sp, #12
+ 767              	.LCFI20:
+ 768              		.cfi_def_cfa_offset 4
+ 769              		@ sp needed
+ 770 001c 5DF804FB 		ldr	pc, [sp], #4
+ 771              	.L72:
+ 772              		.align	2
+ 773              	.L71:
+ 774 0020 00000000 		.word	.LANCHOR1
+ 775              		.cfi_endproc
+ARM GAS  /tmp/ccS5mxBM.s 			page 27
+
+
+ 776              	.LFE145:
+ 778              		.global	SD_Driver
+ 779              		.section	.bss.SDQueueID,"aw",%nobits
+ 780              		.align	2
+ 781              		.set	.LANCHOR1,. + 0
+ 784              	SDQueueID:
+ 785 0000 00000000 		.space	4
+ 786              		.section	.data.Stat,"aw"
+ 787              		.set	.LANCHOR0,. + 0
+ 790              	Stat:
+ 791 0000 01       		.byte	1
+ 792              		.section	.rodata.SD_Driver,"a"
+ 793              		.align	2
+ 796              	SD_Driver:
+ 797 0000 00000000 		.word	SD_initialize
+ 798 0004 00000000 		.word	SD_status
+ 799 0008 00000000 		.word	SD_read
+ 800 000c 00000000 		.word	SD_write
+ 801 0010 00000000 		.word	SD_ioctl
+ 802              		.text
+ 803              	.Letext0:
+ 804              		.file 2 "Middlewares/Third_Party/FatFs/src/integer.h"
+ 805              		.file 3 "Middlewares/Third_Party/FatFs/src/diskio.h"
+ 806              		.file 4 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 807              		.file 5 "Drivers/CMSIS/Include/core_cm4.h"
+ 808              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 809              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h"
+ 810              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 811              		.file 9 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ 812              		.file 10 "Middlewares/Third_Party/FatFs/src/ff_gen_drv.h"
+ 813              		.file 11 "Inc/sd_diskio.h"
+ 814              		.file 12 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 815              		.file 13 "/usr/include/newlib/sys/_types.h"
+ 816              		.file 14 "/usr/include/newlib/sys/reent.h"
+ 817              		.file 15 "/usr/include/newlib/sys/lock.h"
+ 818              		.file 16 "Inc/bsp_driver_sd.h"
+ARM GAS  /tmp/ccS5mxBM.s 			page 28
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 sd_diskio.c
+     /tmp/ccS5mxBM.s:18     .text.SD_CheckStatus:0000000000000000 $t
+     /tmp/ccS5mxBM.s:25     .text.SD_CheckStatus:0000000000000000 SD_CheckStatus
+     /tmp/ccS5mxBM.s:66     .text.SD_CheckStatus:0000000000000020 $d
+     /tmp/ccS5mxBM.s:71     .text.SD_initialize:0000000000000000 $t
+     /tmp/ccS5mxBM.s:78     .text.SD_initialize:0000000000000000 SD_initialize
+     /tmp/ccS5mxBM.s:173    .text.SD_initialize:0000000000000060 $d
+     /tmp/ccS5mxBM.s:179    .text.SD_status:0000000000000000 $t
+     /tmp/ccS5mxBM.s:186    .text.SD_status:0000000000000000 SD_status
+     /tmp/ccS5mxBM.s:209    .text.SD_CheckStatusWithTimeout:0000000000000000 $t
+     /tmp/ccS5mxBM.s:215    .text.SD_CheckStatusWithTimeout:0000000000000000 SD_CheckStatusWithTimeout
+     /tmp/ccS5mxBM.s:271    .text.SD_read:0000000000000000 $t
+     /tmp/ccS5mxBM.s:278    .text.SD_read:0000000000000000 SD_read
+     /tmp/ccS5mxBM.s:413    .text.SD_read:0000000000000074 $d
+     /tmp/ccS5mxBM.s:418    .text.SD_write:0000000000000000 $t
+     /tmp/ccS5mxBM.s:425    .text.SD_write:0000000000000000 SD_write
+     /tmp/ccS5mxBM.s:554    .text.SD_write:0000000000000074 $d
+     /tmp/ccS5mxBM.s:559    .text.SD_ioctl:0000000000000000 $t
+     /tmp/ccS5mxBM.s:566    .text.SD_ioctl:0000000000000000 SD_ioctl
+     /tmp/ccS5mxBM.s:602    .text.SD_ioctl:000000000000001a $d
+     /tmp/ccS5mxBM.s:606    .text.SD_ioctl:000000000000001e $t
+     /tmp/ccS5mxBM.s:682    .text.SD_ioctl:0000000000000054 $d
+     /tmp/ccS5mxBM.s:687    .text.BSP_SD_WriteCpltCallback:0000000000000000 $t
+     /tmp/ccS5mxBM.s:694    .text.BSP_SD_WriteCpltCallback:0000000000000000 BSP_SD_WriteCpltCallback
+     /tmp/ccS5mxBM.s:728    .text.BSP_SD_WriteCpltCallback:0000000000000020 $d
+     /tmp/ccS5mxBM.s:733    .text.BSP_SD_ReadCpltCallback:0000000000000000 $t
+     /tmp/ccS5mxBM.s:740    .text.BSP_SD_ReadCpltCallback:0000000000000000 BSP_SD_ReadCpltCallback
+     /tmp/ccS5mxBM.s:774    .text.BSP_SD_ReadCpltCallback:0000000000000020 $d
+     /tmp/ccS5mxBM.s:796    .rodata.SD_Driver:0000000000000000 SD_Driver
+     /tmp/ccS5mxBM.s:780    .bss.SDQueueID:0000000000000000 $d
+     /tmp/ccS5mxBM.s:784    .bss.SDQueueID:0000000000000000 SDQueueID
+     /tmp/ccS5mxBM.s:790    .data.Stat:0000000000000000 Stat
+     /tmp/ccS5mxBM.s:793    .rodata.SD_Driver:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+BSP_SD_GetCardState
+osKernelGetState
+BSP_SD_Init
+osMessageQueueNew
+osKernelGetTickCount
+BSP_SD_ReadBlocks_DMA
+osMessageQueueGet
+BSP_SD_WriteBlocks_DMA
+BSP_SD_GetCardInfo
+osMessageQueuePut

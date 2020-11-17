@@ -1,11 +1,12 @@
 #pragma once
+#include "fatfs.h"
 
 typedef enum sparkboxerror_t : int32_t {
   SPK_OK = 0,
 
   // FatFs errors (mapped to negative values of 
   // usual fatfs error codes)
-  FATFS_FR_INVALID_PARAMETER = -19,
+  FATFS_FR_INVALID_PARAMETER = 0-FR_INVALID_PARAMETER,
   FATFS_FR_TOO_MANY_OPEN_FILES,
   FATFS_FR_NOT_ENOUGH_CORE,
   FATFS_FR_LOCKED,
@@ -39,8 +40,14 @@ typedef enum sparkboxerror_t : int32_t {
   AUDIO_BANK_INVALID_ID,
   AUDIO_INVALID_CHANNEL,
   AUDIO_UNSUPPORTED_FILE,
+  AUDIO_NOT_A_DIRECTORY,
 
   // Controller errors
   CONTROLLER_NOT_CONNECTED = -499,
   CONTROLLER_INVALID_DATA
 };
+
+// convert 
+int32_t errorFatFsToSparkBox(FRESULT result) {
+  return 0-(int32_t)result;
+}

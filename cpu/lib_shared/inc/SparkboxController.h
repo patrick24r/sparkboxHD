@@ -56,36 +56,28 @@ public:
   SparkboxController();
   ~SparkboxController();
 
-  // Enumerations for building commands
-  enum controllerSelect : uint8_t {
-    CONTROLLER_0 = 0,
-    CONTROLLER_1 = 1,
-    CONTROLLER_2 = 2,
-    CONTROLLER_3 = 3
-  };
-
   // Update a single controller's fields
-  int32_t syncSingleController(controllerSelect controller);
+  int32_t syncSingleController(uint8_t controller);
   // Update all connected controller fields
   int32_t syncAllControllers(void);
   // get the total number of connected controllers
   uint8_t getNumberConnected(void);
   // Test individual connection of controller
-  int32_t isConnected(controllerSelect controller);
+  int32_t isConnected(uint8_t controller);
 
   // Set and get controller status
-  uint8_t getLeds(controllerSelect controller);
-  void setLeds(controllerSelect controller, uint8_t leds);
-  uint8_t getPushButtons(controllerSelect controller);
-  uint16_t getLeftAnalogX(controllerSelect controller);
-  uint16_t getLeftAnalogY(controllerSelect controller);
-  uint16_t getRightAnalogX(controllerSelect controller);
-  uint16_t getRightAnalogY(controllerSelect controller);
+  uint8_t getLeds(uint8_t controller);
+  void setLeds(uint8_t controller, uint8_t leds);
+  uint8_t getPushButtons(uint8_t controller);
+  uint16_t getLeftAnalogX(uint8_t controller);
+  uint16_t getLeftAnalogY(uint8_t controller);
+  uint16_t getRightAnalogX(uint8_t controller);
+  uint16_t getRightAnalogY(uint8_t controller);
   
     
 private:
   // Enable one particular controller at a time
-  void enableController(controllerSelect controller);
+  void enableController(uint8_t controller);
 
   // I2C handle
   I2C_HandleTypeDef hi2c1;

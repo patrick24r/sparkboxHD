@@ -1,0 +1,336 @@
+ARM GAS  /tmp/cc4jMN6p.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"rng.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.MX_RNG_Init,"ax",%progbits
+  18              		.align	1
+  19              		.p2align 2,,3
+  20              		.global	MX_RNG_Init
+  21              		.arch armv7e-m
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  25              		.fpu fpv4-sp-d16
+  27              	MX_RNG_Init:
+  28              	.LFB130:
+  29              		.file 1 "../lib_shared/Core/Src/rng.c"
+   1:../lib_shared/Core/Src/rng.c **** /**
+   2:../lib_shared/Core/Src/rng.c ****   ******************************************************************************
+   3:../lib_shared/Core/Src/rng.c ****   * File Name          : RNG.c
+   4:../lib_shared/Core/Src/rng.c ****   * Description        : This file provides code for the configuration
+   5:../lib_shared/Core/Src/rng.c ****   *                      of the RNG instances.
+   6:../lib_shared/Core/Src/rng.c ****   ******************************************************************************
+   7:../lib_shared/Core/Src/rng.c ****   * @attention
+   8:../lib_shared/Core/Src/rng.c ****   *
+   9:../lib_shared/Core/Src/rng.c ****   * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  10:../lib_shared/Core/Src/rng.c ****   * All rights reserved.</center></h2>
+  11:../lib_shared/Core/Src/rng.c ****   *
+  12:../lib_shared/Core/Src/rng.c ****   * This software component is licensed by ST under Ultimate Liberty license
+  13:../lib_shared/Core/Src/rng.c ****   * SLA0044, the "License"; You may not use this file except in compliance with
+  14:../lib_shared/Core/Src/rng.c ****   * the License. You may obtain a copy of the License at:
+  15:../lib_shared/Core/Src/rng.c ****   *                             www.st.com/SLA0044
+  16:../lib_shared/Core/Src/rng.c ****   *
+  17:../lib_shared/Core/Src/rng.c ****   ******************************************************************************
+  18:../lib_shared/Core/Src/rng.c ****   */
+  19:../lib_shared/Core/Src/rng.c **** 
+  20:../lib_shared/Core/Src/rng.c **** /* Includes ------------------------------------------------------------------*/
+  21:../lib_shared/Core/Src/rng.c **** #include "rng.h"
+  22:../lib_shared/Core/Src/rng.c **** 
+  23:../lib_shared/Core/Src/rng.c **** /* USER CODE BEGIN 0 */
+  24:../lib_shared/Core/Src/rng.c **** 
+  25:../lib_shared/Core/Src/rng.c **** /* USER CODE END 0 */
+  26:../lib_shared/Core/Src/rng.c **** 
+  27:../lib_shared/Core/Src/rng.c **** RNG_HandleTypeDef hrng;
+  28:../lib_shared/Core/Src/rng.c **** 
+  29:../lib_shared/Core/Src/rng.c **** /* RNG init function */
+ARM GAS  /tmp/cc4jMN6p.s 			page 2
+
+
+  30:../lib_shared/Core/Src/rng.c **** void MX_RNG_Init(void)
+  31:../lib_shared/Core/Src/rng.c **** {
+  30              		.loc 1 31 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  32:../lib_shared/Core/Src/rng.c **** 
+  33:../lib_shared/Core/Src/rng.c ****   hrng.Instance = RNG;
+  34              		.loc 1 33 3 view .LVU1
+  35              		.loc 1 33 17 is_stmt 0 view .LVU2
+  36 0000 0548     		ldr	r0, .L6
+  31:../lib_shared/Core/Src/rng.c **** 
+  37              		.loc 1 31 1 view .LVU3
+  38 0002 08B5     		push	{r3, lr}
+  39              	.LCFI0:
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 3, -8
+  42              		.cfi_offset 14, -4
+  43              		.loc 1 33 17 view .LVU4
+  44 0004 054B     		ldr	r3, .L6+4
+  45 0006 0360     		str	r3, [r0]
+  34:../lib_shared/Core/Src/rng.c ****   if (HAL_RNG_Init(&hrng) != HAL_OK)
+  46              		.loc 1 34 3 is_stmt 1 view .LVU5
+  47              		.loc 1 34 7 is_stmt 0 view .LVU6
+  48 0008 FFF7FEFF 		bl	HAL_RNG_Init
+  49              	.LVL0:
+  50              		.loc 1 34 6 view .LVU7
+  51 000c 00B9     		cbnz	r0, .L5
+  35:../lib_shared/Core/Src/rng.c ****   {
+  36:../lib_shared/Core/Src/rng.c ****     Error_Handler();
+  37:../lib_shared/Core/Src/rng.c ****   }
+  38:../lib_shared/Core/Src/rng.c **** 
+  39:../lib_shared/Core/Src/rng.c **** }
+  52              		.loc 1 39 1 view .LVU8
+  53 000e 08BD     		pop	{r3, pc}
+  54              	.L5:
+  36:../lib_shared/Core/Src/rng.c ****   }
+  55              		.loc 1 36 5 is_stmt 1 view .LVU9
+  56              		.loc 1 39 1 is_stmt 0 view .LVU10
+  57 0010 BDE80840 		pop	{r3, lr}
+  58              	.LCFI1:
+  59              		.cfi_restore 14
+  60              		.cfi_restore 3
+  61              		.cfi_def_cfa_offset 0
+  36:../lib_shared/Core/Src/rng.c ****   }
+  62              		.loc 1 36 5 view .LVU11
+  63 0014 FFF7FEBF 		b	Error_Handler
+  64              	.LVL1:
+  65              	.L7:
+  66              		.align	2
+  67              	.L6:
+  68 0018 00000000 		.word	hrng
+  69 001c 00080650 		.word	1342572544
+  70              		.cfi_endproc
+  71              	.LFE130:
+  73              		.section	.text.HAL_RNG_MspInit,"ax",%progbits
+  74              		.align	1
+ARM GAS  /tmp/cc4jMN6p.s 			page 3
+
+
+  75              		.p2align 2,,3
+  76              		.global	HAL_RNG_MspInit
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu fpv4-sp-d16
+  82              	HAL_RNG_MspInit:
+  83              	.LVL2:
+  84              	.LFB131:
+  40:../lib_shared/Core/Src/rng.c **** 
+  41:../lib_shared/Core/Src/rng.c **** void HAL_RNG_MspInit(RNG_HandleTypeDef* rngHandle)
+  42:../lib_shared/Core/Src/rng.c **** {
+  85              		.loc 1 42 1 is_stmt 1 view -0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 8
+  88              		@ frame_needed = 0, uses_anonymous_args = 0
+  43:../lib_shared/Core/Src/rng.c **** 
+  44:../lib_shared/Core/Src/rng.c ****   if(rngHandle->Instance==RNG)
+  89              		.loc 1 44 3 view .LVU13
+  90              		.loc 1 44 5 is_stmt 0 view .LVU14
+  91 0000 0E4B     		ldr	r3, .L14
+  92 0002 0268     		ldr	r2, [r0]
+  93 0004 9A42     		cmp	r2, r3
+  94 0006 00D0     		beq	.L13
+  95 0008 7047     		bx	lr
+  96              	.L13:
+  45:../lib_shared/Core/Src/rng.c ****   {
+  46:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspInit 0 */
+  47:../lib_shared/Core/Src/rng.c **** 
+  48:../lib_shared/Core/Src/rng.c ****   /* USER CODE END RNG_MspInit 0 */
+  49:../lib_shared/Core/Src/rng.c ****     /* RNG clock enable */
+  50:../lib_shared/Core/Src/rng.c ****     __HAL_RCC_RNG_CLK_ENABLE();
+  97              		.loc 1 50 5 is_stmt 1 view .LVU15
+  98              	.LBB2:
+  99              		.loc 1 50 5 view .LVU16
+ 100              	.LBE2:
+  42:../lib_shared/Core/Src/rng.c **** 
+ 101              		.loc 1 42 1 is_stmt 0 view .LVU17
+ 102 000a 00B5     		push	{lr}
+ 103              	.LCFI2:
+ 104              		.cfi_def_cfa_offset 4
+ 105              		.cfi_offset 14, -4
+ 106 000c 83B0     		sub	sp, sp, #12
+ 107              	.LCFI3:
+ 108              		.cfi_def_cfa_offset 16
+ 109              	.LBB3:
+ 110              		.loc 1 50 5 view .LVU18
+ 111 000e 0022     		movs	r2, #0
+ 112 0010 0B4B     		ldr	r3, .L14+4
+ 113 0012 0192     		str	r2, [sp, #4]
+ 114              		.loc 1 50 5 is_stmt 1 view .LVU19
+ 115 0014 596B     		ldr	r1, [r3, #52]
+ 116 0016 41F04001 		orr	r1, r1, #64
+ 117 001a 5963     		str	r1, [r3, #52]
+ 118              		.loc 1 50 5 view .LVU20
+ 119 001c 5B6B     		ldr	r3, [r3, #52]
+ 120 001e 03F04003 		and	r3, r3, #64
+ARM GAS  /tmp/cc4jMN6p.s 			page 4
+
+
+ 121 0022 0193     		str	r3, [sp, #4]
+ 122              		.loc 1 50 5 view .LVU21
+ 123              	.LBE3:
+  51:../lib_shared/Core/Src/rng.c **** 
+  52:../lib_shared/Core/Src/rng.c ****     /* RNG interrupt Init */
+  53:../lib_shared/Core/Src/rng.c ****     HAL_NVIC_SetPriority(HASH_RNG_IRQn, 0, 0);
+ 124              		.loc 1 53 5 is_stmt 0 view .LVU22
+ 125 0024 1146     		mov	r1, r2
+ 126 0026 5020     		movs	r0, #80
+ 127              	.LVL3:
+ 128              	.LBB4:
+  50:../lib_shared/Core/Src/rng.c **** 
+ 129              		.loc 1 50 5 view .LVU23
+ 130 0028 019B     		ldr	r3, [sp, #4]
+ 131              	.LBE4:
+  50:../lib_shared/Core/Src/rng.c **** 
+ 132              		.loc 1 50 5 is_stmt 1 view .LVU24
+ 133              		.loc 1 53 5 view .LVU25
+ 134 002a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 135              	.LVL4:
+  54:../lib_shared/Core/Src/rng.c ****     HAL_NVIC_EnableIRQ(HASH_RNG_IRQn);
+ 136              		.loc 1 54 5 view .LVU26
+ 137 002e 5020     		movs	r0, #80
+  55:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspInit 1 */
+  56:../lib_shared/Core/Src/rng.c **** 
+  57:../lib_shared/Core/Src/rng.c ****   /* USER CODE END RNG_MspInit 1 */
+  58:../lib_shared/Core/Src/rng.c ****   }
+  59:../lib_shared/Core/Src/rng.c **** }
+ 138              		.loc 1 59 1 is_stmt 0 view .LVU27
+ 139 0030 03B0     		add	sp, sp, #12
+ 140              	.LCFI4:
+ 141              		.cfi_def_cfa_offset 4
+ 142              		@ sp needed
+ 143 0032 5DF804EB 		ldr	lr, [sp], #4
+ 144              	.LCFI5:
+ 145              		.cfi_restore 14
+ 146              		.cfi_def_cfa_offset 0
+  54:../lib_shared/Core/Src/rng.c ****     HAL_NVIC_EnableIRQ(HASH_RNG_IRQn);
+ 147              		.loc 1 54 5 view .LVU28
+ 148 0036 FFF7FEBF 		b	HAL_NVIC_EnableIRQ
+ 149              	.LVL5:
+ 150              	.L15:
+ 151 003a 00BF     		.align	2
+ 152              	.L14:
+ 153 003c 00080650 		.word	1342572544
+ 154 0040 00380240 		.word	1073887232
+ 155              		.cfi_endproc
+ 156              	.LFE131:
+ 158              		.section	.text.HAL_RNG_MspDeInit,"ax",%progbits
+ 159              		.align	1
+ 160              		.p2align 2,,3
+ 161              		.global	HAL_RNG_MspDeInit
+ 162              		.syntax unified
+ 163              		.thumb
+ 164              		.thumb_func
+ 165              		.fpu fpv4-sp-d16
+ 167              	HAL_RNG_MspDeInit:
+ARM GAS  /tmp/cc4jMN6p.s 			page 5
+
+
+ 168              	.LVL6:
+ 169              	.LFB132:
+  60:../lib_shared/Core/Src/rng.c **** 
+  61:../lib_shared/Core/Src/rng.c **** void HAL_RNG_MspDeInit(RNG_HandleTypeDef* rngHandle)
+  62:../lib_shared/Core/Src/rng.c **** {
+ 170              		.loc 1 62 1 is_stmt 1 view -0
+ 171              		.cfi_startproc
+ 172              		@ args = 0, pretend = 0, frame = 0
+ 173              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174              		@ link register save eliminated.
+  63:../lib_shared/Core/Src/rng.c **** 
+  64:../lib_shared/Core/Src/rng.c ****   if(rngHandle->Instance==RNG)
+ 175              		.loc 1 64 3 view .LVU30
+ 176              		.loc 1 64 5 is_stmt 0 view .LVU31
+ 177 0000 064B     		ldr	r3, .L19
+ 178 0002 0268     		ldr	r2, [r0]
+ 179 0004 9A42     		cmp	r2, r3
+ 180 0006 00D0     		beq	.L18
+  65:../lib_shared/Core/Src/rng.c ****   {
+  66:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspDeInit 0 */
+  67:../lib_shared/Core/Src/rng.c **** 
+  68:../lib_shared/Core/Src/rng.c ****   /* USER CODE END RNG_MspDeInit 0 */
+  69:../lib_shared/Core/Src/rng.c ****     /* Peripheral clock disable */
+  70:../lib_shared/Core/Src/rng.c ****     __HAL_RCC_RNG_CLK_DISABLE();
+  71:../lib_shared/Core/Src/rng.c **** 
+  72:../lib_shared/Core/Src/rng.c ****     /* RNG interrupt Deinit */
+  73:../lib_shared/Core/Src/rng.c ****     HAL_NVIC_DisableIRQ(HASH_RNG_IRQn);
+  74:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspDeInit 1 */
+  75:../lib_shared/Core/Src/rng.c **** 
+  76:../lib_shared/Core/Src/rng.c ****   /* USER CODE END RNG_MspDeInit 1 */
+  77:../lib_shared/Core/Src/rng.c ****   }
+  78:../lib_shared/Core/Src/rng.c **** } 
+ 181              		.loc 1 78 1 view .LVU32
+ 182 0008 7047     		bx	lr
+ 183              	.L18:
+  70:../lib_shared/Core/Src/rng.c **** 
+ 184              		.loc 1 70 5 is_stmt 1 view .LVU33
+ 185 000a 054A     		ldr	r2, .L19+4
+ 186 000c 536B     		ldr	r3, [r2, #52]
+ 187 000e 23F04003 		bic	r3, r3, #64
+ 188 0012 5363     		str	r3, [r2, #52]
+  73:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspDeInit 1 */
+ 189              		.loc 1 73 5 view .LVU34
+ 190 0014 5020     		movs	r0, #80
+ 191              	.LVL7:
+  73:../lib_shared/Core/Src/rng.c ****   /* USER CODE BEGIN RNG_MspDeInit 1 */
+ 192              		.loc 1 73 5 is_stmt 0 view .LVU35
+ 193 0016 FFF7FEBF 		b	HAL_NVIC_DisableIRQ
+ 194              	.LVL8:
+ 195              	.L20:
+ 196 001a 00BF     		.align	2
+ 197              	.L19:
+ 198 001c 00080650 		.word	1342572544
+ 199 0020 00380240 		.word	1073887232
+ 200              		.cfi_endproc
+ 201              	.LFE132:
+ 203              		.comm	hrng,16,4
+ARM GAS  /tmp/cc4jMN6p.s 			page 6
+
+
+ 204              		.text
+ 205              	.Letext0:
+ 206              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 207              		.file 3 "../lib_shared/Drivers/CMSIS/Core/Include/core_cm4.h"
+ 208              		.file 4 "../lib_shared/Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 209              		.file 5 "../lib_shared/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 210              		.file 6 "../lib_shared/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 211              		.file 7 "../lib_shared/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rng.h"
+ 212              		.file 8 "../lib_shared/Core/Inc/rng.h"
+ 213              		.file 9 "../lib_shared/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h"
+ 214              		.file 10 "../lib_shared/Core/Inc/main.h"
+ARM GAS  /tmp/cc4jMN6p.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 rng.c
+     /tmp/cc4jMN6p.s:18     .text.MX_RNG_Init:0000000000000000 $t
+     /tmp/cc4jMN6p.s:27     .text.MX_RNG_Init:0000000000000000 MX_RNG_Init
+     /tmp/cc4jMN6p.s:68     .text.MX_RNG_Init:0000000000000018 $d
+                            *COM*:0000000000000010 hrng
+     /tmp/cc4jMN6p.s:74     .text.HAL_RNG_MspInit:0000000000000000 $t
+     /tmp/cc4jMN6p.s:82     .text.HAL_RNG_MspInit:0000000000000000 HAL_RNG_MspInit
+     /tmp/cc4jMN6p.s:153    .text.HAL_RNG_MspInit:000000000000003c $d
+     /tmp/cc4jMN6p.s:159    .text.HAL_RNG_MspDeInit:0000000000000000 $t
+     /tmp/cc4jMN6p.s:167    .text.HAL_RNG_MspDeInit:0000000000000000 HAL_RNG_MspDeInit
+     /tmp/cc4jMN6p.s:198    .text.HAL_RNG_MspDeInit:000000000000001c $d
+
+UNDEFINED SYMBOLS
+HAL_RNG_Init
+Error_Handler
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_NVIC_DisableIRQ

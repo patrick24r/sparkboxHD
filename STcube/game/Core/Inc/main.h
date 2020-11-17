@@ -58,14 +58,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define I2C_EN0_Pin GPIO_PIN_2
-#define I2C_EN0_GPIO_Port GPIOE
-#define I2C_EN1_Pin GPIO_PIN_3
-#define I2C_EN1_GPIO_Port GPIOE
-#define I2C_EN2_Pin GPIO_PIN_4
-#define I2C_EN2_GPIO_Port GPIOE
-#define I2C_EN3_Pin GPIO_PIN_5
-#define I2C_EN3_GPIO_Port GPIOE
 #define SDIO_Detect_Pin GPIO_PIN_5
 #define SDIO_Detect_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

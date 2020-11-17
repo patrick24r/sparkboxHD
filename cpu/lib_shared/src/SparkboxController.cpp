@@ -46,7 +46,7 @@ SparkboxController::SparkboxController()
 }
 
 // Synchronize a single controller
-int32_t SparkboxController::syncSingleController(controllerSelect controller)
+int32_t SparkboxController::syncSingleController(uint8_t controller)
 {
   uint8_t* startAddr; // i2c data address variable
   int32_t error;
@@ -108,62 +108,62 @@ uint8_t SparkboxController::getNumberConnected(void)
 }
 
 // Check connection status of controllers
-int32_t SparkboxController::isConnected(controllerSelect controller)
+int32_t SparkboxController::isConnected(uint8_t controller)
 {
   return ((connected >> controller) & 0x01);
 }
 
 // Get the internal LED status
-uint8_t SparkboxController::getLeds(controllerSelect controller)
+uint8_t SparkboxController::getLeds(uint8_t controller)
 {
   return (uint8_t)((controllerData.at(controller) & LED_MASK) 
           >> LED_POS);
 }
 
 // Set the controller LED values internally
-void SparkboxController::setLeds(controllerSelect controller, uint8_t leds)
+void SparkboxController::setLeds(uint8_t controller, uint8_t leds)
 {
   controllerData.at(controller) &= ~(LED_MASK);
   controllerData.at(controller) |= (leds << LED_POS);
 }
 
 // Get the internal push button status
-uint8_t SparkboxController::getPushButtons(controllerSelect controller)
+uint8_t SparkboxController::getPushButtons(uint8_t controller)
 {
   return (uint8_t)((controllerData.at(controller) & BUTTON_MASK) 
           >> BUTTON_POS);
 }
 
 // Get the internal left analog x status
-uint16_t SparkboxController::getLeftAnalogX(controllerSelect controller)
+uint16_t SparkboxController::getLeftAnalogX(uint8_t controller)
 {
   return (uint16_t)((controllerData.at(controller) & LEFT_ANALOG_X_MASK) 
           >> LEFT_ANALOG_X_POS);
 }
 
 // Get the internal left analog y status
-uint16_t SparkboxController::getLeftAnalogY(controllerSelect controller)
+uint16_t SparkboxController::getLeftAnalogY(uint8_t controller)
 {
   return (uint16_t)((controllerData.at(controller) & LEFT_ANALOG_Y_MASK) 
           >> LEFT_ANALOG_Y_POS);
 }
 
 // Get the internal right analog x status
-uint16_t SparkboxController::getRightAnalogX(controllerSelect controller)
+uint16_t SparkboxController::getRightAnalogX(uint8_t controller)
 {
   return (uint16_t)((controllerData.at(controller) & RIGHT_ANALOG_X_MASK) 
           >> RIGHT_ANALOG_X_POS);
 }
 
 // Get the internal right analog y status
-uint16_t SparkboxController::getRightAnalogY(controllerSelect controller)
+uint16_t SparkboxController::getRightAnalogY(uint8_t controller)
 {
   return (uint16_t)((controllerData.at(controller) & RIGHT_ANALOG_Y_MASK) 
           >> RIGHT_ANALOG_Y_POS);
 }
 
 // Enable one controller and disable the others
-void SparkboxController::enableController(controllerSelect controller)
+void SparkboxController::enableController(uint8_t controller)
 {
   uint8_t mask = 0x01 << controller;
 

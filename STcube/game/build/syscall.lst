@@ -1,0 +1,360 @@
+ARM GAS  /tmp/ccelbTFG.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"syscall.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.ff_cre_syncobj,"ax",%progbits
+  18              		.align	1
+  19              		.global	ff_cre_syncobj
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	ff_cre_syncobj:
+  27              	.LVL0:
+  28              	.LFB134:
+  29              		.file 1 "Middlewares/Third_Party/FatFs/src/option/syscall.c"
+   1:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+   2:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* Sample code of OS dependent controls for FatFs                         */
+   3:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* (C)ChaN, 2014                                                          */
+   4:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*   Portions COPYRIGHT 2017 STMicroelectronics                           */
+   5:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*   Portions Copyright (C) 2014, ChaN, all right reserved                */
+   6:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+   7:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+   8:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /**
+   9:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   ******************************************************************************
+  10:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   * @attention
+  11:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   *
+  12:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   * Copyright (c) 2017 STMicroelectronics. All rights reserved.
+  13:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   *
+  14:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   * This software component is licensed by ST under BSD 3-Clause license,
+  15:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   * the "License"; You may not use this file except in compliance with the
+  16:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   * License. You may obtain a copy of the License at:
+  17:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   *                       opensource.org/licenses/BSD-3-Clause
+  18:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   *
+  19:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   ******************************************************************************
+  20:Middlewares/Third_Party/FatFs/src/option/syscall.c **** **/
+  21:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  22:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  23:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  24:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #include "../ff.h"
+  25:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  26:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  27:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _FS_REENTRANT
+  28:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  29:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* Create a Synchronization Object                                        */
+ARM GAS  /tmp/ccelbTFG.s 			page 2
+
+
+  30:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  31:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* This function is called in f_mount() function to create a new
+  32:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /  synchronization object, such as semaphore and mutex. When a 0 is returned,
+  33:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /  the f_mount() function fails with FR_INT_ERR.
+  34:Middlewares/Third_Party/FatFs/src/option/syscall.c **** */
+  35:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  36:Middlewares/Third_Party/FatFs/src/option/syscall.c **** int ff_cre_syncobj (	/* 1:Function succeeded, 0:Could not create the sync object */
+  37:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 	BYTE vol,			/* Corresponding volume (logical drive number) */
+  38:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 	_SYNC_t *sobj		/* Pointer to return the created sync object */
+  39:Middlewares/Third_Party/FatFs/src/option/syscall.c **** )
+  40:Middlewares/Third_Party/FatFs/src/option/syscall.c **** {
+  30              		.loc 1 40 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 40 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0C46     		mov	r4, r1
+  41:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  42:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     int ret;
+  41              		.loc 1 42 5 is_stmt 1 view .LVU2
+  43:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _USE_MUTEX
+  44:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  45:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if (osCMSIS < 0x20000U)
+  46:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     osMutexDef(MTX);
+  47:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     *sobj = osMutexCreate(osMutex(MTX));
+  48:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+  49:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     *sobj = osMutexNew(NULL);
+  50:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+  51:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  52:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+  53:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  54:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if (osCMSIS < 0x20000U)
+  55:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     osSemaphoreDef(SEM);
+  56:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     *sobj = osSemaphoreCreate(osSemaphore(SEM), 1);
+  57:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+  58:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     *sobj = osSemaphoreNew(1, 1, NULL);
+  42              		.loc 1 58 5 view .LVU3
+  43              		.loc 1 58 13 is_stmt 0 view .LVU4
+  44 0004 0022     		movs	r2, #0
+  45 0006 0121     		movs	r1, #1
+  46              	.LVL1:
+  47              		.loc 1 58 13 view .LVU5
+  48 0008 0846     		mov	r0, r1
+  49              	.LVL2:
+  50              		.loc 1 58 13 view .LVU6
+  51 000a FFF7FEFF 		bl	osSemaphoreNew
+  52              	.LVL3:
+  53              		.loc 1 58 11 view .LVU7
+  54 000e 2060     		str	r0, [r4]
+  59:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+  60:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  61:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+ARM GAS  /tmp/ccelbTFG.s 			page 3
+
+
+  62:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     ret = (*sobj != NULL);
+  55              		.loc 1 62 5 is_stmt 1 view .LVU8
+  56              	.LVL4:
+  63:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  64:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     return ret;
+  57              		.loc 1 64 5 view .LVU9
+  65:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+  58              		.loc 1 65 1 is_stmt 0 view .LVU10
+  59 0010 0038     		subs	r0, r0, #0
+  60              	.LVL5:
+  61              		.loc 1 65 1 view .LVU11
+  62 0012 18BF     		it	ne
+  63 0014 0120     		movne	r0, #1
+  64 0016 10BD     		pop	{r4, pc}
+  65              		.loc 1 65 1 view .LVU12
+  66              		.cfi_endproc
+  67              	.LFE134:
+  69              		.section	.text.ff_del_syncobj,"ax",%progbits
+  70              		.align	1
+  71              		.global	ff_del_syncobj
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  75              		.fpu fpv4-sp-d16
+  77              	ff_del_syncobj:
+  78              	.LVL6:
+  79              	.LFB135:
+  66:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  67:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  68:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  69:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  70:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* Delete a Synchronization Object                                        */
+  71:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  72:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* This function is called in f_mount() function to delete a synchronization
+  73:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /  object that created with ff_cre_syncobj() function. When a 0 is returned,
+  74:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /  the f_mount() function fails with FR_INT_ERR.
+  75:Middlewares/Third_Party/FatFs/src/option/syscall.c **** */
+  76:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  77:Middlewares/Third_Party/FatFs/src/option/syscall.c **** int ff_del_syncobj (	/* 1:Function succeeded, 0:Could not delete due to any error */
+  78:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 	_SYNC_t sobj		/* Sync object tied to the logical drive to be deleted */
+  79:Middlewares/Third_Party/FatFs/src/option/syscall.c **** )
+  80:Middlewares/Third_Party/FatFs/src/option/syscall.c **** {
+  80              		.loc 1 80 1 is_stmt 1 view -0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84              		.loc 1 80 1 is_stmt 0 view .LVU14
+  85 0000 08B5     		push	{r3, lr}
+  86              	.LCFI1:
+  87              		.cfi_def_cfa_offset 8
+  88              		.cfi_offset 3, -8
+  89              		.cfi_offset 14, -4
+  81:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _USE_MUTEX
+  82:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     osMutexDelete (sobj);
+  83:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+  84:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     osSemaphoreDelete (sobj);
+  90              		.loc 1 84 5 is_stmt 1 view .LVU15
+ARM GAS  /tmp/ccelbTFG.s 			page 4
+
+
+  91 0002 FFF7FEFF 		bl	osSemaphoreDelete
+  92              	.LVL7:
+  85:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+  86:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     return 1;
+  93              		.loc 1 86 5 view .LVU16
+  87:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+  94              		.loc 1 87 1 is_stmt 0 view .LVU17
+  95 0006 0120     		movs	r0, #1
+  96 0008 08BD     		pop	{r3, pc}
+  97              		.cfi_endproc
+  98              	.LFE135:
+ 100              		.section	.text.ff_req_grant,"ax",%progbits
+ 101              		.align	1
+ 102              		.global	ff_req_grant
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.fpu fpv4-sp-d16
+ 108              	ff_req_grant:
+ 109              	.LVL8:
+ 110              	.LFB136:
+  88:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  89:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  90:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  91:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  92:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* Request Grant to Access the Volume                                     */
+  93:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+  94:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* This function is called on entering file functions to lock the volume.
+  95:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /  When a 0 is returned, the file function fails with FR_TIMEOUT.
+  96:Middlewares/Third_Party/FatFs/src/option/syscall.c **** */
+  97:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+  98:Middlewares/Third_Party/FatFs/src/option/syscall.c **** int ff_req_grant (	/* 1:Got a grant to access the volume, 0:Could not get a grant */
+  99:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 	_SYNC_t sobj	/* Sync object to wait */
+ 100:Middlewares/Third_Party/FatFs/src/option/syscall.c **** )
+ 101:Middlewares/Third_Party/FatFs/src/option/syscall.c **** {
+ 111              		.loc 1 101 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		.loc 1 101 1 is_stmt 0 view .LVU19
+ 116 0000 08B5     		push	{r3, lr}
+ 117              	.LCFI2:
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 3, -8
+ 120              		.cfi_offset 14, -4
+ 102:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   int ret = 0;
+ 121              		.loc 1 102 3 is_stmt 1 view .LVU20
+ 122              	.LVL9:
+ 103:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if (osCMSIS < 0x20000U)
+ 104:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 105:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _USE_MUTEX
+ 106:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   if(osMutexWait(sobj, _FS_TIMEOUT) == osOK)
+ 107:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+ 108:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   if(osSemaphoreWait(sobj, _FS_TIMEOUT) == osOK)
+ 109:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+ 110:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 111:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+ARM GAS  /tmp/ccelbTFG.s 			page 5
+
+
+ 112:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 113:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _USE_MUTEX
+ 114:Middlewares/Third_Party/FatFs/src/option/syscall.c ****    if(osMutexAcquire(sobj, _FS_TIMEOUT) == osOK)
+ 115:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+ 116:Middlewares/Third_Party/FatFs/src/option/syscall.c ****    if(osSemaphoreAcquire(sobj, _FS_TIMEOUT) == osOK)
+ 123              		.loc 1 116 4 view .LVU21
+ 124              		.loc 1 116 7 is_stmt 0 view .LVU22
+ 125 0002 4FF47A71 		mov	r1, #1000
+ 126 0006 FFF7FEFF 		bl	osSemaphoreAcquire
+ 127              	.LVL10:
+ 128              		.loc 1 116 6 view .LVU23
+ 129 000a 08B1     		cbz	r0, .L7
+ 102:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   int ret = 0;
+ 130              		.loc 1 102 7 view .LVU24
+ 131 000c 0020     		movs	r0, #0
+ 132              	.LVL11:
+ 133              	.L5:
+ 117:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+ 118:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 119:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+ 120:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   {
+ 121:Middlewares/Third_Party/FatFs/src/option/syscall.c ****     ret = 1;
+ 122:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   }
+ 123:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 124:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   return ret;
+ 125:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+ 134              		.loc 1 125 1 view .LVU25
+ 135 000e 08BD     		pop	{r3, pc}
+ 136              	.LVL12:
+ 137              	.L7:
+ 121:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   }
+ 138              		.loc 1 121 9 view .LVU26
+ 139 0010 0120     		movs	r0, #1
+ 140              	.LVL13:
+ 124:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+ 141              		.loc 1 124 3 is_stmt 1 view .LVU27
+ 124:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+ 142              		.loc 1 124 10 is_stmt 0 view .LVU28
+ 143 0012 FCE7     		b	.L5
+ 144              		.cfi_endproc
+ 145              	.LFE136:
+ 147              		.section	.text.ff_rel_grant,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	ff_rel_grant
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.fpu fpv4-sp-d16
+ 155              	ff_rel_grant:
+ 156              	.LVL14:
+ 157              	.LFB137:
+ 126:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 127:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 128:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 129:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+ 130:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* Release Grant to Access the Volume                                     */
+ 131:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /*------------------------------------------------------------------------*/
+ARM GAS  /tmp/ccelbTFG.s 			page 6
+
+
+ 132:Middlewares/Third_Party/FatFs/src/option/syscall.c **** /* This function is called on leaving file functions to unlock the volume.
+ 133:Middlewares/Third_Party/FatFs/src/option/syscall.c **** */
+ 134:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 
+ 135:Middlewares/Third_Party/FatFs/src/option/syscall.c **** void ff_rel_grant (
+ 136:Middlewares/Third_Party/FatFs/src/option/syscall.c **** 	_SYNC_t sobj	/* Sync object to be signaled */
+ 137:Middlewares/Third_Party/FatFs/src/option/syscall.c **** )
+ 138:Middlewares/Third_Party/FatFs/src/option/syscall.c **** {
+ 158              		.loc 1 138 1 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		.loc 1 138 1 is_stmt 0 view .LVU30
+ 163 0000 08B5     		push	{r3, lr}
+ 164              	.LCFI3:
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 3, -8
+ 167              		.cfi_offset 14, -4
+ 139:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #if _USE_MUTEX
+ 140:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   osMutexRelease(sobj);
+ 141:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #else
+ 142:Middlewares/Third_Party/FatFs/src/option/syscall.c ****   osSemaphoreRelease(sobj);
+ 168              		.loc 1 142 3 is_stmt 1 view .LVU31
+ 169 0002 FFF7FEFF 		bl	osSemaphoreRelease
+ 170              	.LVL15:
+ 143:Middlewares/Third_Party/FatFs/src/option/syscall.c **** #endif
+ 144:Middlewares/Third_Party/FatFs/src/option/syscall.c **** }
+ 171              		.loc 1 144 1 is_stmt 0 view .LVU32
+ 172 0006 08BD     		pop	{r3, pc}
+ 173              		.cfi_endproc
+ 174              	.LFE137:
+ 176              		.text
+ 177              	.Letext0:
+ 178              		.file 2 "Middlewares/Third_Party/FatFs/src/option/../integer.h"
+ 179              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 180              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ 181              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 182              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 183              		.file 7 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ARM GAS  /tmp/ccelbTFG.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 syscall.c
+     /tmp/ccelbTFG.s:18     .text.ff_cre_syncobj:0000000000000000 $t
+     /tmp/ccelbTFG.s:26     .text.ff_cre_syncobj:0000000000000000 ff_cre_syncobj
+     /tmp/ccelbTFG.s:70     .text.ff_del_syncobj:0000000000000000 $t
+     /tmp/ccelbTFG.s:77     .text.ff_del_syncobj:0000000000000000 ff_del_syncobj
+     /tmp/ccelbTFG.s:101    .text.ff_req_grant:0000000000000000 $t
+     /tmp/ccelbTFG.s:108    .text.ff_req_grant:0000000000000000 ff_req_grant
+     /tmp/ccelbTFG.s:148    .text.ff_rel_grant:0000000000000000 $t
+     /tmp/ccelbTFG.s:155    .text.ff_rel_grant:0000000000000000 ff_rel_grant
+
+UNDEFINED SYMBOLS
+osSemaphoreNew
+osSemaphoreDelete
+osSemaphoreAcquire
+osSemaphoreRelease

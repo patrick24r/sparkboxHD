@@ -6,11 +6,11 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Core/Src/dac.c \
-../Core/Src/dma.c \
 ../Core/Src/fmc.c \
 ../Core/Src/freertos.c \
 ../Core/Src/gpio.c \
 ../Core/Src/main.c \
+../Core/Src/mdma.c \
 ../Core/Src/rng.c \
 ../Core/Src/sdmmc.c \
 ../Core/Src/spi.c \
@@ -24,17 +24,18 @@ C_SRCS += \
 ../Core/Src/usart.c 
 
 CPP_SRCS += \
-../Core/Src/Sparkbox.cpp \
 ../Core/Src/SparkboxAudioManager.cpp \
+../Core/Src/SparkboxLevel.cpp \
+../Core/Src/sparkboxCallbacks.cpp \
 ../Core/Src/sparkboxMain.cpp 
 
 C_DEPS += \
 ./Core/Src/dac.d \
-./Core/Src/dma.d \
 ./Core/Src/fmc.d \
 ./Core/Src/freertos.d \
 ./Core/Src/gpio.d \
 ./Core/Src/main.d \
+./Core/Src/mdma.d \
 ./Core/Src/rng.d \
 ./Core/Src/sdmmc.d \
 ./Core/Src/spi.d \
@@ -48,16 +49,17 @@ C_DEPS += \
 ./Core/Src/usart.d 
 
 OBJS += \
-./Core/Src/Sparkbox.o \
 ./Core/Src/SparkboxAudioManager.o \
+./Core/Src/SparkboxLevel.o \
 ./Core/Src/dac.o \
-./Core/Src/dma.o \
 ./Core/Src/fmc.o \
 ./Core/Src/freertos.o \
 ./Core/Src/gpio.o \
 ./Core/Src/main.o \
+./Core/Src/mdma.o \
 ./Core/Src/rng.o \
 ./Core/Src/sdmmc.o \
+./Core/Src/sparkboxCallbacks.o \
 ./Core/Src/sparkboxMain.o \
 ./Core/Src/spi.o \
 ./Core/Src/stm32h7xx_hal_msp.o \
@@ -70,8 +72,9 @@ OBJS += \
 ./Core/Src/usart.o 
 
 CPP_DEPS += \
-./Core/Src/Sparkbox.d \
 ./Core/Src/SparkboxAudioManager.d \
+./Core/Src/SparkboxLevel.d \
+./Core/Src/sparkboxCallbacks.d \
 ./Core/Src/sparkboxMain.d 
 
 

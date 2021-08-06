@@ -21,8 +21,8 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "dac.h"
-#include "dma.h"
 #include "fatfs.h"
+#include "mdma.h"
 #include "rng.h"
 #include "sdmmc.h"
 #include "spi.h"
@@ -102,8 +102,8 @@ int main(void)
   MX_RNG_Init();
   MX_SDMMC1_SD_Init();
   MX_SPI1_Init();
-  MX_DMA_Init();
   MX_FATFS_Init();
+  MX_MDMA_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 

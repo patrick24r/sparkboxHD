@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    dma.h
-  * @brief   This file contains all the function prototypes for
-  *          the dma.c file
+  * File Name          : mdma.h
+  * Description        : This file contains all the function prototypes for
+  *                      the mdma.c file
   ******************************************************************************
   * @attention
   *
@@ -17,18 +17,18 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DMA_H__
-#define __DMA_H__
+#ifndef __mdma_H
+#define __mdma_H
 
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* DMA memory to memory transfer handles -------------------------------------*/
-extern DMA_HandleTypeDef hdma_memtomem_dma1_stream0;
+/* MDMA transfer handles -----------------------------------------------------*/
+extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
 
 /* USER CODE BEGIN Includes */
 
@@ -38,7 +38,7 @@ extern DMA_HandleTypeDef hdma_memtomem_dma1_stream0;
 
 /* USER CODE END Private defines */
 
-void MX_DMA_Init(void);
+void MX_MDMA_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -48,6 +48,10 @@ void MX_DMA_Init(void);
 }
 #endif
 
-#endif /* __DMA_H__ */
+#endif /* __mdma_H */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

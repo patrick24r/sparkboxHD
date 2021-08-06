@@ -1,8 +1,6 @@
-#include "Sparkbox.h"
+#include "SparkboxLevel.h"
 
 
-Sparkbox spk;
-
-
+SparkboxLevel* spark;
 
 

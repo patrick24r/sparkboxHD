@@ -6712,7 +6712,6 @@ static void TIM_DMATriggerCplt(DMA_HandleTypeDef *hdma)
 #if (USE_HAL_TIM_REGISTER_CALLBACKS == 1)
   htim->TriggerCallback(htim);
 #else
-  HAL_TIM_TriggerCallback(htim);
 #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
 }
 

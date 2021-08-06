@@ -1,10 +1,9 @@
 new:173:33:void* operator new(std::size_t, void*)	16	static
 stl_deque.h:93:3:constexpr std::size_t std::__deque_buf_size(std::size_t)	16	static
+char_traits.h:315:7:static int std::char_traits<char>::compare(const char_type*, const char_type*, std::size_t)	24	static
 gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-SparkboxAudioManager.h:78:3:SparkboxAudioManager::AudioStreamTracker::AudioStreamTracker(uint32_t)	16	static
-SparkboxAudioManager.h:82:3:SparkboxAudioManager::AudioStreamTracker::~AudioStreamTracker()	16	static
-SparkboxAudioManager.cpp:4:6:void cb_dmaComplete()	4	static
-SparkboxAudioManager.cpp:8:6:void cb_audioTimerIT()	4	static
+SparkboxAudioManager.h:85:3:SparkboxAudioManager::AudioStreamTracker::AudioStreamTracker(uint32_t)	16	static
+SparkboxAudioManager.h:89:3:SparkboxAudioManager::AudioStreamTracker::~AudioStreamTracker()	16	static
 stl_vector.h:125:14:std::_Vector_base<SparkboxAudioManager::AudioStreamTracker, std::allocator<SparkboxAudioManager::AudioStreamTracker> >::_Vector_impl::~_Vector_impl()	16	static
 stl_vector.h:285:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 stl_vector.h:484:7:std::vector<_Tp, _Alloc>::vector() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
@@ -12,12 +11,28 @@ stl_vector.h:125:14:std::_Vector_base<SparkboxAudioManager::ImportedAudioFile, s
 stl_vector.h:285:7:std::_Vector_base<_Tp, _Alloc>::_Vector_base() [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 stl_vector.h:484:7:std::vector<_Tp, _Alloc>::vector() [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 stl_queue.h:96:11:std::queue<SparkboxAudioManager::AudioDmaRequest>::~queue()	16	static
-SparkboxAudioManager.cpp:13:1:SparkboxAudioManager::SparkboxAudioManager()	56	static
-SparkboxAudioManager.cpp:31:1:SparkboxAudioManager::~SparkboxAudioManager()	16	static
-SparkboxAudioManager.cpp:38:6:void SparkboxAudioManager::callback_DMATransferComplete()	40	static
-SparkboxAudioManager.h:61:8:SparkboxAudioManager::ImportedAudioFile::ImportedAudioFile(const SparkboxAudioManager::ImportedAudioFile&)	16	static
-SparkboxAudioManager.h:61:8:SparkboxAudioManager::ImportedAudioFile::~ImportedAudioFile()	16	static
-SparkboxAudioManager.cpp:52:6:void SparkboxAudioManager::callback_AudioTimerIT()	144	static
+SparkboxAudioManager.cpp:3:1:SparkboxAudioManager::SparkboxAudioManager()	64	static
+SparkboxAudioManager.cpp:25:1:SparkboxAudioManager::~SparkboxAudioManager()	16	static
+SparkboxAudioManager.cpp:32:9:int32_t SparkboxAudioManager::importAllAudioFiles(std::string)	16	static
+SparkboxAudioManager.cpp:37:9:int32_t SparkboxAudioManager::importAudioFile(std::string)	16	static
+SparkboxAudioManager.cpp:42:9:int32_t SparkboxAudioManager::setAudioStream(uint8_t, std::string)	40	static
+SparkboxAudioManager.cpp:54:9:int32_t SparkboxAudioManager::setAudioStream(uint8_t, uint8_t)	16	static
+SparkboxAudioManager.cpp:64:9:int32_t SparkboxAudioManager::resetAudioStream(uint8_t)	16	static
+SparkboxAudioManager.cpp:89:9:int32_t SparkboxAudioManager::playAudioStream(uint8_t)	16	static
+SparkboxAudioManager.cpp:94:9:int32_t SparkboxAudioManager::playAudioStream(uint8_t, int32_t)	24	static
+SparkboxAudioManager.cpp:107:9:int32_t SparkboxAudioManager::stopAudioStream(uint8_t)	16	static
+SparkboxAudioManager.cpp:117:9:int32_t SparkboxAudioManager::resumeAudioStream(uint8_t)	16	static
+SparkboxAudioManager.cpp:127:9:int32_t SparkboxAudioManager::rewindAudioStream(uint8_t)	56	static
+SparkboxAudioManager.cpp:142:9:int32_t SparkboxAudioManager::rewindAudioStream(uint8_t, float)	24	static
+SparkboxAudioManager.cpp:147:9:int32_t SparkboxAudioManager::rewindAudioStream(uint8_t, int32_t)	24	static
+SparkboxAudioManager.cpp:157:9:int32_t SparkboxAudioManager::skipAudioStream(uint8_t, float)	24	static
+SparkboxAudioManager.cpp:162:9:int32_t SparkboxAudioManager::skipAudioStream(uint8_t, int32_t)	24	static
+SparkboxAudioManager.cpp:174:6:void SparkboxAudioManager::callback_DMATransferComplete()	32	static
+SparkboxAudioManager.h:68:8:SparkboxAudioManager::ImportedAudioFile::ImportedAudioFile(const SparkboxAudioManager::ImportedAudioFile&)	16	static
+SparkboxAudioManager.h:68:8:SparkboxAudioManager::ImportedAudioFile::~ImportedAudioFile()	16	static
+SparkboxAudioManager.cpp:190:6:void SparkboxAudioManager::callback_AudioTimerIT()	96	static
+SparkboxAudioManager.cpp:248:6:void SparkboxAudioManager::threadfcn_AudioManager()	120	static
+SparkboxAudioManager.cpp:314:6:void SparkboxAudioManager::mixAudioSample(uint16_t&, uint16_t&)	104	static
 stl_vector.h:128:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl::_Vector_impl() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 allocator.h:153:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = SparkboxAudioManager::AudioStreamTracker]	16	static
 stl_vector.h:330:7:std::_Vector_base<_Tp, _Alloc>::~_Vector_base() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
@@ -29,6 +44,15 @@ stl_vector.h:675:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = SparkboxAudio
 stl_queue.h:160:2:std::queue<_Tp, _Sequence>::queue() [with _Seq = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >; _Requires = void; _Tp = SparkboxAudioManager::AudioDmaRequest; _Sequence = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >]	16	static
 stl_deque.h:1071:7:std::deque<_Tp, _Alloc>::~deque() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	48	static
 stl_vector.h:1200:7:void std::vector<_Tp, _Alloc>::push_back(std::vector<_Tp, _Alloc>::value_type&&) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
+stl_vector.h:808:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::begin() [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	24	static
+stl_vector.h:826:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::end() [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	24	static
+stl_iterator.h:907:5:bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	24	static
+stl_iterator.h:827:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>& __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator++() [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_iterator.h:823:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::pointer __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator->() const [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	16	static
+basic_string.h:6149:5:typename __gnu_cxx::__enable_if<std::__is_char<_Tp>::__value, bool>::__type std::operator==(const std::__cxx11::basic_string<_CharT>&, const std::__cxx11::basic_string<_CharT>&) [with _CharT = char]	24	static
+stl_iterator.h:989:5:typename __gnu_cxx::__normal_iterator<_Iterator, _Container>::difference_type __gnu_cxx::operator-(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	24	static
+stl_vector.h:1089:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::at(std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
+stl_vector.h:1089:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::at(std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 stl_queue.h:292:7:void std::queue<_Tp, _Sequence>::pop() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Sequence = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >]	16	static
 stl_queue.h:197:7:bool std::queue<_Tp, _Sequence>::empty() const [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Sequence = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >]	16	static
 stl_queue.h:210:7:std::queue<_Tp, _Sequence>::reference std::queue<_Tp, _Sequence>::front() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Sequence = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >]	16	static
@@ -37,7 +61,8 @@ stl_vector.h:826:7:std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::
 stl_iterator.h:907:5:bool __gnu_cxx::operator!=(const __gnu_cxx::__normal_iterator<_Iterator, _Container>&, const __gnu_cxx::__normal_iterator<_Iterator, _Container>&) [with _Iterator = SparkboxAudioManager::AudioStreamTracker*; _Container = std::vector<SparkboxAudioManager::AudioStreamTracker>]	24	static
 stl_iterator.h:827:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>& __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator++() [with _Iterator = SparkboxAudioManager::AudioStreamTracker*; _Container = std::vector<SparkboxAudioManager::AudioStreamTracker>]	16	static
 stl_iterator.h:819:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::reference __gnu_cxx::__normal_iterator<_Iterator, _Container>::operator*() const [with _Iterator = SparkboxAudioManager::AudioStreamTracker*; _Container = std::vector<SparkboxAudioManager::AudioStreamTracker>]	16	static
-stl_vector.h:1089:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::at(std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_vector.h:915:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_algobase.h:198:5:constexpr const _Tp& std::min(const _Tp&, const _Tp&) [with _Tp = long unsigned int]	16	static
 stl_queue.h:259:7:void std::queue<_Tp, _Sequence>::push(const value_type&) [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Sequence = std::deque<SparkboxAudioManager::AudioDmaRequest, std::allocator<SparkboxAudioManager::AudioDmaRequest> >]	16	static
 allocator.h:138:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = SparkboxAudioManager::AudioStreamTracker]	16	static
 stl_vector.h:94:2:std::_Vector_base<_Tp, _Alloc>::_Vector_impl_data::_Vector_impl_data() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
@@ -61,13 +86,17 @@ stl_deque.h:167:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::_Deque_iterator(const s
 stl_deque.h:2113:7:void std::deque<_Tp, _Alloc>::_M_destroy_data(std::deque<_Tp, _Alloc>::iterator, std::deque<_Tp, _Alloc>::iterator, const std::allocator<_Tp1>&) [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	56	static
 move.h:99:5:constexpr typename std::remove_reference<_Tp>::type&& std::move(_Tp&&) [with _Tp = SparkboxAudioManager::AudioStreamTracker&]	16	static
 vector.tcc:109:7:) [with _Args = {SparkboxAudioManager::AudioStreamTracker}; _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	24	static
+stl_iterator.h:806:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::__normal_iterator(const _Iterator&) [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_iterator.h:871:7:const _Iterator& __gnu_cxx::__normal_iterator<_Iterator, _Container>::base() const [with _Iterator = SparkboxAudioManager::ImportedAudioFile*; _Container = std::vector<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_vector.h:1067:7:void std::vector<_Tp, _Alloc>::_M_range_check(std::vector<_Tp, _Alloc>::size_type) const [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
+stl_vector.h:1040:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
+stl_vector.h:1067:7:void std::vector<_Tp, _Alloc>::_M_range_check(std::vector<_Tp, _Alloc>::size_type) const [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
+stl_vector.h:1040:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 stl_deque.h:1605:7:void std::deque<_Tp, _Alloc>::pop_front() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	16	static
 stl_deque.h:1384:7:bool std::deque<_Tp, _Alloc>::empty() const [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	16	static
 stl_deque.h:1478:7:std::deque<_Tp, _Alloc>::reference std::deque<_Tp, _Alloc>::front() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	32	static
 stl_iterator.h:806:7:__gnu_cxx::__normal_iterator<_Iterator, _Container>::__normal_iterator(const _Iterator&) [with _Iterator = SparkboxAudioManager::AudioStreamTracker*; _Container = std::vector<SparkboxAudioManager::AudioStreamTracker>]	16	static
 stl_iterator.h:871:7:const _Iterator& __gnu_cxx::__normal_iterator<_Iterator, _Container>::base() const [with _Iterator = SparkboxAudioManager::AudioStreamTracker*; _Container = std::vector<SparkboxAudioManager::AudioStreamTracker>]	16	static
-stl_vector.h:1067:7:void std::vector<_Tp, _Alloc>::_M_range_check(std::vector<_Tp, _Alloc>::size_type) const [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
-stl_vector.h:1040:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::operator[](std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 stl_deque.h:1569:7:void std::deque<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	16	static
 new_allocator.h:80:7:__gnu_cxx::new_allocator<_Tp>::new_allocator() [with _Tp = SparkboxAudioManager::AudioStreamTracker]	16	static
 alloc_traits.h:469:7:static void std::allocator_traits<std::allocator<_Tp1> >::deallocate(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, std::allocator_traits<std::allocator<_Tp1> >::pointer, std::allocator_traits<std::allocator<_Tp1> >::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker]	24	static
@@ -84,11 +113,11 @@ alloc_traits.h:482:2:) [with _Up = SparkboxAudioManager::AudioStreamTracker; _Ar
 stl_vector.h:441:7:static constexpr bool std::vector<_Tp, _Alloc>::_S_use_relocate() [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 stl_vector.h:428:7:static constexpr bool std::vector<_Tp, _Alloc>::_S_nothrow_relocate(std::true_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 vector.tcc:426:7:) [with _Args = {SparkboxAudioManager::AudioStreamTracker}; _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	64	static
+stl_vector.h:915:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 alloc_traits.h:495:2:static void std::allocator_traits<std::allocator<_Tp1> >::destroy(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, _Up*) [with _Up = SparkboxAudioManager::AudioDmaRequest; _Tp = SparkboxAudioManager::AudioDmaRequest]	16	static
 deque.tcc:571:10:void std::deque<_Tp, _Alloc>::_M_pop_front_aux() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	16	static
 stl_deque.h:286:5:bool std::operator==(const std::_Deque_iterator<_Tp, _Ref, _Ptr>&, const std::_Deque_iterator<_Tp, _Ref, _Ptr>&) [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Ref = SparkboxAudioManager::AudioDmaRequest&; _Ptr = SparkboxAudioManager::AudioDmaRequest*]	16	static
 stl_deque.h:179:7:std::_Deque_iterator<_Tp, _Ref, _Ptr>::reference std::_Deque_iterator<_Tp, _Ref, _Ptr>::operator*() const [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Ref = SparkboxAudioManager::AudioDmaRequest&; _Ptr = SparkboxAudioManager::AudioDmaRequest*]	16	static
-stl_vector.h:915:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
 alloc_traits.h:482:2:) [with _Up = SparkboxAudioManager::AudioDmaRequest; _Args = {const SparkboxAudioManager::AudioDmaRequest&}; _Tp = SparkboxAudioManager::AudioDmaRequest]	24	static
 deque.tcc:479:7:) [with _Args = {const SparkboxAudioManager::AudioDmaRequest&}; _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	24	static
 new_allocator.h:119:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker]	24	static
@@ -132,7 +161,6 @@ allocator.h:151:2:std::allocator< <template-parameter-1-1> >::allocator(const st
 new_allocator.h:89:7:__gnu_cxx::new_allocator<_Tp>::~new_allocator() [with _Tp = SparkboxAudioManager::AudioDmaRequest*]	16	static
 new_allocator.h:119:7:void __gnu_cxx::new_allocator<_Tp>::deallocate(__gnu_cxx::new_allocator<_Tp>::pointer, __gnu_cxx::new_allocator<_Tp>::size_type) [with _Tp = SparkboxAudioManager::AudioDmaRequest*]	24	static
 stl_vector.h:920:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::max_size() const [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
-stl_vector.h:915:7:std::vector<_Tp, _Alloc>::size_type std::vector<_Tp, _Alloc>::size() const [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
 alloc_traits.h:443:7:static _Tp* std::allocator_traits<std::allocator<_Tp1> >::allocate(std::allocator_traits<std::allocator<_Tp1> >::allocator_type&, std::allocator_traits<std::allocator<_Tp1> >::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker]	16	static
 stl_vector.h:450:7:static std::vector<_Tp, _Alloc>::pointer std::vector<_Tp, _Alloc>::_S_do_relocate(std::vector<_Tp, _Alloc>::pointer, std::vector<_Tp, _Alloc>::pointer, std::vector<_Tp, _Alloc>::pointer, std::vector<_Tp, _Alloc>::_Tp_alloc_type&, std::true_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	24	static
 stl_iterator.h:1242:5:_ReturnType std::__make_move_if_noexcept_iterator(_Tp*) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _ReturnType = std::move_iterator<SparkboxAudioManager::AudioStreamTracker*>]	24	static

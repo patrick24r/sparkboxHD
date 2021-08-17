@@ -39,3 +39,4 @@
 */simulation/*
 *.data
 */build/*
+*/Debug/*

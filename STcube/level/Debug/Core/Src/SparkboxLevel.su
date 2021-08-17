@@ -1,2 +1,0 @@
-gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
-SparkboxLevel.cpp:3:1:SparkboxLevel::SparkboxLevel(std::string)	16	static

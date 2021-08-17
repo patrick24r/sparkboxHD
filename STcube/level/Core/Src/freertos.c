@@ -26,7 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "fatfs.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,6 +56,13 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for sdCardTask */
+osThreadId_t sdCardTaskHandle;
+const osThreadAttr_t sdCardTask_attributes = {
+  .name = "sdCardTask",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -62,6 +70,7 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
+void sdCardTaskFcn(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -95,6 +104,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of sdCardTask */
+  sdCardTaskHandle = osThreadNew(sdCardTaskFcn, NULL, &sdCardTask_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -115,12 +127,51 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+	printf("Hello world\r\n");
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_sdCardTaskFcn */
+/**
+* @brief Function implementing the sdCardTask thread.
+* @param argument: Not used
+* @retval None
+*/
+uint32_t bytesWritten, bytesRead;
+uint8_t wtext[] = "Maybe this will work";
+uint8_t rtext[100];
+/* USER CODE END Header_sdCardTaskFcn */
+void sdCardTaskFcn(void *argument)
+{
+  /* USER CODE BEGIN sdCardTaskFcn */
+	f_mount(&SDFatFS, (TCHAR const*)SDPath, 0);
+
+	retSD = f_open(&SDFile, "textFile.txt", FA_CREATE_ALWAYS | FA_WRITE);
+	if (retSD != FR_OK)
+	{
+		while (retSD-- > 0)
+		{
+			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+			osDelay(300);
+			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+			osDelay(300);
+		}
+	}
+
+
+	f_close(&SDFile);
+
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END sdCardTaskFcn */
 }
 
 /* Private application code --------------------------------------------------*/

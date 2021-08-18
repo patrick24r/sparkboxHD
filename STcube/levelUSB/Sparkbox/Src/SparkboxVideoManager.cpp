@@ -1,4 +1,9 @@
 #include "SparkboxVideoManager.h"
+void videoThreadWrapper(void* arg)
+{
+	SparkboxVideoManager::threadfcn_VideoManager(arg);
+}
+
 SparkboxVideoManager::SparkboxVideoManager(void)
 {
 	// Initialize relevant peripherals
@@ -9,6 +14,10 @@ SparkboxVideoManager::SparkboxVideoManager(void)
 
 	// Allocate internal memory for video data
 	gpuDataModel = new GpuModel_TypeDef;
+	if (gpuDataModel == NULL) return;
+
+	// Start the main audio thread
+	threadHandle = osThreadNew(videoThreadWrapper, (void*)this, &threadTask_attributes);
 }
 
 int32_t SparkboxVideoManager::importAllSpriteLayers(string directoryPath)
@@ -29,6 +38,7 @@ int32_t SparkboxVideoManager::importAllSpriteLayers(string directoryPath)
 	if (res != FR_OK) return res;
 
 	while (res == FR_OK) {
+		res = f_readdir(&dir, &fno);
 		// On error or end of directory, break
 		if (res != FR_OK || fno.fname[0] == 0) break;
 		// on subdirectory, hidden file, or system file, continue
@@ -38,10 +48,7 @@ int32_t SparkboxVideoManager::importAllSpriteLayers(string directoryPath)
 		filePath.assign(fno.fname);
 		if (filePath.size() < 5) continue;
 		fileExt = filePath.substr(filePath.length() - 4, 4);
-		for (auto& ch : fileExt) {
-			ch = tolower(ch);
-		}
-		if (fileExt != ".spr") continue;
+		if (fileExt != ".spr" && fileExt != ".SPR") continue;
 
 		// Add the sprite file
 		addFileResult = importSpriteLayer(filePath);
@@ -61,6 +68,7 @@ int32_t SparkboxVideoManager::importSpriteLayer(string filePath)
 
 void SparkboxVideoManager::resetActiveLayers() 
 {
+	// TODO: lock active layers from edits before clearing them
 	memset(gpuDataModel->activeLayers, 0, sizeof(ActiveLayers_TypeDef) * MAX_ACTIVE_LAYERS);
 }
 
@@ -132,4 +140,26 @@ void SparkboxVideoManager::setTextScale(uint8_t activeLayer, uint8_t newTextScal
 uint16_t SparkboxVideoManager::getPaletteColor(uint8_t layer, uint8_t paletteIndex)
 {
 	return gpuDataModel->layersPalette[layer].colors[paletteIndex];
+}
+
+
+void SparkboxVideoManager::threadfcn_VideoManager(void* arg)
+{
+	SparkboxVideoManager* vid = (SparkboxVideoManager*)arg;
+
+	// 
+	while (1) {
+
+		// Wait until we can render a frame
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_SET);
+		osDelay(500);
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
+		osDelay(500);
+		// Send all of the data to the GPU
+		
+		// Tell the GPU to begin rendering
+
+		// Wait for render to finish
+
+	}
 }

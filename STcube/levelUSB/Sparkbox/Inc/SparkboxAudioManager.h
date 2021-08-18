@@ -9,8 +9,10 @@ extern "C" {
 #include "fmc.h"
 #include "tim.h"
 #include "fatfs.h"
-}
 
+void audioThreadWrapper(void* arg);
+}
+#include "sparkboxCallbacks.h"
 #include <vector>
 #include <queue>
 #include <string>
@@ -23,13 +25,14 @@ public:
 	const uint32_t MaxAudioStreams = 4;
 	const uint32_t MaxAudioFiles = 256;
 	const uint32_t MaxSampleFrequency = 48000;
+	
 
 	SparkboxAudioManager();
 	~SparkboxAudioManager();
 
 	// Import audio
-	int32_t importAllAudioFiles(string directoryPath, vector<uint8_t>& audioFileIDs);
-	int32_t importAudioFile(string filePath, uint8_t& audioFileID);
+	int32_t importAllAudioFiles(string directoryPath);
+	int32_t importAudioFile(string filePath);
 
 	int32_t setAudioStream(uint8_t audioStream, string audioFilePath);
 	int32_t setAudioStream(uint8_t audioStream, uint8_t audioFileID);
@@ -122,10 +125,19 @@ private:
 	const uint32_t ExternalBufferBytes = 0x10000000;
 	const uint32_t InternalSingleBufferBytes = 1024;
 
+	// OS related variables
 	osMutexId_t spkAudioTrackMutexHandle;
 	const osMutexAttr_t spkAudioTrackMutex_attributes = {
 		.name = "spkAudioTrackMutex"
 	};
+
+	osThreadId_t threadHandle;
+	const osThreadAttr_t threadTask_attributes = {
+		.name = "audioManagerTask",
+		.stack_size = 512 * 4,
+		.priority = (osPriority_t)osPriorityHigh,
+	};
+
 	uint32_t totalAudioBytesImported = 0;
 	uint8_t dmaTransferActive = 0;
 	vector<AudioStreamTracker> audioStreamTrackers;

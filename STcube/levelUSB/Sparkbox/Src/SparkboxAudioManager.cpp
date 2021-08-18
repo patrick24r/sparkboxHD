@@ -1,5 +1,17 @@
 #include "SparkboxAudioManager.h"
 
+#define WAV_HEADER_SIZE (44UL)
+#define WAV_HEADER_NUMCHANNELS_POS (22UL)
+#define WAV_HEADER_SAMPLERATE_POS (24UL)
+#define WAV_HEADER_BLOCKALIGN_POS (32UL)
+#define WAV_HEADER_BITSPERSAMPLE_POS (34UL)
+#define WAVE_HEADER_DATASIZE_POS (40UL)
+
+void audioThreadWrapper(void* arg)
+{
+	SparkboxAudioManager::threadfcn_AudioManager(arg);
+}
+
 SparkboxAudioManager::SparkboxAudioManager(void)
 {
 	// Initialize the internal audio buffers and trackers
@@ -7,36 +19,41 @@ SparkboxAudioManager::SparkboxAudioManager(void)
 		audioStreamTrackers.push_back(AudioStreamTracker(InternalSingleBufferBytes));
 	}
 
-	// Initialize relevant peripherals
-	MX_FMC_Init();
-	MX_DAC1_Init();
-	MX_MDMA_Init();
-	MX_TIM7_Init();
-	hsdram1.hmdma = &hmdma_mdma_channel40_sw_0; // Link the mdma to the sdram
+	// Link the mdma to the sdram
+	hsdram1.hmdma = &hmdma_mdma_channel40_sw_0; 
 
 	// Create the mutex
 	spkAudioTrackMutexHandle = osMutexNew(&spkAudioTrackMutex_attributes);
 
+	
+	HAL_TIM_RegisterCallback(&htim7, HAL_TIM_PERIOD_ELAPSED_CB_ID, sparkboxCallback_audioIT);
+	HAL_MDMA_RegisterCallback(&hmdma_mdma_channel40_sw_0, HAL_MDMA_XFER_CPLT_CB_ID, sparkboxCallback_audioDMACplt);
+	
 	// Start the audio output by repeatedly sending whatever is in the activeSamples variable
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
 	HAL_DAC_Start(&hdac1, DAC_CHANNEL_2);
+
+	// Start the main audio thread and the audio sample timer
+	threadHandle = osThreadNew(audioThreadWrapper, (void*)this, &threadTask_attributes);
+	HAL_TIM_Base_Start_IT(&htim7);
 }
 
 SparkboxAudioManager::~SparkboxAudioManager()
 {
+	HAL_TIM_Base_Stop_IT(&htim7);
+	osThreadTerminate(threadHandle);
 	HAL_DAC_Stop(&hdac1, DAC_CHANNEL_1);
 	HAL_DAC_Stop(&hdac1, DAC_CHANNEL_2);
+	osMutexDelete(spkAudioTrackMutexHandle);
 }
 
 
-int32_t SparkboxAudioManager::importAllAudioFiles(string directoryPath, vector<uint8_t>& audioFileIDs)
+int32_t SparkboxAudioManager::importAllAudioFiles(string directoryPath)
 {
-	audioFileIDs.clear();
 	DIR dir;
 	FRESULT res;
 	FILINFO fno;
 	int32_t addFileResult = 0;
-	uint8_t audioFileID;
 	string filePath, fileExt;
 
 	// Check if the folder exists
@@ -48,8 +65,8 @@ int32_t SparkboxAudioManager::importAllAudioFiles(string directoryPath, vector<u
 	res = f_opendir(&dir, directoryPath.c_str());
 	if (res != FR_OK) return res;
 
-	while (res == FR_OK)
-	{
+	while (res == FR_OK) {
+		res = f_readdir(&dir, &fno);
 		// On error or end of directory, break
 		if (res != FR_OK || fno.fname[0] == 0) break;
 		// on subdirectory, hidden file, or system file, continue
@@ -57,37 +74,109 @@ int32_t SparkboxAudioManager::importAllAudioFiles(string directoryPath, vector<u
 
 		// Go to next file if the file is not a wav or mp3
 		filePath.assign(fno.fname);
+		if (filePath.size() < 5) continue;
 		fileExt = filePath.substr(filePath.length() - 4, 4);
-		for (auto& ch : fileExt) {
-			ch = tolower(ch);
-		}
-		if (fileExt != ".wav" && fileExt != ".mp3") continue;
+		if (fileExt != ".wav" && fileExt != ".mp3" &&
+			fileExt != ".WAV" && fileExt != ".MP3") continue;
 
 		// Add the wav or mp3 file 
-		addFileResult = importAudioFile(filePath, audioFileID);
+		addFileResult = importAudioFile(filePath);
 
 		// Stop on any error
 		if (addFileResult) return addFileResult;
-
-		audioFileIDs.push_back(audioFileID);
 	}
-
-	
 	return 0;
 }
 
 // Give the user both the return error code and the id number for the file
-int32_t SparkboxAudioManager::importAudioFile(string filePath, uint8_t& audioFileID)
+int32_t SparkboxAudioManager::importAudioFile(string filePath)
 {
-	// acquire mutex for audioStreamTrackers
-	if (osMutexAcquire(spkAudioTrackMutexHandle, osWaitForever) != osOK) return -1;
+	ImportedAudioFile fileImport;
+	FIL fileRead;
+	FILINFO fno;
+	FRESULT fRes;
+	uint8_t tempBuffer[_MAX_SS];
+	UINT bytesRead;
+	uint32_t bytesReadOffset = 0;
 
-	// Check that the file exists
+	// Check that this file hasn't already been imported
+	for (auto& file : importedAudioFiles) {
+		if (file.importedFilePath == filePath) return -1;
+	}
+	// Check that the file exists and is supported
+	fRes = f_stat(filePath.c_str(), &fno);
+	if (fRes != FR_OK) return fRes;
+	fRes = f_open(&fileRead, filePath.c_str(), FA_READ);
+	if (fRes != FR_OK) return fRes;
+	// Check that the file can fit in memory (after decompression)
+	if (f_size(&fileRead) < WAV_HEADER_SIZE ||
+		f_size(&fileRead) > (ExternalBufferBytes - totalAudioBytesImported)) {
+		f_close(&fileRead);
+		return -1;
+	}
+	// Read the file header for initial WAV data
+	fRes = f_read(&fileRead, tempBuffer, WAV_HEADER_SIZE, &bytesRead);
+	if (fRes != FR_OK || bytesRead != WAV_HEADER_SIZE) {
+		f_close(&fileRead);
+		return -1;
+	}
 
-	// Check that the file can fit in memory
+	// Check for wave file IDs to verify this is a WAV file
+	if (tempBuffer[0] != 'R' || tempBuffer[1] != 'I' || tempBuffer[2] != 'F' || tempBuffer[3] != 'F' ||
+		tempBuffer[8] != 'W' || tempBuffer[9] != 'A' || tempBuffer[10] != 'V' || tempBuffer[11] != 'E' ||
+		tempBuffer[12] != 'f' || tempBuffer[13] != 'm' || tempBuffer[14] != 't' || tempBuffer[15] != 0x20 ||
+		tempBuffer[36] != 'd' || tempBuffer[37] != 'a' || tempBuffer[38] != 't' || tempBuffer[39] != 'a') {
+		f_close(&fileRead);
+		return -1;
+	}
 
-	// release mutex for audioStreamTrackers
-	osMutexRelease(spkAudioTrackMutexHandle);
+	// Populate the ImportedAudioFile fields
+	fileImport.numberOfChannels = tempBuffer[WAV_HEADER_NUMCHANNELS_POS];
+	fileImport.sampleRate = *(uint32_t*)(tempBuffer + WAV_HEADER_SAMPLERATE_POS);
+	fileImport.bytesPerSample = *(uint16_t*)(tempBuffer + WAV_HEADER_BITSPERSAMPLE_POS) >> 3;
+	fileImport.blockAlign = *(uint16_t*)(tempBuffer + WAV_HEADER_BLOCKALIGN_POS);
+	fileImport.dataSizeBytes = *(uint32_t*)(tempBuffer + WAVE_HEADER_DATASIZE_POS);
+
+	// Sanity check all fields we read to verify file integrity
+	if (fileImport.blockAlign != fileImport.bytesPerSample * fileImport.numberOfChannels ||
+		(fileImport.numberOfChannels != 1 && fileImport.numberOfChannels != 2) ||
+		fileImport.blockAlign == 0 || fileImport.bytesPerSample == 0 || 
+		fileImport.sampleRate == 0 || fileImport.dataSizeBytes == 0) {
+		f_close(&fileRead);
+		return -1;
+	}
+
+	fileImport.numberOfSamples = fileImport.dataSizeBytes / fileImport.blockAlign;
+	fileImport.importedFilePath = filePath;
+	if (importedAudioFiles.empty()) {
+		fileImport.externalDataAddress = (uint8_t*)ExternalBufferAddress;
+	}
+	else {
+		fileImport.externalDataAddress = importedAudioFiles.back().externalDataAddress +
+			importedAudioFiles.back().dataSizeBytes;
+	}
+	fileImport.dataSizeBytes = fileImport.numberOfSamples * fileImport.blockAlign;
+
+	// Read the samples into memory
+	// TODO: Converty PCM (signed) to unsigned for the DAC
+	do {
+		fRes = f_read(&fileRead, tempBuffer, _MAX_SS, &bytesRead);
+		if (fRes != FR_OK) {
+			f_close(&fileRead);
+			return -1;
+		}
+
+
+		memcpy(fileImport.externalDataAddress + bytesReadOffset, tempBuffer, bytesRead);
+		bytesReadOffset += bytesRead;
+	} while (bytesRead == _MAX_SS);
+	
+	f_close(&fileRead);
+	if (fRes != FR_OK || fileImport.dataSizeBytes != bytesRead) return -1;
+
+	// After adding it successfully, add to the list of imported files
+	importedAudioFiles.push_back(fileImport);
+
 	return 0;
 }
 
@@ -248,9 +337,13 @@ void SparkboxAudioManager::callback_DMATransferComplete(void)
 // Timer interrupt callback
 void SparkboxAudioManager::callback_AudioTimerIT(void)
 {
+	HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+	return;
+
+	// TODO: add a mutex to prevent reentrancy
 	uint16_t newSampleLeft = 0, newSampleRight = 0;
 	for (AudioStreamTracker& it : audioStreamTrackers) {
-		if (it.audioFileIndex > (int16_t)importedAudioFiles.size() ||
+		if (it.audioFileIndex >= (int16_t)importedAudioFiles.size() ||
 			it.audioFileIndex < 0 || !it.playRequested) continue;
 		ImportedAudioFile fil = importedAudioFiles.at(it.audioFileIndex);
 		// Check if the audio streams are moving to the next sample
@@ -299,7 +392,7 @@ void SparkboxAudioManager::callback_AudioTimerIT(void)
 	HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_L, newSampleRight);
 }
 
-// Main thread function. Compatible with osThreadNew
+// Main thread function
 // For each audio stream
 // - Check for any required dma requests
 // - Check if the dma requests need to be "kicked off"
@@ -309,6 +402,14 @@ void SparkboxAudioManager::threadfcn_AudioManager(void* arg)
 	SparkboxAudioManager* aud = (SparkboxAudioManager*)arg;
 	AudioDmaRequest req;
 	uint32_t bytesOfBufferLeft, bytesOfFileLeft, bytesUntilActiveSample;
+
+	while(1) {
+		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+		osDelay(500);
+		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+		osDelay(500);
+	}
+
 	// Repeat forever
 	while (1) {
 		osDelay(1); // Wait a 1 ms between updates
@@ -317,7 +418,7 @@ void SparkboxAudioManager::threadfcn_AudioManager(void* arg)
 		if (osMutexAcquire(aud->spkAudioTrackMutexHandle, osWaitForever) != osOK) return;
 
 		for (AudioStreamTracker& it : aud->audioStreamTrackers) {
-			if (it.audioFileIndex > (int16_t)aud->importedAudioFiles.size() ||
+			if (it.audioFileIndex >= (int16_t)aud->importedAudioFiles.size() ||
 				it.audioFileIndex < 0 || !it.playRequested) continue;
 			ImportedAudioFile fil = aud->importedAudioFiles.at(it.audioFileIndex);
 			// Save the current active sample location - this can change in the timer interrupt
@@ -356,14 +457,14 @@ void SparkboxAudioManager::threadfcn_AudioManager(void* arg)
 					it.nextExternalSampleToRead = fil.externalDataAddress;
 				}
 			}
+		}
 
-			// Kick off a dma transfer if there are requests but none are active
-			if (!aud->dmaRequestQueue.empty() && !aud->dmaTransferActive) {
-				aud->dmaTransferActive = 1;
-				req = aud->dmaRequestQueue.front();
-				HAL_SDRAM_Read_DMA(&hsdram1, (uint32_t*)req.transferFromAddress,
-					(uint32_t*)req.transferToAddress, req.transferSizeBytes);
-			}
+		// Kick off a dma transfer if there are requests but none are active
+		if (!aud->dmaRequestQueue.empty() && !aud->dmaTransferActive) {
+			aud->dmaTransferActive = 1;
+			req = aud->dmaRequestQueue.front();
+			HAL_SDRAM_Read_DMA(&hsdram1, (uint32_t*)req.transferFromAddress,
+				(uint32_t*)req.transferToAddress, req.transferSizeBytes);
 		}
 
 		// Release mutex for audioStreamTrackerss

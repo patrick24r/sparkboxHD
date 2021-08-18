@@ -1,6 +1,8 @@
-#include "SparkboxLevel.h"
+#include "SparkboxMain.h"
 
+SparkboxLevel* spark = NULL;
 
-SparkboxLevel* spark;
-
-
+void runSparkbox()
+{
+	spark = new SparkboxLevel("baseFolderPath");
+}

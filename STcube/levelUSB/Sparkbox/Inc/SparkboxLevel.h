@@ -10,6 +10,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #include "SparkboxAudioManager.h"
+#include "SparkboxVideoManager.h"
 #include <string>
 
 using namespace std;
@@ -19,9 +20,7 @@ class SparkboxLevel
 public:
 	SparkboxLevel(string levelFolder);
 	SparkboxAudioManager* audioMgr;
-	vector<uint8_t> audioFileIDs;
-
-	static void audioThreadWrapper(void);
+	SparkboxVideoManager* videoMgr;
 
 private:
 	osThreadId_t audioManagerHandle;

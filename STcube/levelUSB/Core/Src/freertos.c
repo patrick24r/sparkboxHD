@@ -29,6 +29,7 @@
 #include "stdio.h"
 #include "fatfs.h"
 #include "usb_host.h"
+#include "sparkboxMain.h"
 extern volatile ApplicationTypeDef Appli_state;
 /* USER CODE END Includes */
 
@@ -121,8 +122,23 @@ void StartDefaultTask(void *argument)
   /* init code for USB_HOST */
   MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
+  while (Appli_state != APPLICATION_READY);
+  runSparkbox();
+  // testFatfs();
+  /* Infinite loop */
+  for(;;)
+  {
+    
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+void testFatfs()
+{
   UINT bw;
-  while (Appli_state != APPLICATION_READY) {}
+  while (Appli_state != APPLICATION_READY);
   HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_SET);
 	retUSBH = f_open(&USBHFile, "testFile.txt", FA_CREATE_ALWAYS | FA_WRITE);
   if (retUSBH == FR_OK) {
@@ -130,30 +146,13 @@ void StartDefaultTask(void *argument)
 
     retUSBH = f_write(&USBHFile, "Hello", 5, &bw);
     if (retUSBH == FR_OK) {
-    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
     }
     f_close(&USBHFile);
+
     while(1) osDelay(1);
   }
-  /* Infinite loop */
-  for(;;)
-  {
-	  while (retUSBH-- > 0)
-    {
-      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-      osDelay(300);
-      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-      osDelay(300);
-    }
-
-    osDelay(1);
-  }
-  /* USER CODE END StartDefaultTask */
 }
-
-/* Private application code --------------------------------------------------*/
-/* USER CODE BEGIN Application */
-
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

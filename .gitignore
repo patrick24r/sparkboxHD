@@ -30,13 +30,15 @@
 *.exe
 *.out
 *.app
+*.bin
+*.elf
 
 # Backup/Data Files
 *.bak
-*/db/*
-*/output_files/*
-*/incremental_db/*
-*/simulation/*
+**/db/**
+**/output_files/**
+**/incremental_db/**
+**/simulation/**
 *.data
-*/build/*
-*/Debug/*
+**/build/**
+**/Debug/**

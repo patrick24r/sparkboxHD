@@ -7,7 +7,10 @@ extern "C" {
 #include "mdma.h"
 #include "fmc.h"
 #include "fatfs.h"
+#include "main.h"
+void videoThreadWrapper(void* arg);
 }
+
 #include "SparkboxGpuDataModel.h"
 #include <string>
 #include <vector>
@@ -71,7 +74,17 @@ public:
 	// Main video thread function
 	static void threadfcn_VideoManager(void* arg);
 private:
-	void syncWithGpu();
+	osMutexId_t frameMutexHandle;
+	const osMutexAttr_t frameMutex_attributes = {
+		.name = "spkFrameRenderingMutex"
+	};
+
+	osThreadId_t threadHandle;
+	const osThreadAttr_t threadTask_attributes = {
+		.name = "videoManagerTask",
+		.stack_size = 512 * 4,
+		.priority = (osPriority_t)osPriorityNormal,
+	};
 
 	vector<string> allLayerNames;
 	uint32_t totalVideoBytesImported = 0;

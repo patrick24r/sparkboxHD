@@ -1,0 +1,3 @@
+[submodule "lib_shared/Middlewares/Third_Party/freertosnewlib"]
+	path = lib_shared/Middlewares/Third_Party/freertosnewlib
+	url = https://github.com/patrick24r/freertosnewlib.git

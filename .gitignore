@@ -32,6 +32,7 @@
 *.app
 *.bin
 *.elf
+*.map
 
 # Backup/Data Files
 *.bak

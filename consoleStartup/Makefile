@@ -13,6 +13,8 @@
 TARGETDIR = 
 TARGET = consoleStartup
 
+PROCESSOR = STM32H743xx
+
 #######################################
 # Defines
 #######################################
@@ -20,7 +22,7 @@ TARGET = consoleStartup
 PREFIX = arm-none-eabi
 CC = $(PREFIX)-gcc
 CPP = $(PREFIX)-g++
-AS = $(PREFIX)-gcc -x assembler-with-cpp
+AS = $(PREFIX)-as
 CP = $(PREFIX)-objcopy
 OD = $(PREFIX)-objdump
 SZ = $(PREFIX)-size
@@ -41,6 +43,7 @@ COMDIR := ../common
 
 # Find all source files
 SRC := $(shell find $(SRCDIR) $(COMDIR) -name [^.]*.c)
+SRC += $(shell find $(SRCDIR) $(COMDIR) -name [^.]*.s)
 SRC += $(shell find $(SRCDIR) $(COMDIR) -name [^.]*.cpp)
 SRCDIR := $(sort $(dir $(SRC)))
 
@@ -67,9 +70,7 @@ OBJ := $(OBJ:.s=.o)
 LDSCRIPT = STM32H743ZITx_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys 
-LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) -lc -lm -lnosys -Wl,-Map=$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = -specs=nano.specs -T$(LDSCRIPT) -lc -lm -lnosys -Wl,-Map=$(TARGET).map,--cref -Wl,--gc-sections
 
 #######################################
 # Compiler Flags
@@ -77,9 +78,9 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) -lc -lm -lnosys -Wl,-Map=$(TARG
 INCFLAGS := $(addprefix -I, $(INC))
 CFLAGS = $(OPT) $(INCFLAGS) -Wall -fdata-sections -ffunction-sections \
 	-mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard \
-	-DUSE_HAL_DRIVER -DSTM32H743xx -g -gdwarf-2
+	-DUSE_HAL_DRIVER -D$(PROCESSOR) -g -gdwarf-2
 
-CPPFLAGS = $(CFLAGS) -fno-exceptions
+CPPFLAGS = $(CFLAGS) -fexceptions
 
 #######################################
 # Targets
@@ -118,4 +119,4 @@ $(OBJDIR)/%.o: %.s
 # Clean
 #######################################
 clean:
-	rm -f $(OBJDIR) $(TARGET).elf $(TARGET).bin $(TARGET).hex $(TARGET).map $(OBJDIR)/*.o
+	rm -rf $(OBJDIR) $(TARGET).elf $(TARGET).bin $(TARGET).hex $(TARGET).map $(OBJDIR)/*.o

@@ -112,7 +112,7 @@ typedef struct
 } LayersMeta_TypeDef;
 
 typedef struct {
-	char fontNames[12]; /* null terminated character array */
+	char* fontNames[12]; /* null terminated character array */
 } FontsMeta_Typedef;
 
 typedef struct {

@@ -22,7 +22,7 @@ PROCESSOR = STM32H743xx
 PREFIX = arm-none-eabi
 CC = $(PREFIX)-gcc
 CPP = $(PREFIX)-g++
-AS = $(PREFIX)-as
+AS = $(PREFIX)-g++
 CP = $(PREFIX)-objcopy
 OD = $(PREFIX)-objdump
 SZ = $(PREFIX)-size
@@ -33,7 +33,7 @@ SZ = $(PREFIX)-size
 # O1, O2, O3 -> Speed optimizations
 # Os -> Size optimization
 # Og -> Optimize for debugging
-OPT = -O0
+OPT = -Os
 
 # Define directories
 SRCDIR := src
@@ -66,21 +66,24 @@ OBJ := $(OBJ:.s=.o)
 #######################################
 # LDFLAGS
 #######################################
+MCU = --specs=nano.specs -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 # link script
 LDSCRIPT = STM32H743ZITx_FLASH.ld
 
 # libraries
-LDFLAGS = -specs=nano.specs -T$(LDSCRIPT) -lc -lm -lnosys -Wl,-Map=$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map -Wl,--gc-sections -static -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 
 #######################################
 # Compiler Flags
 #######################################
-INCFLAGS := $(addprefix -I, $(INC))
-CFLAGS = $(OPT) $(INCFLAGS) -Wall -fdata-sections -ffunction-sections \
-	-mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard \
-	-DUSE_HAL_DRIVER -D$(PROCESSOR) -g -gdwarf-2
 
-CPPFLAGS = $(CFLAGS) -fexceptions
+INCFLAGS := $(addprefix -I, $(INC))
+
+SRCFLAGS = $(MCU) -c $(INCFLAGS) $(OPT) -g3 -DDEBUG -Wall -fdata-sections -ffunction-sections \
+	-MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" 
+ASFLAGS = $(SRCFLAGS) -x assembler-with-cpp
+CFLAGS = $(SRCFLAGS) -DUSE_HAL_DRIVER -std=gnu11 -fstack-usage
+CPPFLAGS = $(SRCFLAGS) -DUSE_HAL_DRIVER -std=gnu++14 -fstack-usage -fno-rtti -fno-use-cxa-atexit -fexceptions
 
 #######################################
 # Targets
@@ -98,25 +101,35 @@ $(TARGET).hex: $(TARGET).elf
 
 # Compile executable
 $(TARGET).elf: $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CPP) $(LDFLAGS) $^ -o $@
+	$(SZ) $@
 
 # Compile c objects rule
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) -c $(CFLAGS) $< -o $@ 
 
 # Compile c++ objects rule
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(@D)
-	$(CPP) $(CPPFLAGS) -c -o $@ $<
+	$(CPP) -c $(CPPFLAGS) $< -o $@
 
-#Compile s objects rule
+# Compile s objects rule
 $(OBJDIR)/%.o: %.s
 	@mkdir -p $(@D)
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) $< -o $@
 
 #######################################
 # Clean
 #######################################
 clean:
-	rm -rf $(OBJDIR) $(TARGET).elf $(TARGET).bin $(TARGET).hex $(TARGET).map $(OBJDIR)/*.o
+	rm -rf $(OBJDIR) $(TARGET).elf $(TARGET).bin $(TARGET).hex $(TARGET).map
+
+
+#######################################
+# Flash
+#######################################
+flash: $(TARGET).bin
+	/mnt/c/Windows/System32/cmd.exe /C powershell -Command \
+	"Copy-Item $< (Get-WMIObject Win32_Volume \
+	| ? {\$$_.Label -eq 'NOD_H743ZI2'} | %{\$$_.DriveLetter})"

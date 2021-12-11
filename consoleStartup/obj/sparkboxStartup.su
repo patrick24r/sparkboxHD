@@ -1,0 +1,2 @@
+sparkboxStartup.cpp:12:17:void levelStartupTask(void*)	32	static
+sparkboxStartup.cpp:24:6:void testFatfs()	24	static

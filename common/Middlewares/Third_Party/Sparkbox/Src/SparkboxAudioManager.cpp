@@ -34,24 +34,28 @@ sparkboxError_t SparkboxAudioManager::linkDriver(const SparkboxAudioDriver_TypeD
 		audioDriver->allSamplesBuffer == NULL ||
 		audioDriver->hostInitialize == NULL ||
 		audioDriver->hostWriteSample == NULL ||
+		audioDriver->hostBeginDMATx == NULL ||
 		audioDriver->hostDeinitialize == NULL) {
-		return SparkboxError::AUDIO_DRVIER_STRUCT_INVALID;
+		return SparkboxError::AUDIO_DRIVER_STRUCT_INVALID;
 	} else {
 		driver = audioDriver;
-		isInitialized = 0;
+		isInitialized = 0; // New driver, low level is no longer initialized
 		return SparkboxError::SPARK_OK;
 	}
 }
 
 sparkboxError_t SparkboxAudioManager::initialize()
 {
+	sparkboxError_t status;
 	if (driver == NULL) {
-		return SparkboxError::AUDIO_DRVIER_STRUCT_INVALID;
+		return SparkboxError::AUDIO_DRIVER_STRUCT_INVALID;
 	} else if (isInitialized) {
 		return SparkboxError::SPARK_OK;
 	}
 
-	return driver->hostInitialize();
+	status = driver->hostInitialize();
+    if (status == SparkboxError::SPARK_OK) isInitialized = 1;
+	return status;
 }
 
 /*
@@ -99,7 +103,6 @@ sparkboxError_t SparkboxAudioManager::importAllAudioFiles(string directoryPath)
 	return SparkboxError::SPARK_OK;
 }
 
-// Give the user both the return error code and the id number for the file
 /*
  * @brief
  */
@@ -402,8 +405,7 @@ void SparkboxAudioManager::DMATransferCompleteCallback(void)
 void SparkboxAudioManager::timerInterruptCallback(void)
 {
 	int mixedSample;
-	HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-	return;
+	return; // TODO: Actually mix the sample
 
 	// Do nothing if not initialized
 	if (!isInitialized) return;
@@ -465,14 +467,14 @@ void SparkboxAudioManager::timerInterruptCallback(void)
 void SparkboxAudioManager::audioThreadFunction()
 {
 	while(1) {
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		osDelay(500);
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-		osDelay(500);
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		osDelay(250);
 	}
 
-	// Do nothing if not initialized
-	if (!isInitialized) return;
+	// Do nothing until initialized
+	while (!isInitialized) {
+		osDelay(100);
+	}
 
 	// Repeat forever
 	while (1) {

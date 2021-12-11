@@ -57,6 +57,12 @@ int _kill(int pid, int sig)
 	return -1;
 }
 
+__attribute__((weak)) void _exit (int status)
+{
+	_kill(status, -1);
+	while (1) {}		/* Make sure we hang here */
+}
+
 __attribute__((weak)) int _read(int file, char *ptr, int len)
 {
 	int DataIdx;

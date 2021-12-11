@@ -7,6 +7,7 @@
 #include "ff.h"
 #include "sparkboxErrors.hpp"
 
+// Have overwriteable defines for each parameter that is involved with memory allocation
 #ifndef MAX_AUDIO_STREAMS
 #define MAX_AUDIO_STREAMS (4)
 #endif // !MAX_AUDIO_STREAMS
@@ -115,10 +116,10 @@ private:
 		unsigned int transferSizeBytes; // Transfer size in bytes
 	};
 
-	unsigned char isInitialized = 0;
-	unsigned char streamsLocked = 0;
-	unsigned char dmaTransferActive = 0;
-	unsigned int totalAudioBytesImported = 0;
+	volatile unsigned char isInitialized = 0;
+	volatile unsigned char streamsLocked = 0;
+	volatile unsigned char dmaTransferActive = 0;
+	volatile unsigned int totalAudioBytesImported = 0;
 
 	const SparkboxAudioDriver_TypeDef* driver;
 	vector<ImportedAudioFile> importedAudioFiles;

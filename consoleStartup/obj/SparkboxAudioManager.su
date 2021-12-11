@@ -1,0 +1,30 @@
+stl_vector.h:347:7:void std::_Vector_base<_Tp, _Alloc>::_M_deallocate(std::_Vector_base<_Tp, _Alloc>::pointer, std::size_t) [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	0	static
+stl_uninitialized.h:936:5:_ForwardIterator std::__relocate_a_1(_InputIterator, _InputIterator, _ForwardIterator, _Allocator&) [with _InputIterator = SparkboxAudioManager::ImportedAudioFile*; _ForwardIterator = SparkboxAudioManager::ImportedAudioFile*; _Allocator = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	32	static
+SparkboxAudioManager.cpp:30:17:sparkboxError_t SparkboxAudioManager::linkDriver(const SparkboxAudioDriver_TypeDef*)	0	static
+SparkboxAudioManager.cpp:47:17:sparkboxError_t SparkboxAudioManager::initialize()	8	static
+SparkboxAudioManager.cpp:303:17:sparkboxError_t SparkboxAudioManager::stopAudioStream(unsigned char)	0	static
+SparkboxAudioManager.cpp:330:17:sparkboxError_t SparkboxAudioManager::rewindAudioStream(unsigned char, float)	0	static
+SparkboxAudioManager.cpp:343:17:sparkboxError_t SparkboxAudioManager::rewindAudioStream(unsigned char, int)	0	static
+SparkboxAudioManager.cpp:356:17:sparkboxError_t SparkboxAudioManager::skipAudioStream(unsigned char, float)	0	static
+SparkboxAudioManager.cpp:369:17:sparkboxError_t SparkboxAudioManager::skipAudioStream(unsigned char, int)	0	static
+SparkboxAudioManager.cpp:384:6:void SparkboxAudioManager::DMATransferCompleteCallback()	16	static
+SparkboxAudioManager.cpp:405:6:void SparkboxAudioManager::timerInterruptCallback()	0	static
+SparkboxAudioManager.cpp:467:6:void SparkboxAudioManager::audioThreadFunction()	8	static
+SparkboxAudioManager.cpp:499:5:int SparkboxAudioManager::mixAudioSample()	0	static
+stl_vector.h:675:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	16	static
+basic_string.h:6213:5:bool std::operator!=(const std::__cxx11::basic_string<_CharT, _Traits, _Alloc>&, const _CharT*) [with _CharT = char; _Traits = std::char_traits<char>; _Alloc = std::allocator<char>]	8	static
+basic_string.h:6149:5:typename __gnu_cxx::__enable_if<std::__is_char<_Tp>::__value, bool>::__type std::operator==(const std::__cxx11::basic_string<_CharT>&, const std::__cxx11::basic_string<_CharT>&) [with _CharT = char]	8	static
+SparkboxAudioManager.cpp:109:17:sparkboxError_t SparkboxAudioManager::importAudioFile(std::string)	16	static
+SparkboxAudioManager.cpp:64:17:sparkboxError_t SparkboxAudioManager::importAllAudioFiles(std::string)	480	static
+stl_vector.h:1089:7:std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::at(std::vector<_Tp, _Alloc>::size_type) [with _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	16	static
+SparkboxAudioManager.cpp:267:17:sparkboxError_t SparkboxAudioManager::resetAudioStream(unsigned char)	16	static
+SparkboxAudioManager.cpp:316:17:sparkboxError_t SparkboxAudioManager::resumeAudioStream(unsigned char)	16	static
+SparkboxAudioManager.cpp:293:17:sparkboxError_t SparkboxAudioManager::playAudioStream(unsigned char, int)	16	static
+SparkboxAudioManager.cpp:247:17:sparkboxError_t SparkboxAudioManager::setAudioStream(unsigned char, unsigned int)	32	static
+SparkboxAudioManager.cpp:217:17:sparkboxError_t SparkboxAudioManager::setAudioStream(unsigned char, std::string)	128	static
+stl_deque.h:675:5:std::_Deque_base<_Tp, _Alloc>::~_Deque_base() [with _Tp = SparkboxAudioManager::AudioDmaRequest; _Alloc = std::allocator<SparkboxAudioManager::AudioDmaRequest>]	16	static
+SparkboxAudioManager.cpp:22:1:SparkboxAudioManager::~SparkboxAudioManager()	8	static
+vector.tcc:426:7:) [with _Args = {const SparkboxAudioManager::ImportedAudioFile&}; _Tp = SparkboxAudioManager::ImportedAudioFile; _Alloc = std::allocator<SparkboxAudioManager::ImportedAudioFile>]	48	static
+SparkboxAudioManager.cpp:124:17:sparkboxError_t SparkboxAudioManager::importWAVFile(std::string)	1480	static
+vector.tcc:426:7:) [with _Args = {SparkboxAudioManager::AudioStreamTracker}; _Tp = SparkboxAudioManager::AudioStreamTracker; _Alloc = std::allocator<SparkboxAudioManager::AudioStreamTracker>]	48	static
+SparkboxAudioManager.cpp:10:1:SparkboxAudioManager::SparkboxAudioManager()	1096	static

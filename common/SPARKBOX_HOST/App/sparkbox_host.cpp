@@ -3,13 +3,17 @@
 SparkboxLevel* spkLevel;
 
 // Audio declarations
+static sparkboxError_t audioInitialize_lowLevel(void);
+static sparkboxError_t audioWriteSample_lowLevel(unsigned int newSample);
+static sparkboxError_t audioBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes);
+static void audioDeinitialize_lowLevel(void);
 
 // These callbacks need to use C conventions to play nice with the STM32H7 HAL library
 // and the freeRTOS libraries
 extern "C" {
 	static void sparkboxAudio_TimerITCallback(TIM_HandleTypeDef* timHandle);
 	static void sparkboxAudio_DMACompleteCallback(MDMA_HandleTypeDef* mdmaHandle);
-	static void sparkboxAudio_MainTask(void * arg);
+	static void sparkboxAudio_MainTask(void* arg);
 }
 
 static const SparkboxAudioDriver_TypeDef audioDriver = {
@@ -28,16 +32,36 @@ static const osThreadAttr_t audioThreadAttributes = {
 };
 
 // Video declarations
+static sparkboxError_t videoInitialize_lowLevel(void);
+static sparkboxError_t videoBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes);
+static void videoDeinitialize_lowLevel(void);
 
+extern "C" {
+	static void sparkboxVideo_DMACompleteCallback(MDMA_HandleTypeDef* mdmaHandle);
+	static void sparkboxVideo_MainTask(void* arg);
+}
 
+static const SparkboxVideoDriver_TypeDef videoDriver = {
+	.gpuStartAddress = (unsigned char*)0x60000000,
+	.hostInitialize = videoInitialize_lowLevel,
+	.hostBeginDMATx = videoBeginDMATx_lowLevel,
+	.hostDeinitialize = videoDeinitialize_lowLevel
+};
+
+osThreadId_t videoThreadHandle;
+static const osThreadAttr_t videoThreadAttributes = {
+	.name = "videoTask",
+	.stack_size = 512 * 4,
+	.priority = (osPriority_t)osPriorityNormal,
+};
 
 
 // Initialization
-sparkboxError_t SparkboxLevelInit(string& levelDirectory)
+sparkboxError_t sparkboxLevelInit(string levelDirectory)
 {
 	sparkboxError_t status;
 
-	// Instantiate everything
+	// Instantiate everything and catch bad allocation
 	try {
 		spkLevel = new SparkboxLevel();
 	} catch (bad_alloc& ex) {
@@ -49,10 +73,22 @@ sparkboxError_t SparkboxLevelInit(string& levelDirectory)
 	if (status != SparkboxError::SPARK_OK) {
 		return status;
 	}
-	
+	// Initialize audio manager
+	status = spkLevel->audioMgr->initialize();
+	if (status != SparkboxError::SPARK_OK) {
+		return status;
+	}
 
 	// Link the video driver
-
+	status = spkLevel->videoMgr->linkDriver(&videoDriver);
+	if (status != SparkboxError::SPARK_OK) {
+		return status;
+	}
+	// Initialize video manager
+	status = spkLevel->videoMgr->initialize();
+	if (status != SparkboxError::SPARK_OK) {
+		return status;
+	}
 
 	// Import the level
 	status = spkLevel->importLevel(levelDirectory);
@@ -63,17 +99,9 @@ sparkboxError_t SparkboxLevelInit(string& levelDirectory)
 	return SparkboxError::SPARK_OK;
 }
 
-/* Audio driver low level functions */
-sparkboxError_t audioInitialize_lowLevel(void)
+/******************************** Audio driver host/low level functions *************************/
+static sparkboxError_t audioInitialize_lowLevel(void)
 {
-	// Initialize audio peripherals
-	MX_GPIO_Init();
-	MX_FATFS_Init();
-	MX_MDMA_Init();
-	MX_FMC_Init();
-	MX_DAC1_Init();
-	MX_TIM7_Init();
-
 	// Link the mdma to the sdram
 	hsdram1.hmdma = &hmdma_mdma_channel40_sw_0;
 
@@ -91,7 +119,7 @@ sparkboxError_t audioInitialize_lowLevel(void)
 	return SparkboxError::SPARK_OK;
 }
 
-sparkboxError_t audioWriteSample_lowLevel(unsigned int newSample)
+static sparkboxError_t audioWriteSample_lowLevel(unsigned int newSample)
 {
 	uint16_t newSampleLeft = (uint16_t)((newSample >> 16) & 0x0000FFFF);
 	uint16_t newSampleRight = (uint16_t)(newSample & 0x0000FFFF);
@@ -100,8 +128,9 @@ sparkboxError_t audioWriteSample_lowLevel(unsigned int newSample)
 	return SparkboxError::SPARK_OK;
 }
 
-sparkboxError_t audioBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes)
+static sparkboxError_t audioBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes)
 {
+	// Read sample data from sdram into internal SRAM
 	HAL_StatusTypeDef status = HAL_SDRAM_Read_DMA(&hsdram1, (uint32_t*)txFromAddress, 
 		(uint32_t*)txToAddress, sizeBytes);
 
@@ -112,7 +141,7 @@ sparkboxError_t audioBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress,
 	return SparkboxError::SPARK_OK;
 }
 
-void audioDeinitialize_lowLevel(void)
+static void audioDeinitialize_lowLevel(void)
 {
 	HAL_TIM_Base_Stop_IT(&htim7);
 	osThreadTerminate(audioThreadHandle);
@@ -130,10 +159,44 @@ static void sparkboxAudio_DMACompleteCallback(MDMA_HandleTypeDef* mdmaHandle)
 	spkLevel->audioMgr->DMATransferCompleteCallback();
 }
 
-static void sparkboxAudio_MainTask(void * arg)
+static void sparkboxAudio_MainTask(void* arg)
 {
 	spkLevel->audioMgr->audioThreadFunction();
 }
 
 
-/* Video driver low level functions */
+/******************************** Video driver host/low level functions *************************/
+static sparkboxError_t videoInitialize_lowLevel(void)
+{
+	// Link the mdma to the "sram" which is really the gpu
+	hsram1.hmdma = &hmdma_mdma_channel41_sw_0;
+
+	// Register the dma complete callback
+	HAL_MDMA_RegisterCallback(&hmdma_mdma_channel41_sw_0, HAL_MDMA_XFER_CPLT_CB_ID, sparkboxVideo_DMACompleteCallback);
+
+	videoThreadHandle = osThreadNew(sparkboxVideo_MainTask, NULL, &videoThreadAttributes);
+	return SparkboxError::SPARK_OK;
+}
+
+static sparkboxError_t videoBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes)
+{
+	// Write data from internal SRAM to "external SRAM"/GPU
+	HAL_SRAM_Write_DMA(&hsram1, (uint32_t*)txToAddress, (uint32_t*)txFromAddress, sizeBytes);
+	return SparkboxError::SPARK_OK;
+}
+
+static void videoDeinitialize_lowLevel(void)
+{
+	osThreadTerminate(videoThreadHandle);
+}
+
+
+static void sparkboxVideo_DMACompleteCallback(MDMA_HandleTypeDef* mdmaHandle)
+{
+	spkLevel->videoMgr->DMATransferCompleteCallback();
+}
+
+static void sparkboxVideo_MainTask(void* arg)
+{
+	spkLevel->videoMgr->videoThreadFunction();
+}

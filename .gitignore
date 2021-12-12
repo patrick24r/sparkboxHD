@@ -32,6 +32,7 @@
 *.app
 *.bin
 *.elf
+*.hex
 *.map
 
 # Backup/Data Files

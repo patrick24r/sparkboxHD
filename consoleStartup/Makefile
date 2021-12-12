@@ -82,7 +82,7 @@ INCFLAGS := $(addprefix -I, $(INC))
 SRCFLAGS = $(MCU) -c $(INCFLAGS) $(OPT) -g3 -DDEBUG -Wall -fdata-sections -ffunction-sections \
 	-MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" 
 ASFLAGS = $(SRCFLAGS) -x assembler-with-cpp
-CFLAGS = $(SRCFLAGS) -DUSE_HAL_DRIVER -std=gnu11 -fstack-usage
+CFLAGS = $(SRCFLAGS) -DUSE_HAL_DRIVER -std=gnu17 -fstack-usage
 CPPFLAGS = $(SRCFLAGS) -DUSE_HAL_DRIVER -std=gnu++14 -fstack-usage -fno-rtti -fno-use-cxa-atexit -fexceptions
 
 #######################################
@@ -133,3 +133,10 @@ flash: $(TARGET).bin
 	/mnt/c/Windows/System32/cmd.exe /C powershell -Command \
 	"Copy-Item $< (Get-WMIObject Win32_Volume \
 	| ? {\$$_.Label -eq 'NOD_H743ZI2'} | %{\$$_.DriveLetter})"
+
+#######################################
+# Debug
+#######################################
+debug: flash
+	st-util -p 4242 &
+	gdb-multiarch $(TARGET).elf -tui -ex "target remote 127.0.0.1:4242"

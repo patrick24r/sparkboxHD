@@ -110,6 +110,7 @@ int main(void)
   MX_DAC1_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+
   /* USER CODE END 2 */
 
   /* Init scheduler */

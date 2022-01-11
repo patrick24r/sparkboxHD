@@ -1,7 +1,0 @@
-SparkboxVideoManager.cpp:16:17:sparkboxError_t SparkboxVideoManager::linkDriver(const SparkboxVideoDriver_TypeDef*)	0	static
-SparkboxVideoManager.cpp:31:17:sparkboxError_t SparkboxVideoManager::initialize()	8	static
-SparkboxVideoManager.cpp:49:6:void SparkboxVideoManager::DMATransferCompleteCallback()	0	static
-SparkboxVideoManager.cpp:56:6:void SparkboxVideoManager::videoThreadFunction()	8	static
-stl_vector.h:675:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = std::__cxx11::basic_string<char>; _Alloc = std::allocator<std::__cxx11::basic_string<char> >]	16	static
-SparkboxVideoManager.cpp:9:1:SparkboxVideoManager::~SparkboxVideoManager()	8	static
-SparkboxVideoManager.cpp:3:1:SparkboxVideoManager::SparkboxVideoManager()	32	static

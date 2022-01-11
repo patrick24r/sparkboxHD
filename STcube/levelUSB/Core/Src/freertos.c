@@ -29,7 +29,7 @@
 #include "stdio.h"
 #include "fatfs.h"
 #include "usb_host.h"
-#include "sparkboxMain.h"
+#include "sparkboxStartup.hpp"
 extern volatile ApplicationTypeDef Appli_state;
 /* USER CODE END Includes */
 
@@ -52,17 +52,17 @@ extern volatile ApplicationTypeDef Appli_state;
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for levelTask */
+osThreadId_t levelTaskHandle;
+const osThreadAttr_t levelTask_attributes = {
+  .name = "levelTask",
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-
+void testFatfs();
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -97,8 +97,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of levelTask */
+  levelTaskHandle = osThreadNew(StartDefaultTask, NULL, &levelTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -119,12 +119,8 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
-  /* init code for USB_HOST */
-  MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
-  while (Appli_state != APPLICATION_READY);
-  runSparkbox();
-  // testFatfs();
+  levelStartupTask(argument);
   /* Infinite loop */
   for(;;)
   {
@@ -135,24 +131,7 @@ void StartDefaultTask(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-void testFatfs()
-{
-  UINT bw;
-  while (Appli_state != APPLICATION_READY);
-  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_SET);
-	retUSBH = f_open(&USBHFile, "testFile.txt", FA_CREATE_ALWAYS | FA_WRITE);
-  if (retUSBH == FR_OK) {
-    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 
-    retUSBH = f_write(&USBHFile, "Hello", 5, &bw);
-    if (retUSBH == FR_OK) {
-      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-    }
-    f_close(&USBHFile);
-
-    while(1) osDelay(1);
-  }
-}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -56,6 +56,7 @@ void SparkboxVideoManager::DMATransferCompleteCallback()
 void SparkboxVideoManager::videoThreadFunction()
 {
     sparkboxError_t status;
+
     // Do nothing until initialized
 	while (!isInitialized) {
 		osDelay(100);
@@ -68,8 +69,6 @@ void SparkboxVideoManager::videoThreadFunction()
 
 
     while(1) {
-        
-        
         // Wait for any ongoing render to end and until max frame rate overrun is avoided
         while (gpuDataLocked /*&& isFrameRendering()*/) {
             osDelay(1);

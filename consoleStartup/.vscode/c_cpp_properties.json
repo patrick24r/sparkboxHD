@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "STM32H7",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../common/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:\\Program Files (x86)\\GNU Arm Embedded Toolchain\\10 2021.07\\bin\\arm-none-eabi-g++.exe",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-arm",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}

@@ -1,0 +1,1 @@
+{"buildTargets":["all","clean","consoleStartup.bin","consoleStartup.elf","consoleStartup.hex","d:\\sparkboxHD\\consoleStartup\\Makefile","debug","flash","get"],"launchTargets":["d:\\sparkboxHD\\consoleStartup>consoleStartup.elf()"],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

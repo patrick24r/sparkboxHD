@@ -57,7 +57,7 @@ int _kill(int pid, int sig)
 	return -1;
 }
 
-__attribute__((weak)) void _exit (int status)
+void _exit (int status)
 {
 	_kill(status, -1);
 	while (1) {}		/* Make sure we hang here */

@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stdio.h"
 #include "sparkboxStartup.hpp"
 /* USER CODE END Includes */
 
@@ -50,8 +49,8 @@
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
+osThreadId_t levelTaskHandle;
+const osThreadAttr_t levelTask_attributes = {
   .name = "levelTask",
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
@@ -91,7 +90,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(levelStartupTask, NULL, &defaultTask_attributes);
+  levelTaskHandle = osThreadNew(levelStartupTask, NULL, &levelTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

@@ -1,14 +1,18 @@
-#include "SparkboxLevel.h"
+#include "SparkboxLevel.hpp"
 
-SparkboxLevel::SparkboxLevel(string levelPath)
+SparkboxLevel::SparkboxLevel()
 {
-	
 	// Initialize audio manager
 	audioMgr = new SparkboxAudioManager();
-	//audioMgr->importAllAudioFiles(levelPath + "/audio");
-
 
 	// Initialize video manager
 	videoMgr = new SparkboxVideoManager();
+	
+	//audioMgr->importAllAudioFiles(levelPath + "/audio");
 	//videoMgr->importAllSpriteLayers(levelPath + "/sprite");
+}
+
+sparkboxError_t SparkboxLevel::importLevel(string& levelDirectory)
+{
+	return SparkboxError::SPARK_OK;
 }

@@ -9,11 +9,18 @@
 
 extern volatile ApplicationTypeDef Appli_state;
 
+void testFatfs();
+
 extern "C" void levelStartupTask(void * argument)
 {
   //string directoryName = "noDirectoryYet"; 
-  /* Initialize USB - this needs to be done */
+  /* Initialize USB - this needs to be done suring */
   MX_USB_HOST_Init();
+  while (Appli_state != APPLICATION_READY) {
+    osDelay(100);
+  }
+  //testFatfs();
+
   sparkboxLevelInit("noDirectoryYet");
   while(1) {
     HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -29,7 +29,7 @@
 
 /* MDMA transfer handles -----------------------------------------------------*/
 extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
-extern MDMA_LinkNodeTypeDef node_mdma_channel40_sw_1;
+extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 
 /* USER CODE BEGIN Includes */
 

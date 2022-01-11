@@ -60,6 +60,7 @@ extern HCD_HandleTypeDef hhcd_USB_OTG_FS;
 extern DAC_HandleTypeDef hdac1;
 extern SDRAM_HandleTypeDef hsdram1;
 extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
 extern TIM_HandleTypeDef htim7;
 extern TIM_HandleTypeDef htim6;
 
@@ -233,6 +234,7 @@ void MDMA_IRQHandler(void)
 
   /* USER CODE END MDMA_IRQn 0 */
   HAL_MDMA_IRQHandler(&hmdma_mdma_channel40_sw_0);
+  HAL_MDMA_IRQHandler(&hmdma_mdma_channel41_sw_0);
   /* USER CODE BEGIN MDMA_IRQn 1 */
 
   /* USER CODE END MDMA_IRQn 1 */

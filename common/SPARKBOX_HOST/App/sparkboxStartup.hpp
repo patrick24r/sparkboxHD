@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-void levelStartupTask(void * argument);
+void startupTask(void * argument);
 
 #ifdef __cplusplus
 }

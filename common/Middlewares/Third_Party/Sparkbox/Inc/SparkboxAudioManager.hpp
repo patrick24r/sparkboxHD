@@ -33,8 +33,8 @@ using namespace std;
 typedef struct SparkboxAudioDriver {
 	unsigned char* allSamplesBuffer; //< Buffer for all imported raw samples
 	sparkboxError_t(*hostInitialize)(void); //< Initialize all host peripherals
-	sparkboxError_t(*hostWriteSample)(unsigned int); //< Write the sample to the output
-	sparkboxError_t(*hostBeginDMATx)(void*, void*, unsigned int); //< Begin DMA transfer from allSamplesBuffer to 
+	sparkboxError_t(*hostWriteSample)(unsigned int); //< Write the sample to the output (DAC or other audio output)
+	sparkboxError_t(*hostBeginDMATx)(void*, void*, unsigned int); //< Begin DMA transfer from allSamplesBuffer to internal buffer
 	void (*hostDeinitialize)(void); //< Deinitialize all host peripherals
 } SparkboxAudioDriver_TypeDef;
 

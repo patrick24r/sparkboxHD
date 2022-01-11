@@ -8,11 +8,16 @@ SparkboxLevel::SparkboxLevel()
 	// Initialize video manager
 	videoMgr = new SparkboxVideoManager();
 	
-	//audioMgr->importAllAudioFiles(levelPath + "/audio");
+	
 	//videoMgr->importAllSpriteLayers(levelPath + "/sprite");
 }
 
 sparkboxError_t SparkboxLevel::importLevel(string& levelDirectory)
 {
+	sparkboxError_t status;
+	
+	status = audioMgr->importAllAudioFiles(levelDirectory + "/audio");
+	if (status != SparkboxError::SPARK_OK) return status;
+
 	return SparkboxError::SPARK_OK;
 }

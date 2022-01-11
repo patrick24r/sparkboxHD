@@ -49,10 +49,10 @@
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
-osThreadId_t levelTaskHandle;
-const osThreadAttr_t levelTask_attributes = {
-  .name = "levelTask",
-  .stack_size = 256 * 4,
+osThreadId_t startupTaskHandle;
+const osThreadAttr_t startupTask_attributes = {
+  .name = "startupTask",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 
@@ -90,7 +90,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  levelTaskHandle = osThreadNew(levelStartupTask, NULL, &levelTask_attributes);
+  startupTaskHandle = osThreadNew(startupTask, NULL, &startupTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

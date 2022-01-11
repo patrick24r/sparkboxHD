@@ -80,6 +80,10 @@ sparkboxError_t SparkboxAudioManager::importAllAudioFiles(string directoryPath)
 	res = f_opendir(&dir, directoryPath.c_str());
 	if (res != FR_OK) return SparkboxError::AUDIO_FATFS_ERROR;
 
+	// Change working directory 
+	res = f_chdir(directoryPath.c_str());
+	if (res != FR_OK) return SparkboxError::AUDIO_FATFS_ERROR;
+
 	while (res == FR_OK) {
 		res = f_readdir(&dir, &fno);
 		// On error or end of directory, break
@@ -87,18 +91,12 @@ sparkboxError_t SparkboxAudioManager::importAllAudioFiles(string directoryPath)
 		// on subdirectory, hidden file, or system file, continue
 		if (fno.fattrib & (AM_DIR | AM_HID | AM_SYS)) continue;
 
-		// Go to next file if the file is not a wav or mp3
+		// Try to add the audio file 
 		filePath.assign(fno.fname);
-		if (filePath.size() < 5) continue;
-		fileExt = filePath.substr(filePath.length() - 4, 4);
-		if (fileExt != ".wav" && fileExt != ".mp3" &&
-			fileExt != ".WAV" && fileExt != ".MP3") continue;
+		addFileResult = importAudioFile("/" + directoryPath + "/" + filePath);
 
-		// Add the wav or mp3 file 
-		addFileResult = importAudioFile(filePath);
-
-		// Stop on any error
-		if (addFileResult) return addFileResult;
+		// Stop on any error except for unsupported file type
+		if (addFileResult && addFileResult != SparkboxError::AUDIO_FILE_UNSUPPORTED) return addFileResult;
 	}
 	return SparkboxError::SPARK_OK;
 }
@@ -108,6 +106,9 @@ sparkboxError_t SparkboxAudioManager::importAllAudioFiles(string directoryPath)
  */
 sparkboxError_t SparkboxAudioManager::importAudioFile(string filePath)
 {
+	string fileExtension;
+	uint idxExtension;
+
 	if (!isInitialized) return SparkboxError::AUDIO_NOT_INITIALIZED;
 
 	// Check that this file hasn't already been imported
@@ -116,9 +117,18 @@ sparkboxError_t SparkboxAudioManager::importAudioFile(string filePath)
 	}
 
 	// Check file extension
+	idxExtension = filePath.find_last_of('.');
+	if (idxExtension >= filePath.size()) {
+		return SparkboxError::AUDIO_FILE_UNSUPPORTED;
+	}
+	fileExtension = filePath.substr(idxExtension + 1);
 
-	// return importWAVFile(filePath);
-	return SparkboxError::SPARK_OK;
+	// Import the audio file appropriately based on file extension
+	if (fileExtension == "WAV" || fileExtension == "wav") {
+		return importWAVFile(filePath);
+	}
+
+	return SparkboxError::AUDIO_FILE_UNSUPPORTED;
 }
 
 sparkboxError_t SparkboxAudioManager::importWAVFile(string filePath)
@@ -127,7 +137,7 @@ sparkboxError_t SparkboxAudioManager::importWAVFile(string filePath)
 	FIL fileRead;
 	FILINFO fno;
 	FRESULT fRes;
-	uint8_t tempBuffer[_MAX_SS];
+	uint8_t tempBuffer[_MIN_SS];
 	UINT bytesRead;
 	uint32_t bytesReadOffset = 0;
 
@@ -192,17 +202,17 @@ sparkboxError_t SparkboxAudioManager::importWAVFile(string filePath)
 
 	// Read the samples into memory
 	do {
-		fRes = f_read(&fileRead, tempBuffer, _MAX_SS, &bytesRead);
+		fRes = f_read(&fileRead, tempBuffer, _MIN_SS, &bytesRead);
 		if (fRes != FR_OK) {
 			f_close(&fileRead);
 			return SparkboxError::AUDIO_FATFS_ERROR;
 		}
-
+		
 		// TODO: Convert whatever form the data is in to unsigned 16 bit for the DAC
 
 		memcpy(fileImport.externalDataAddress + bytesReadOffset, tempBuffer, bytesRead);
 		bytesReadOffset += bytesRead;
-	} while (bytesRead == _MAX_SS);
+	} while (bytesRead == _MIN_SS);
 	f_close(&fileRead);
 
 	// After adding it successfully, add to the list of imported files

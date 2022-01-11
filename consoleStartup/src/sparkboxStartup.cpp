@@ -1,5 +1,5 @@
 /*
- * @file           : consoleStartup.cpp
+ * @file           : sparkboxStartup.cpp
  * @brief          : Main program body
  */
 #include "sparkboxStartup.hpp"
@@ -11,7 +11,7 @@ extern volatile ApplicationTypeDef Appli_state;
 
 void testFatfs();
 
-extern "C" void levelStartupTask(void * argument)
+extern "C" void startupTask(void * argument)
 {
   //string directoryName = "noDirectoryYet"; 
   /* Initialize USB - this needs to be done suring */
@@ -21,7 +21,7 @@ extern "C" void levelStartupTask(void * argument)
   }
   //testFatfs();
 
-  sparkboxLevelInit("noDirectoryYet");
+  sparkboxLevelInit("game1");
   while(1) {
     HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
     osDelay(500);

@@ -52,11 +52,11 @@ extern volatile ApplicationTypeDef Appli_state;
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for levelTask */
-osThreadId_t levelTaskHandle;
-const osThreadAttr_t levelTask_attributes = {
-  .name = "levelTask",
-  .stack_size = 256 * 4,
+/* Definitions for startupTask */
+osThreadId_t startupTaskHandle;
+const osThreadAttr_t startupTask_attributes = {
+  .name = "startupTask",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 
@@ -97,8 +97,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of levelTask */
-  levelTaskHandle = osThreadNew(StartDefaultTask, NULL, &levelTask_attributes);
+  /* creation of startupTask */
+  startupTaskHandle = osThreadNew(StartDefaultTask, NULL, &startupTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -119,6 +119,8 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
+  /* init code for USB_HOST */
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
   levelStartupTask(argument);
   /* Infinite loop */

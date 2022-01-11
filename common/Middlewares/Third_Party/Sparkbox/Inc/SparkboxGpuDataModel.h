@@ -23,7 +23,7 @@ extern "C" {
 	* 0x13C0 | 64 * 256 = 16384 | User layers palettes
 	* 0x53C0 | 1 * 256 = 256    | User layers virtual data
 	* 0x54C0 | 1 * 256 = 256    | Fonts virtual data
-	* Total Memory Usage: 21920 Bytes
+	* Total Memory Usage: 21952 Bytes
 	*
 	* User layers metadata
 	* Contains the properties for user layers that are immutable
@@ -95,11 +95,14 @@ extern "C" {
 #define ACTIVE_LAYERS_FLAGS_FRAME_ITERATE_Pos (1U)
 #define ACTIVE_LAYERS_FLAGS_FRAME_ITERATE_Msk (0x1UL << ACTIVE_LAYERS_FLAGS_FRAME_ITERATE_Pos)
 #define ACTIVE_LAYERS_FLAGS_FRAME_ITERATE ACTIVE_LAYERS_FLAGS_FRAME_ITERATE_Msk
+
+#pragma pack(1)
 typedef struct 
 {
 	uint8_t data[64]; // TODO: break up into what the data actually means
 } GlobalFlags_TypeDef;
 
+#pragma pack(1)
 typedef struct
 {
 	uint8_t flags; /* Layer flags register */
@@ -111,10 +114,12 @@ typedef struct
 	};
 } LayersMeta_TypeDef;
 
+#pragma pack(1)
 typedef struct {
 	char fontName[12]; /* null terminated character array */
 } FontsMeta_Typedef;
 
+#pragma pack(1)
 typedef struct {
 	uint8_t flags; /* Active layer flags */
 	uint8_t layerIndex; /* Index of layer of which this is an instance */
@@ -129,10 +134,12 @@ typedef struct {
 	uint8_t textScale;
 } ActiveLayers_TypeDef;
 
+#pragma pack(1)
 typedef struct {
 	uint16_t colors[MAX_PALETTE_SIZE];
 } Palette_TypeDef;
 
+#pragma pack(1)
 typedef struct {
 	GlobalFlags_TypeDef globalFlags;
 	LayersMeta_TypeDef layersMetadata[MAX_LAYERS];

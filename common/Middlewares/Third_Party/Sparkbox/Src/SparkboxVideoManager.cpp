@@ -63,7 +63,7 @@ void SparkboxVideoManager::videoThreadFunction()
 	}
 
     while (1) {
-        HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+        HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
         osDelay(125);
     }
 

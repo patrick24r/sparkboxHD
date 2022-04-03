@@ -10,13 +10,10 @@
             "executable": "consoleStartup.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32H743ZI",
-            "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32h7x.cfg"
-            ],
-            "svdFile": "../common/STM32H743.svd"
+            "servertype": "stlink",
+            "interface": "swd",
+            "stlinkPath": "C:\\Program Files (x86)\\STMicroelectronics\\STM32CubeIDE_1.7.0\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.0.0.202105311346\\tools\\bin\\ST-LINK_gdbserver.exe",
+            "showDevDebugOutput": "none"
         }
     ]
 }

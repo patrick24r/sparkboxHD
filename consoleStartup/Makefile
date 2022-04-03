@@ -13,7 +13,7 @@
 TARGETDIR = 
 TARGET = consoleStartup
 
-PROCESSOR = STM32H743xx
+PROCESSOR = STM32H750xx
 
 #######################################
 # Defines
@@ -68,7 +68,7 @@ OBJ := $(OBJ:.s=.o)
 #######################################
 MCU = --specs=nano.specs -mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard
 # link script
-LDSCRIPT = STM32H743ZITx_FLASH.ld
+LDSCRIPT = STM32H750VBTx_FLASH.ld
 
 # libraries
 LDFLAGS = $(MCU) -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map -Wl,--gc-sections -static -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group

@@ -16,7 +16,7 @@ sparkboxError_t SparkboxLevel::importLevel(string& levelDirectory)
 {
 	sparkboxError_t status;
 	
-	status = audioMgr->importAllAudioFiles(levelDirectory + "/audio");
+	// status = audioMgr->importAllAudioFiles(levelDirectory + "/audio");
 	if (status != SparkboxError::SPARK_OK) return status;
 
 	return SparkboxError::SPARK_OK;

@@ -31,7 +31,8 @@ SDRAM_HandleTypeDef hsdram1;
 void MX_FMC_Init(void)
 {
   /* USER CODE BEGIN FMC_Init 0 */
-
+  HAL_StatusTypeDef status;
+  FMC_SDRAM_CommandTypeDef Command;
   /* USER CODE END FMC_Init 0 */
 
   FMC_NORSRAM_TimingTypeDef Timing = {0};
@@ -85,19 +86,19 @@ void MX_FMC_Init(void)
   hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_12;
   hsdram1.Init.MemoryDataWidth = FMC_SDRAM_MEM_BUS_WIDTH_8;
   hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
-  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_1;
+  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_2;
   hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE;
   hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_DISABLE;
-  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_DISABLE;
+  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;
   hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_0;
   /* SdramTiming */
   SdramTiming.LoadToActiveDelay = 16;
-  SdramTiming.ExitSelfRefreshDelay = 16;
-  SdramTiming.SelfRefreshTime = 16;
-  SdramTiming.RowCycleDelay = 16;
-  SdramTiming.WriteRecoveryTime = 16;
-  SdramTiming.RPDelay = 16;
-  SdramTiming.RCDDelay = 16;
+  SdramTiming.ExitSelfRefreshDelay = 9;
+  SdramTiming.SelfRefreshTime = 4;
+  SdramTiming.RowCycleDelay = 8;
+  SdramTiming.WriteRecoveryTime = 4;
+  SdramTiming.RPDelay = 2;
+  SdramTiming.RCDDelay = 2;
 
   if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK)
   {
@@ -105,6 +106,38 @@ void MX_FMC_Init(void)
   }
 
   /* USER CODE BEGIN FMC_Init 2 */
+  // SDRAM is AS4C64M8SC-7TIN, digikey 1450-1469-ND
+  // Enable the clock
+  Command.CommandMode = FMC_SDRAM_CMD_CLK_ENABLE;
+  Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+  Command.AutoRefreshNumber = 1;
+  Command.ModeRegisterDefinition = 0;
+  status = HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  // Precharge all banks
+  Command.CommandMode = FMC_SDRAM_CMD_PALL;
+  Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+  Command.AutoRefreshNumber = 1;
+  Command.ModeRegisterDefinition = 0;
+  status = HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  // Precharge all banks
+  Command.CommandMode = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
+  Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+  Command.AutoRefreshNumber = 8;
+  Command.ModeRegisterDefinition = 0;
+  status = HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  // Set Mode Register
+  Command.CommandMode = FMC_SDRAM_CMD_LOAD_MODE;
+  Command.CommandTarget = FMC_SDRAM_CMD_TARGET_BANK1;
+  Command.AutoRefreshNumber = 1;
+  Command.ModeRegisterDefinition = (uint32_t)(SDRAM_MODEREG_BURST_LENGTH_1 |
+    SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_2);
+  status = HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  // Send minimum 8 auto refresh cycles
+  status = HAL_SDRAM_SetAutoRefreshNumber(&hsdram1, 8);
 
   /* USER CODE END FMC_Init 2 */
 }

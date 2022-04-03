@@ -477,7 +477,7 @@ void SparkboxAudioManager::timerInterruptCallback(void)
 void SparkboxAudioManager::audioThreadFunction()
 {
 	while(1) {
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		osDelay(250);
 	}
 

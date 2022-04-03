@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -48,11 +48,11 @@
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-/* Definitions for defaultTask */
-osThreadId_t startupTaskHandle;
-const osThreadAttr_t startupTask_attributes = {
-  .name = "startupTask",
-  .stack_size = 1024 * 4,
+/* Definitions for StartupTask */
+osThreadId_t StartupTaskHandle;
+const osThreadAttr_t StartupTask_attributes = {
+  .name = "StartupTask",
+  .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 
@@ -60,6 +60,10 @@ const osThreadAttr_t startupTask_attributes = {
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
+
+void startupTask(void *argument);
+
+extern void MX_USB_HOST_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
@@ -89,8 +93,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  startupTaskHandle = osThreadNew(startupTask, NULL, &startupTask_attributes);
+  /* creation of StartupTask */
+  StartupTaskHandle = osThreadNew(startupTask, NULL, &StartupTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

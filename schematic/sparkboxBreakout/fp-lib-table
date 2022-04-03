@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "sparkboxBreakout")(type "KiCad")(uri "${KIPRJMOD}/sparkboxBreakout.pretty")(options "")(descr ""))
+)

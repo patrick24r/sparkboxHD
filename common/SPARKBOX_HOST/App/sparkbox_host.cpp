@@ -105,7 +105,7 @@ sparkboxError_t sparkboxLevelInit(string levelDirectory)
 static sparkboxError_t audioInitialize_lowLevel(void)
 {
 	// Link the mdma to the sdram
-	hsdram1.hmdma = &hmdma_mdma_channel40_sw_0;
+	hsram1.hmdma = &hmdma_mdma_channel40_sw_0;
 
 	// Register the correct callbacks
 	HAL_TIM_RegisterCallback(&htim7, HAL_TIM_PERIOD_ELAPSED_CB_ID, sparkboxAudio_TimerITCallback);
@@ -133,7 +133,7 @@ static sparkboxError_t audioWriteSample_lowLevel(unsigned int newSample)
 static sparkboxError_t audioBeginDMATx_lowLevel(void* txFromAddress, void* txToAddress, unsigned int sizeBytes)
 {
 	// Read sample data from sdram into internal SRAM
-	HAL_StatusTypeDef status = HAL_SDRAM_Read_DMA(&hsdram1, (uint32_t*)txFromAddress, 
+	HAL_StatusTypeDef status = HAL_SRAM_Read_DMA(&hsram1, (uint32_t*)txFromAddress, 
 		(uint32_t*)txToAddress, sizeBytes);
 
 	if (status != HAL_OK) {

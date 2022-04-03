@@ -68,7 +68,7 @@
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 56 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
-#define configTOTAL_HEAP_SIZE                    ((size_t)35360)
+#define configTOTAL_HEAP_SIZE                    ((size_t)15360)
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1
 #define configUSE_16_BIT_TICKS                   0
@@ -93,8 +93,7 @@
 #define configTIMER_QUEUE_LENGTH                 10
 #define configTIMER_TASK_STACK_DEPTH             256
 
-/* The following flag must be enabled only when using newlib */
-#define configUSE_NEWLIB_REENTRANT          1
+
 
 /* CMSIS-RTOS V2 flags */
 #define configUSE_OS2_THREAD_SUSPEND_RESUME  1
@@ -168,12 +167,14 @@ standard names. */
 
 /* USER CODE BEGIN Defines */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+/* The following flag must be enabled only when using newlib */
+#define configUSE_NEWLIB_REENTRANT           1
 #if !defined(EXTERNC)
- #if defined(__cplusplus)
-  #define EXTERNC extern "C"
- #else
-  #define EXTERNC extern
- #endif
+  #if defined(__cplusplus)
+    #define EXTERNC extern "C"
+  #else
+    #define EXTERNC extern
+  #endif
 #endif
 
 #define configISR_STACK_SIZE_WORDS (0x100) // in WORDS, must be valid constant for GCC assembler

@@ -58,6 +58,13 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SDRAM_MODEREG_BURST_LENGTH_1 (0x00)
+#define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL (0x00 << 3)
+#define SDRAM_MODEREG_CAS_LATENCY_2 (0x2 << 4)
+#define SDRAM_MODEREG_CAS_LATENCY_3 (0x3 << 4)
+#define SDRAM_MODEREG_WRITE_BURST_NORMAL (0x0 << 9)
+#define SDRAM_MODEREG_OCD_NORMAL (0x0 << 10)
+#define SDRAM_TIMEOUT 1
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 #define LD1_Pin GPIO_PIN_0

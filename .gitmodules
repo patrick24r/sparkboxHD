@@ -1,3 +1,0 @@
-[submodule "common/Middlewares/Third_Party/FreeRTOS"]
-	path = common/Middlewares/Third_Party/FreeRTOS
-	url = git@github.com:patrick24r/freertosnewlib.git

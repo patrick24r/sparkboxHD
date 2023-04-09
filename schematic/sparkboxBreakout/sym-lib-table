@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name "sparkboxLibrary")(type "KiCad")(uri "${KIPRJMOD}/sparkboxLibrary.kicad_sym")(options "")(descr ""))
-)

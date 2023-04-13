@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+add_subdirectory(filesystem)
+
 add_library(sparkbox STATIC
     sparkbox.cc
 )
@@ -11,5 +13,6 @@ target_include_directories(sparkbox
 
 target_link_libraries(sparkbox
     PUBLIC
-        sparkbox_device
+        sparkbox.filesystem.controller
+        sparkbox.filesystem.driver
 )

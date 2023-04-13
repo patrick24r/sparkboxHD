@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.16)
+
+set(CMAKE_TOOLCHAIN_FILE
+    ${CMAKE_CURRENT_SOURCE_DIR}/posix.cmake)
+
+add_library(sparkbox_device STATIC
+    posix_filesystem_driver.cc
+)
+
+target_include_directories(sparkbox_device
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(sparkbox_device
+    PUBLIC
+        sparkbox
+        sparkbox.filesystem.driver
+)

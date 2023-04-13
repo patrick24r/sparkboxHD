@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Sparkbox::Audio
+namespace sparkbox::audio
 {
 
 class AudioController {

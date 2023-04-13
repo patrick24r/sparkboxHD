@@ -9,8 +9,9 @@ if (NOT SPARKBOX_DEVICE)
     endif()
 endif()
 
+# Add the subdirectory of the specified device
 if (${SPARKBOX_DEVICE} STREQUAL UNIX)
-    add_subdirectory(unix)
+    add_subdirectory(posix)
 else ()
     message(FATAL_ERROR "Invalid SPARKBOX_DEVICE")
 endif()

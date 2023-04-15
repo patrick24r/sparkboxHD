@@ -7,11 +7,13 @@ namespace sparkbox::filesystem {
 
 class FilesystemController {
  public:
-  FilesystemController(const FilesystemDriver& driver) :
+  FilesystemController(FilesystemDriver& driver) :
     driver_(driver) {}
 
+  void RunTest();
+
  private:
-  const FilesystemDriver& driver_;
+  FilesystemDriver& driver_;
 };
 
 } // namespace Sparkbox::Filesystem

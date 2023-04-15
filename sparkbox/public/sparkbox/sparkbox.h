@@ -17,11 +17,20 @@ class Sparkbox final {
   Sparkbox(filesystem::FilesystemDriver& fs_driver) :
     fs_controller_{fs_driver} {}
 
-  const filesystem::FilesystemController& 
+  filesystem::FilesystemController&
     GetFilesystemController() { return fs_controller_; }
 
  private:
   filesystem::FilesystemController fs_controller_;
 };
+
+
+// Logging macros
+#define SP_LOG_ERROR
+#define SP_LOG_WARNING
+#define SP_LOG_INFO
+#define SP_LOG_DEBUG
+
+
 
 } // namespace Sparkbox

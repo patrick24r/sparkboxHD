@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_TOOLCHAIN_FILE
-    ${CMAKE_CURRENT_SOURCE_DIR}/posix.cmake)
+    ${CMAKE_CURRENT_SOURCE_DIR}/windows.cmake)
 
 add_library(sparkbox_device STATIC
     sparkbox_device.cc

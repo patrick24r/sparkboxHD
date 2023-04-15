@@ -15,9 +15,9 @@ using namespace ::sparkbox;
 using namespace ::std;
 } // namespace
 
-namespace sparkbox::device::posix {
+namespace device::shared::host {
 
-class PosixFilesystemDriver : public FilesystemDriver {
+class HostFilesystemDriver : public FilesystemDriver {
  public:
   Status Open(int * file_id, const char * path, IoMode mode) final;
   Status Close(int file_id) final;
@@ -45,4 +45,4 @@ class PosixFilesystemDriver : public FilesystemDriver {
   }
 };
 
-} // namespace sparkbox::device::posix
+} // namespace device::shared::host

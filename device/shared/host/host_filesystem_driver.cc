@@ -1,4 +1,4 @@
-#include "posix_filesystem_driver.h"
+#include "host_filesystem_driver.h"
 
 #include <cassert>
 #include <cstdint>
@@ -14,9 +14,9 @@ using namespace ::std;
 using namespace ::sparkbox;
 } // namespace
 
-namespace sparkbox::device::posix {
+namespace device::shared::host {
 
-Status PosixFilesystemDriver::Open(int * file_id, 
+Status HostFilesystemDriver::Open(int * file_id, 
                                    const char * path,
                                    IoMode mode) {
   // Check for null pointers because safety is important I guess
@@ -49,7 +49,7 @@ Status PosixFilesystemDriver::Open(int * file_id,
   }
 }
 
-Status PosixFilesystemDriver::Close(int file_id) {
+Status HostFilesystemDriver::Close(int file_id) {
   // If no open file matches the file ID, do nothing
   if (!open_files_.count(file_id)) return Status::kOk;
 
@@ -58,7 +58,7 @@ Status PosixFilesystemDriver::Close(int file_id) {
   return Status::kOk;
 }
 
-Status PosixFilesystemDriver::Read(int file_id,
+Status HostFilesystemDriver::Read(int file_id,
                                    void * data,
                                    size_t bytes_to_read,
                                    size_t * bytes_read) {
@@ -87,7 +87,7 @@ Status PosixFilesystemDriver::Read(int file_id,
   return Status::kOk;
 }
 
-Status PosixFilesystemDriver::Write(int file_id,
+Status HostFilesystemDriver::Write(int file_id,
                                     const void * data,
                                     size_t bytes_to_write,
                                     size_t * bytes_written) {
@@ -116,4 +116,4 @@ Status PosixFilesystemDriver::Write(int file_id,
   return Status::kOk;
 }
 
-} // namespace sparkbox::device::posix
+} // namespace device::shared::host

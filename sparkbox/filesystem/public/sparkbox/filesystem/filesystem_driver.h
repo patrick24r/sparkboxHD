@@ -4,47 +4,43 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace sparkbox::filesystem {
+#include "sparkbox/status.h"
 
-using IoMode = uint8_t;
-// kRead : If set, will open the file with read permissions
-constexpr IoMode kRead = ((0x01) << 0);
-// kWrite : If set, will open the file with write permissions
-constexpr IoMode kWrite = ((0x01) << 1);
-// kCreate : If set, will always create a new file or overwrite the existing file
-constexpr IoMode kCreate = ((0x01) << 2);
-// kAppend : If set, will always open a file in append mode
-constexpr IoMode kAppend = ((0x01) << 3);
+namespace {
+using ::sparkbox::Status;
+} // namespace
+
+namespace sparkbox::filesystem {
 
 class FilesystemDriver {
  public:
+  using IoMode = int;
+  // kRead : If set, will open the file with read permissions
+  static constexpr IoMode kRead = 1 << 0;
+  // kWrite : If set, will open the file with write permissions
+  static constexpr IoMode kWrite = 1 << 1;
+  // kCreate : If set, will always create a new file or overwrite the existing file
+  static constexpr IoMode kCreate = 1 << 2;
+  // kAppend : If set, will always open a file in append mode
+  static constexpr IoMode kAppend = 1 << 3;
 
   // File access
+  // Open a file. Populates the file_id on success
+  virtual Status Open(int * file_id, const char * path, IoMode mode) = 0;
 
-  // Open a file. Returns the open file's associated id
-  virtual int Open(const char * path, IoMode mode) = 0;
   // Close a file
-  virtual void Close(int file_id) = 0;
-  // Read from a file
-  virtual size_t Read(int file_id, void * data, size_t data_bytes) = 0;
-  // Write to a file
-  virtual size_t Write(int file_id, void * data, size_t data_bytes) = 0;
+  virtual Status Close(int file_id) = 0;
+
+  // Read from a file. Populates bytes_read with the number of bytes read
+  virtual Status Read(int file_id, void * data,
+                      size_t bytes_to_read, size_t * bytes_read) = 0;
+
+  // Write to a file. Populates bytes_written with the number of bytes written
+  virtual Status Write(int file_id, const void * data,
+                       size_t bytes_to_write, size_t * bytes_written) = 0;
 
   // Directory access
  protected:
-  int next_file_id_ = 0;
-  int GetUniqueFileId() {
-    int file_id = next_file_id_;
-
-    // Keep valid file id's positive
-    if (file_id == INT_MAX) {
-      next_file_id_ = 0;
-    } else {
-      ++next_file_id_;
-    }
-    
-    return file_id;
-  }
 
 };
 

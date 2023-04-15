@@ -2,7 +2,7 @@
 
 #include "posix_filesystem_driver.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
-#include "sparkbox.h"
+#include "sparkbox/sparkbox.h"
 
 
 namespace {

@@ -1,9 +1,12 @@
 #pragma once
 
+#include "sparkbox/audio/audio_controller.h"
+#include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/filesystem/filesystem_controller.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 
 namespace {
+using namespace ::sparkbox::audio;
 using namespace ::sparkbox::filesystem;
 }
 

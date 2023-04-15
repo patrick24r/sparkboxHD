@@ -6,6 +6,10 @@ target_include_directories(sparkbox.filesystem.driver
     INTERFACE
         public
 )
+target_link_libraries(sparkbox.filesystem.driver
+    INTERFACE
+        sparkbox.status
+)
 
 # sparkbox.filesystem.controller
 add_library(sparkbox.filesystem.controller STATIC

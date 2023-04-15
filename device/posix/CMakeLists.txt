@@ -15,5 +15,6 @@ target_include_directories(sparkbox_device
 target_link_libraries(sparkbox_device
     PUBLIC
         sparkbox
+        sparkbox.audio.driver
         sparkbox.filesystem.driver
 )

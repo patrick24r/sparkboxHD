@@ -2,7 +2,6 @@
 #include "host_filesystem_driver.h"
 #include "sparkbox/sparkbox.h"
 
-
 namespace {
 using namespace ::sparkbox;
 }

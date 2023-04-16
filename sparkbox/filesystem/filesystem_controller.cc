@@ -1,9 +1,9 @@
 #include "sparkbox/filesystem/filesystem_controller.h"
 
-#include "sparkbox/filesystem/filesystem_driver.h"
-
 #include <string>
-#include <iostream>
+
+#include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/log.h"
 
 namespace {
 using namespace ::std;
@@ -18,11 +18,12 @@ void FilesystemController::RunTest() {
   int file;
   size_t byte_result;
 
+  SP_LOG_INFO("Entered Filesystem test");
+
   // Write test
   status = driver_.Open(&file, "test.txt", FilesystemDriver::kWrite | FilesystemDriver::kCreate);
   if (status != Status::kOk) {
-    cout << "Write test open failed with status: "
-      << std::to_string(static_cast<int>(status)) << endl;
+    SP_LOG_ERROR("Write test open failed with status: %d", static_cast<int>(status));
     return;
   }
 
@@ -31,15 +32,14 @@ void FilesystemController::RunTest() {
                     &byte_result);
   driver_.Close(file);
   if (status != Status::kOk) {
-    cout << "Write test write failed." << endl;
+    SP_LOG_ERROR("Write test write failed with status: %d", static_cast<int>(status));
     return;
   }
 
   // Read test
   status = driver_.Open(&file, "test.txt", FilesystemDriver::kRead);
   if (status != Status::kOk) {
-    cout << "Read test open failed with status: "
-      << std::to_string(static_cast<int>(status)) << endl;
+    SP_LOG_ERROR("Read test open failed with status: %d", static_cast<int>(status));
     return;
   }
 
@@ -47,11 +47,11 @@ void FilesystemController::RunTest() {
   driver_.Close(file);
 
   if (status == Status::kOk) {
-    cout << "Read " << std::to_string(byte_result) << " bytes:" << endl;
+    SP_LOG_DEBUG("Read %zu bytes:", byte_result);
     std::string readText(inputBuffer, byte_result);
-    cout << readText << endl;
+    SP_LOG_DEBUG("%s", readText.c_str());
   } else {
-    cout << "Read test read failed." << endl;
+    SP_LOG_ERROR("Read test open failed with status: %d", static_cast<int>(status));
   }
 }
 

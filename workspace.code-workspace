@@ -53,7 +53,13 @@
 			"xtr1common": "cpp",
 			"xtree": "cpp",
 			"xutility": "cpp",
-			"cassert": "cpp"
+			"cassert": "cpp",
+			"functional": "cpp",
+			"list": "cpp",
+			"span": "cpp",
+			"unordered_map": "cpp",
+			"vector": "cpp",
+			"xhash": "cpp"
 		}
 	}
 }

@@ -24,13 +24,4 @@ class Sparkbox final {
   filesystem::FilesystemController fs_controller_;
 };
 
-
-// Logging macros
-#define SP_LOG_ERROR
-#define SP_LOG_WARNING
-#define SP_LOG_INFO
-#define SP_LOG_DEBUG
-
-
-
 } // namespace Sparkbox

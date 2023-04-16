@@ -20,4 +20,5 @@ target_include_directories(sparkbox.audio.controller
 target_link_libraries(sparkbox.audio.controller
     PUBLIC
         sparkbox.audio.driver
+        sparkbox.core
 )

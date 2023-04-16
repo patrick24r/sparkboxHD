@@ -14,6 +14,6 @@ target_include_directories(sparkbox_device
 
 target_link_libraries(sparkbox_device
     PUBLIC
-        device.shared.host
+        device.shared.host.filesystem
         sparkbox
 )

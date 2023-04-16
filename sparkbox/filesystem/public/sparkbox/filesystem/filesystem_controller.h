@@ -1,6 +1,5 @@
 #pragma once
 
-#include "error.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 
 namespace sparkbox::filesystem {
@@ -16,4 +15,4 @@ class FilesystemController {
   FilesystemDriver& driver_;
 };
 
-} // namespace Sparkbox::Filesystem
+} // namespace sparkbox::filesystem

@@ -8,7 +8,7 @@ target_include_directories(sparkbox.filesystem.driver
 )
 target_link_libraries(sparkbox.filesystem.driver
     INTERFACE
-        sparkbox.status
+        sparkbox.core
 )
 
 # sparkbox.filesystem.controller

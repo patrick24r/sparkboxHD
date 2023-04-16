@@ -59,7 +59,10 @@
 			"span": "cpp",
 			"unordered_map": "cpp",
 			"vector": "cpp",
-			"xhash": "cpp"
+			"xhash": "cpp",
+			"cstdarg": "cpp",
+			"array": "cpp",
+			"bitset": "cpp"
 		}
 	}
 }

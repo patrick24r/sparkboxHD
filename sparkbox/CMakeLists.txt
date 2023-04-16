@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 add_subdirectory(audio)
+add_subdirectory(controller)
 add_subdirectory(core)
 add_subdirectory(filesystem)
 
@@ -17,6 +18,7 @@ target_include_directories(sparkbox
 target_link_libraries(sparkbox
     PUBLIC
         sparkbox.audio.controller
+        sparkbox.controller.controller
         sparkbox.core
         sparkbox.filesystem.controller
 )

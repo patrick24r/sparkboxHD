@@ -7,17 +7,17 @@ target_include_directories(sparkbox.audio.driver
         public
 )
 
-# sparkbox.audio.controller
-add_library(sparkbox.audio.controller STATIC
-    audio_controller.cc
+# sparkbox.audio.manager
+add_library(sparkbox.audio.manager STATIC
+    audio_manager.cc
 )
 
-target_include_directories(sparkbox.audio.controller
+target_include_directories(sparkbox.audio.manager
     PUBLIC
         public
 )
 
-target_link_libraries(sparkbox.audio.controller
+target_link_libraries(sparkbox.audio.manager
     PUBLIC
         sparkbox.audio.driver
         sparkbox.core

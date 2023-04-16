@@ -1,10 +1,10 @@
 #pragma once
 
-#include "sparkbox/audio/audio_controller.h"
+#include "sparkbox/audio/audio_manager.h"
 #include "sparkbox/audio/audio_driver.h"
-#include "sparkbox/controller/controller_controller.h"
+#include "sparkbox/controller/controller_manager.h"
 #include "sparkbox/controller/controller_driver.h"
-#include "sparkbox/filesystem/filesystem_controller.h"
+#include "sparkbox/filesystem/filesystem_manager.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 
 namespace {
@@ -18,16 +18,16 @@ class Sparkbox final {
  public:
   Sparkbox(filesystem::FilesystemDriver& fs_driver,
            controller::ControllerDriver& cont_driver) :
-    cont_controller_{cont_driver},
-    fs_controller_{fs_driver} {}
+    controller_manager_{cont_driver},
+    fs_manager_{fs_driver} {}
 
-  controller::ControllerController& Controller(void) { return cont_controller_; }
-  filesystem::FilesystemController& Filesystem(void) { return fs_controller_; }
+  controller::ControllerManager& Controller(void) { return controller_manager_; }
+  filesystem::FilesystemManager& Filesystem(void) { return fs_manager_; }
 
 
  private:
-  controller::ControllerController cont_controller_;
-  filesystem::FilesystemController fs_controller_;
+  controller::ControllerManager controller_manager_;
+  filesystem::FilesystemManager fs_manager_;
 };
 
 } // namespace Sparkbox

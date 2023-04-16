@@ -6,10 +6,11 @@
 
 namespace sparkbox::controller {
 
-class ControllerController {
+class ControllerManager {
  public:
-  ControllerController(ControllerDriver& driver) : driver_(driver) {
-    ControllerDriver::Callback cb = std::bind(&ControllerController::OnControllerChanged, this);
+  ControllerManager(ControllerDriver& driver) : driver_(driver) {
+    ControllerDriver::Callback cb = 
+      std::bind(&ControllerManager::OnControllerChanged, this);
     driver_.SetOnControllerChanged(cb);
   }
 

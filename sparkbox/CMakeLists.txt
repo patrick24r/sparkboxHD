@@ -17,8 +17,8 @@ target_include_directories(sparkbox
 
 target_link_libraries(sparkbox
     PUBLIC
-        sparkbox.audio.controller
-        sparkbox.controller.controller
+        sparkbox.audio.manager
+        sparkbox.controller.manager
         sparkbox.core
-        sparkbox.filesystem.controller
+        sparkbox.filesystem.manager
 )

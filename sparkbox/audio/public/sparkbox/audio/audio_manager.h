@@ -5,7 +5,7 @@
 namespace sparkbox::audio
 {
 
-class AudioController {
+class AudioManager {
  public:
   sparkbox::Status ImportAudioFiles(const char * directory);
   sparkbox::Status ImportAudioFile(const char * file);

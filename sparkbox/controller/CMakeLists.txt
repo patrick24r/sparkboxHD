@@ -11,17 +11,17 @@ target_link_libraries(sparkbox.controller.driver
         sparkbox.core
 )
 
-# sparkbox.controller.controller
-add_library(sparkbox.controller.controller STATIC
-    controller_controller.cc
+# sparkbox.controller.manager
+add_library(sparkbox.controller.manager STATIC
+    controller_manager.cc
 )
 
-target_include_directories(sparkbox.controller.controller
+target_include_directories(sparkbox.controller.manager
     PUBLIC
         public
 )
 
-target_link_libraries(sparkbox.controller.controller
+target_link_libraries(sparkbox.controller.manager
     PUBLIC
         sparkbox.controller.driver
 )

@@ -4,9 +4,9 @@
 
 namespace sparkbox::filesystem {
 
-class FilesystemController {
+class FilesystemManager {
  public:
-  FilesystemController(FilesystemDriver& driver) :
+  FilesystemManager(FilesystemDriver& driver) :
     driver_(driver) {}
 
   void RunTest();

@@ -11,17 +11,17 @@ target_link_libraries(sparkbox.filesystem.driver
         sparkbox.core
 )
 
-# sparkbox.filesystem.controller
-add_library(sparkbox.filesystem.controller STATIC
-    filesystem_controller.cc
+# sparkbox.filesystem.manager
+add_library(sparkbox.filesystem.manager STATIC
+    filesystem_manager.cc
 )
 
-target_include_directories(sparkbox.filesystem.controller
+target_include_directories(sparkbox.filesystem.manager
     PUBLIC
         public
 )
 
-target_link_libraries(sparkbox.filesystem.controller
+target_link_libraries(sparkbox.filesystem.manager
     PUBLIC
         sparkbox.filesystem.driver
 )

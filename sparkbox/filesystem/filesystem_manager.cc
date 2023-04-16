@@ -1,4 +1,4 @@
-#include "sparkbox/filesystem/filesystem_controller.h"
+#include "sparkbox/filesystem/filesystem_manager.h"
 
 #include <string>
 
@@ -11,7 +11,7 @@ using namespace ::std;
 
 namespace sparkbox::filesystem {
 
-void FilesystemController::RunTest() {
+void FilesystemManager::RunTest() {
   char inputBuffer[500];
   std::string testText = "Hello World!";
   sparkbox::Status status;

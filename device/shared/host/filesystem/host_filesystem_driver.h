@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <fstream>
-#include <limits>
 #include <map>
 #include <memory>
 
@@ -17,8 +16,9 @@ using namespace ::std;
 
 namespace device::shared::host {
 
-class HostFilesystemDriver : public FilesystemDriver {
+class HostFilesystemDriver final : public FilesystemDriver {
  public:
+  static constexpr int kMaxFiles = 5;
   Status Open(int * file_id, const char * path, IoMode mode) final;
   Status Close(int file_id) final;
 
@@ -34,14 +34,15 @@ class HostFilesystemDriver : public FilesystemDriver {
  private:
   std::map<int, std::unique_ptr<std::fstream>> open_files_;
 
-  // Get a unique file id for a new file by picking an int
-  // one higher than the last item in open_files
+  int next_file_id_ = 0;
+  // Gets a unique file id for a new file by just picking the next int.
+  // If not available, check the next one
   int GetUniqueFileId() {
-    if (open_files_.empty()) {
-      return INT_MIN;
+    while (open_files_.count(next_file_id_)) {
+      ++next_file_id_;
     }
 
-    return (open_files_.rbegin()->first + 1);
+    return next_file_id_;
   }
 };
 

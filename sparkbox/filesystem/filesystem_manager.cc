@@ -12,13 +12,13 @@ using namespace ::std;
 namespace sparkbox::filesystem {
 
 void FilesystemManager::RunTest() {
-  char inputBuffer[500];
+  char inputBuffer[50];
   std::string testText = "Hello World!";
   sparkbox::Status status;
   int file;
   size_t byte_result;
 
-  SP_LOG_INFO("Entered Filesystem test");
+  SP_LOG_DEBUG("Entered Filesystem test...");
 
   // Write test
   status = driver_.Open(&file, "test.txt", FilesystemDriver::kWrite | FilesystemDriver::kCreate);
@@ -53,6 +53,10 @@ void FilesystemManager::RunTest() {
   } else {
     SP_LOG_ERROR("Read test open failed with status: %d", static_cast<int>(status));
   }
+}
+
+void FilesystemManager::RunDirectoryTest() {
+  
 }
 
 } // namespace Sparkbox::Filesystem

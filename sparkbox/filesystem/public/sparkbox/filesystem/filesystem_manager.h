@@ -10,6 +10,7 @@ class FilesystemManager {
     driver_(driver) {}
 
   void RunTest();
+  void RunDirectoryTest();
 
  private:
   FilesystemDriver& driver_;

@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/log.h"
 #include "sparkbox/status.h"
 
 namespace {
@@ -24,11 +25,12 @@ Status HostFilesystemDriver::Open(int * file_id,
     return Status::kBadParameter;
   }
 
-  *file_id = GetUniqueFileId();
-  // If the file id already exists, you have INT_MAX files open???
-  if (open_files_.count(*file_id)) {
+  // If we already have too many files open, do nothing
+  if (open_files_.size() >= kMaxFiles) {
     return Status::kUnavailable;
   }
+
+  *file_id = GetUniqueFileId();
 
   // Open the file in the specified mode
   auto file = std::make_unique<fstream>();
@@ -52,7 +54,6 @@ Status HostFilesystemDriver::Open(int * file_id,
 Status HostFilesystemDriver::Close(int file_id) {
   // If no open file matches the file ID, do nothing
   if (!open_files_.count(file_id)) return Status::kOk;
-
   open_files_[file_id]->close();
   open_files_.erase(file_id);
   return Status::kOk;
@@ -106,8 +107,8 @@ Status HostFilesystemDriver::Write(int file_id,
 
   open_files_[file_id]->write(reinterpret_cast<const char*>(data), bytes_to_write);
 
-  // Check write status
-  if (!open_files_[file_id]->good()) {
+  // Check write status, don't care about eof
+  if (open_files_[file_id]->fail()) {
     *bytes_written = 0;
     return Status::kUnavailable;
   }

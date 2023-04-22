@@ -117,4 +117,15 @@ Status HostFilesystemDriver::Write(int file_id,
   return Status::kOk;
 }
 
+
+Status HostFilesystemDriver::OpenDirectory(int * dir_id, const char * path, bool create) {
+  return Status::kOk;
+}
+
+Status HostFilesystemDriver::ReadDirectory(int dir_id, DirectoryItem * item)
+
+Status HostFilesystemDriver::CloseDirectory(int dir_id) {
+  return Status::kOk;
+}
+
 } // namespace device::shared::host

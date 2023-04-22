@@ -56,7 +56,7 @@ void FilesystemManager::RunTest() {
 }
 
 void FilesystemManager::RunDirectoryTest() {
-  
+  Status status = driver_.OpenDirectory();
 }
 
 } // namespace Sparkbox::Filesystem

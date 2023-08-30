@@ -1,5 +1,2 @@
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER g++)
-
-unset(CMAKE_GENERATOR)
-set(CMAKE_GENERATOR "Unix Makefiles")

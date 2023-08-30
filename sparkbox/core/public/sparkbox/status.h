@@ -14,6 +14,9 @@ enum class Status : int {
   // Bad input parameter
   kBadParameter,
 
+  // Already Exists
+  kAlreadyExists,
+
   // Timeout
   kTimeout,
 
@@ -22,6 +25,9 @@ enum class Status : int {
 
   // Bad resource state. Fix the problem and try again
   kBadResourceState,
+
+  // Unsupported. Do not try again
+  kUnsupported,
 };
 
 } // namespace sparkbox

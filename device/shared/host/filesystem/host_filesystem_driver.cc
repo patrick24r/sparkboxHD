@@ -2,9 +2,11 @@
 
 #include <cassert>
 #include <cstdint>
-#include <iostream>
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <memory>
+#include <string>
 
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/log.h"
@@ -17,20 +19,58 @@ using namespace ::sparkbox;
 
 namespace device::shared::host {
 
-Status HostFilesystemDriver::Open(int * file_id, 
-                                   const char * path,
-                                   IoMode mode) {
-  // Check for null pointers because safety is important I guess
-  if (file_id == nullptr || path == nullptr) {
-    return Status::kBadParameter;
+// Check if a file OR directory exists
+Status HostFilesystemDriver::Exists(const std::string& path, bool& exists) {
+  exists = std::filesystem::exists(path);
+  return Status::kOk;
+}
+
+// Create a directory if it does not exist
+Status HostFilesystemDriver::CreateDirectory(const std::string& path) {
+  bool already_exists = false;
+  if (Exists(path, already_exists) == Status::kOk && already_exists == true) {
+    return Status::kOk;
   }
 
+  if (!std::filesystem::create_directories(path)) {
+    return Status::kUnavailable;
+  }
+
+  return Status::kOk;
+}
+
+// Remove a file OR directory
+Status HostFilesystemDriver::Remove(const std::string& path) {
+  Status status = Status::kOk;
+  bool already_exists = false;
+
+  status = Exists(path, already_exists);
+  if (status != Status::kOk) {
+    return status;
+  }
+
+  // File/folder doesn't exist, no need to do anything
+  if (!already_exists) {
+    return Status::kOk;
+  }
+
+  if (!std::filesystem::remove(path)) {
+    return Status::kUnavailable;
+  }
+  
+  return Status::kOk;
+}
+
+// Open a file
+Status HostFilesystemDriver::Open(int& file_id, 
+                                  const std::string& path,
+                                  IoMode mode) {
   // If we already have too many files open, do nothing
   if (open_files_.size() >= kMaxFiles) {
     return Status::kUnavailable;
   }
 
-  *file_id = GetUniqueFileId();
+  file_id = GetUniqueFileId();
 
   // Open the file in the specified mode
   auto file = std::make_unique<fstream>();
@@ -43,7 +83,7 @@ Status HostFilesystemDriver::Open(int * file_id,
 
   if (file->good()) {
     // Save the open file stream handle and iterate to the next one
-    open_files_[*file_id] = std::move(file);
+    open_files_[file_id] = std::move(file);
     return Status::kOk;
   } else {
     // Failed to open file, maybe try again later???
@@ -51,6 +91,7 @@ Status HostFilesystemDriver::Open(int * file_id,
   }
 }
 
+// Close an open file
 Status HostFilesystemDriver::Close(int file_id) {
   // If no open file matches the file ID, do nothing
   if (!open_files_.count(file_id)) return Status::kOk;
@@ -59,15 +100,14 @@ Status HostFilesystemDriver::Close(int file_id) {
   return Status::kOk;
 }
 
+// Read from an open file
 Status HostFilesystemDriver::Read(int file_id,
                                    void * data,
                                    size_t bytes_to_read,
-                                   size_t * bytes_read) {
+                                   size_t& bytes_read) {
   // Check parameters
-  if (bytes_read == nullptr) {
-    return Status::kBadParameter;
-  } else if (data == nullptr) {
-    *bytes_read = 0;
+  if (data == nullptr) {
+    bytes_read = 0;
     return Status::kBadParameter;
   }
 
@@ -77,7 +117,7 @@ Status HostFilesystemDriver::Read(int file_id,
   }
 
   // Read from the file
-  *bytes_read = open_files_[file_id]->
+  bytes_read = open_files_[file_id]->
       readsome(reinterpret_cast<char*>(data), bytes_to_read);
 
   // Don't care about eof, just fail and bad bit
@@ -88,15 +128,14 @@ Status HostFilesystemDriver::Read(int file_id,
   return Status::kOk;
 }
 
+// Write to an open file
 Status HostFilesystemDriver::Write(int file_id,
                                     const void * data,
                                     size_t bytes_to_write,
-                                    size_t * bytes_written) {
+                                    size_t& bytes_written) {
   // Check parameters
-  if (bytes_written == nullptr) {
-    return Status::kBadParameter;
-  } else if (data == nullptr) {
-    *bytes_written = 0;
+  if (data == nullptr) {
+    bytes_written = 0;
     return Status::kBadParameter;
   }
 
@@ -109,22 +148,11 @@ Status HostFilesystemDriver::Write(int file_id,
 
   // Check write status, don't care about eof
   if (open_files_[file_id]->fail()) {
-    *bytes_written = 0;
+    bytes_written = 0;
     return Status::kUnavailable;
   }
 
-  *bytes_written = bytes_to_write;
-  return Status::kOk;
-}
-
-
-Status HostFilesystemDriver::OpenDirectory(int * dir_id, const char * path, bool create) {
-  return Status::kOk;
-}
-
-Status HostFilesystemDriver::ReadDirectory(int dir_id, DirectoryItem * item)
-
-Status HostFilesystemDriver::CloseDirectory(int dir_id) {
+  bytes_written = bytes_to_write;
   return Status::kOk;
 }
 

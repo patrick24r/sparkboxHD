@@ -62,7 +62,25 @@
 			"xhash": "cpp",
 			"cstdarg": "cpp",
 			"array": "cpp",
-			"bitset": "cpp"
+			"bitset": "cpp",
+			"xlocmes": "cpp",
+			"filesystem": "cpp",
+			"algorithm": "cpp",
+			"charconv": "cpp",
+			"chrono": "cpp",
+			"format": "cpp",
+			"forward_list": "cpp",
+			"iomanip": "cpp",
+			"locale": "cpp",
+			"mutex": "cpp",
+			"optional": "cpp",
+			"ratio": "cpp",
+			"sstream": "cpp",
+			"stop_token": "cpp",
+			"thread": "cpp",
+			"xlocbuf": "cpp",
+			"xlocmon": "cpp",
+			"xloctime": "cpp"
 		}
 	}
 }

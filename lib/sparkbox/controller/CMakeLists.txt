@@ -23,5 +23,6 @@ target_include_directories(sparkbox.controller.manager
 
 target_link_libraries(sparkbox.controller.manager
     PUBLIC
+        freertos_kernel
         sparkbox.controller.driver
 )

@@ -6,27 +6,34 @@
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/filesystem/filesystem_manager.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/status.h"
 
 namespace {
-using namespace ::sparkbox::audio;
-using namespace ::sparkbox::filesystem;
+using ::sparkbox::controller::ControllerDriver;
+using ::sparkbox::controller::ControllerManager;
+using ::sparkbox::filesystem::FilesystemDriver;
+using ::sparkbox::filesystem::FilesystemManager;
+using ::sparkbox::Status;
 }
 
 namespace sparkbox {
 
 class Sparkbox final {
  public:
-  Sparkbox(filesystem::FilesystemDriver& fs_driver,
-           controller::ControllerDriver& cont_driver) :
+  Sparkbox(FilesystemDriver& fs_driver,
+           ControllerDriver& cont_driver) :
     fs_manager_{fs_driver},
     controller_manager_{cont_driver} {}
 
-  filesystem::FilesystemManager& Filesystem(void) { return fs_manager_; }
-  controller::ControllerManager& Controller(void) { return controller_manager_; }
+  Status SetUp(void);
+  void TearDown(void);
+
+  FilesystemManager& Filesystem(void) { return fs_manager_; }
+  ControllerManager& Controller(void) { return controller_manager_; }
 
  private:
-  filesystem::FilesystemManager fs_manager_;
-  controller::ControllerManager controller_manager_;
+  FilesystemManager fs_manager_;
+  ControllerManager controller_manager_;
   
 };
 

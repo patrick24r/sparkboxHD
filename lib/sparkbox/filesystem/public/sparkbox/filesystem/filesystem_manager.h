@@ -7,12 +7,12 @@ namespace sparkbox::filesystem {
 class FilesystemManager {
  public:
   FilesystemManager(FilesystemDriver& driver) :
-    driver_(driver) {
-      driver_.Init();
-    }
+    driver_(driver) {}
 
-  void RunTest();
-  void RunDirectoryTest();
+  Status SetUp(void) { return driver_.SetUp(); }
+  void TearDown(void) { driver_.TearDown(); }
+
+  void RunTest(void);
 
  private:
   FilesystemDriver& driver_;

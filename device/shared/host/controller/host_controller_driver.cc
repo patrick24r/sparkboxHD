@@ -7,8 +7,14 @@ using ::sparkbox::Status;
 
 namespace device::shared::host {
 
-Status HostControllerDriver::SetOnControllerChanged(Callback& callback) {
-    return Status::kOk;
+Status HostControllerDriver::SetOnInputChanged(Callback& callback) {
+ // Save the callback to call when the input changes
+ on_input_changed_cb_ = callback;
+ return Status::kOk;
+}
+
+Status HostControllerDriver::GetControllerState(int controllerIndex, ControllerState& state) {
+  return Status::kOk;
 }
 
 } // namespace device::shared::host

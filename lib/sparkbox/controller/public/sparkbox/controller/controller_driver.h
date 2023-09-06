@@ -19,7 +19,10 @@ class ControllerDriver {
 
   // Sets the callback for when new controller input is recieved.
   // This includes connected/disconnected controllers
-  virtual Status SetOnControllerChanged(Callback& callback) = 0;
+  virtual Status SetOnInputChanged(Callback& callback) = 0;
+
+  // Get the state of the given controller
+  virtual Status GetControllerState(int controllerIndex, ControllerState& state) = 0;
 };
     
 } // namespace sparkbox::controller

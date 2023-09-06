@@ -17,6 +17,7 @@ target_include_directories(sparkbox
 
 target_link_libraries(sparkbox
     PUBLIC
+        freertos_kernel
         sparkbox.audio.manager
         sparkbox.controller.manager
         sparkbox.core

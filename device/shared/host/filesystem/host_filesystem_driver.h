@@ -22,7 +22,8 @@ class HostFilesystemDriver final : public sparkbox::filesystem::FilesystemDriver
   static constexpr int kMaxDirs = 3;
   
   // Nothing special to be done for initialization on host
-  Status Init() final { return Status::kOk; }
+  Status SetUp(void) final { return Status::kOk; }
+  void TearDown(void) final {}
 
   Status Exists(const std::string& path, bool& exists) final;
   Status CreateDirectory(const std::string& directory) final;

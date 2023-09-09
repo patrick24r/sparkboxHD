@@ -15,7 +15,10 @@ namespace sparkbox::controller {
 class ControllerDriver {
  public:
   static constexpr int kMaxControllers = 4;
-  using Callback = std::function<void()>;
+  using Callback = std::function<Status(uint)>;
+
+  virtual Status SetUp(void) = 0;
+  virtual void TearDown(void) = 0;
 
   // Sets the callback for when new controller input is recieved.
   // This includes connected/disconnected controllers

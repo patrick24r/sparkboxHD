@@ -12,6 +12,8 @@ using namespace ::sparkbox;
 
 int main(void) {
   Sparkbox sbox = device::GetSparkbox();
+  sbox.SetUp();
   sbox.Filesystem().RunTest();
+  sbox.TearDown();
   return 0;
 }

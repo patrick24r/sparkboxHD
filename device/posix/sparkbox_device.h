@@ -3,11 +3,13 @@
 #include "sparkbox/sparkbox.h"
 
 namespace {
-using namespace ::sparkbox;
+
+using ::sparkbox::Sparkbox;
+
 }
 
 namespace device {
 
-sparkbox::Sparkbox& GetSparkbox();
+Sparkbox& GetSparkbox();
 
 } // namespace device

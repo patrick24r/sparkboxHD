@@ -26,6 +26,9 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#include <assert.h>
+#include <pthread.h>
+
 /*-----------------------------------------------------------
 * Application specific definitions.
 *
@@ -39,12 +42,12 @@
 
 #define configUSE_PREEMPTION                       1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION    0
-#define configUSE_IDLE_HOOK                        1
-#define configUSE_TICK_HOOK                        1
-#define configUSE_DAEMON_TASK_STARTUP_HOOK         1
+#define configUSE_IDLE_HOOK                        0
+#define configUSE_TICK_HOOK                        0
+#define configUSE_DAEMON_TASK_STARTUP_HOOK         0
 #define configTICK_RATE_HZ                         ( 1000 )                  /* In this non-real time simulated environment the tick frequency has to be at least a multiple of the Win32 tick frequency, and therefore very slow. */
 #define configMINIMAL_STACK_SIZE                   ( ( unsigned short ) PTHREAD_STACK_MIN ) /* The stack size being passed is equal to the minimum stack size needed by pthread_create(). */
-#define configTOTAL_HEAP_SIZE                      ( ( size_t ) ( 65 * 1024 ) )
+#define configTOTAL_HEAP_SIZE                      ( ( size_t ) ( 256 * 1024 ) )
 #define configMAX_TASK_NAME_LEN                    ( 12 )
 #define configUSE_TRACE_FACILITY                   1
 #define configUSE_16_BIT_TICKS                     0
@@ -58,7 +61,8 @@
 #define configUSE_ALTERNATIVE_API                  0
 #define configUSE_QUEUE_SETS                       1
 #define configUSE_TASK_NOTIFICATIONS               1
-#define configSUPPORT_STATIC_ALLOCATION            1
+#define configSUPPORT_STATIC_ALLOCATION            0
+#define configSUPPORT_DYNAMIC_ALLOCATION           1
 #define configRECORD_STACK_HIGH_ADDRESS            1
 
 /* Software timer related configuration options.  The maximum possible task
@@ -118,9 +122,6 @@ void vConfigureTimerForRunTimeStats( void );    /* Prototype of function that in
     #define sbSEND_COMPLETED( pxStreamBuffer )    vGenerateCoreBInterrupt( pxStreamBuffer )
 #endif /* configINCLUDE_MESSAGE_BUFFER_AMP_DEMO */
 
-extern void vAssertCalled( const char * const pcFileName,
-                           unsigned long ulLine );
-
 /* projCOVERAGE_TEST should be defined on the command line so this file can be
  * used with multiple project configurations.  If it is
  */
@@ -128,34 +129,15 @@ extern void vAssertCalled( const char * const pcFileName,
     #error projCOVERAGE_TEST should be defined to 1 or 0 on the command line.
 #endif
 
-#if ( projCOVERAGE_TEST == 1 )
-
-/* Insert NOPs in empty decision paths to ensure both true and false paths
- * are being tested. */
-    #define mtCOVERAGE_TEST_MARKER()    __asm volatile ( "NOP" )
-
-/* Ensure the tick count overflows during the coverage test. */
-    #define configINITIAL_TICK_COUNT        0xffffd800UL
-
-/* Allows tests of trying to allocate more than the heap has free. */
-    #define configUSE_MALLOC_FAILED_HOOK    0
-
-/* To test builds that remove the static qualifier for debug builds. */
-    #define portREMOVE_STATIC_QUALIFIER
-#else /* if ( projCOVERAGE_TEST == 1 ) */
-
 /* It is a good idea to define configASSERT() while developing.  configASSERT()
  * uses the same semantics as the standard C assert() macro.  Don't define
  * configASSERT() when performing code coverage tests though, as it is not
  * intended to asserts() to fail, some some code is intended not to run if no
  * errors are present. */
-    #define configASSERT( x )    if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ )
+#include <assert.h>
+#define configASSERT( x ) assert(x)
 
-    #define configUSE_MALLOC_FAILED_HOOK    1
-
-/* Include the FreeRTOS+Trace FreeRTOS trace macro definitions. */
-/*    #include "trcRecorder.h" */
-#endif /* if ( projCOVERAGE_TEST == 1 ) */
+#define configUSE_MALLOC_FAILED_HOOK    0
 
 /* networking definitions */
 #define configMAC_ISR_SIMULATOR_PRIORITY    ( configMAX_PRIORITIES - 1 )

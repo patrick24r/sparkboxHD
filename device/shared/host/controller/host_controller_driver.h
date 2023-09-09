@@ -16,11 +16,14 @@ namespace device::shared::host {
 
 class HostControllerDriver : public ControllerDriver {
  public:
+  Status SetUp() final;
+  void TearDown() final;
+
   Status SetOnInputChanged(Callback& callback) final;
   Status GetControllerState(int controllerIndex, ControllerState& state) final;
 
  private:
-  Callback on_input_changed_cb_;
+  Callback on_input_changed_cb_ = NULL;
 };
 
 } // namespace device::shared::host

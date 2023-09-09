@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <bitset>
 
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/controller/controller_state.h"
@@ -18,7 +19,10 @@ namespace sparkbox::controller {
 
 class ControllerManager {
  public:
-  ControllerManager(ControllerDriver& driver) : driver_(driver) {}
+  ControllerManager(ControllerDriver& driver) : 
+    driver_(driver),
+    task_handle_(nullptr),
+    new_controller_inputs_(0) {}
 
   Status SetUp(void);
   void TearDown(void);
@@ -30,14 +34,17 @@ class ControllerManager {
   std::array<ControllerState, ControllerDriver::kMaxControllers> controllers_state_;
 
 
-  constexpr static size_t TaskStackDepth = 128;
-  constexpr static size_t TaskPriority = 16;
-  TaskHandle_t task_handle_;
-  static void ControllerTaskWrapper(void * controller);
-  void ControllerTask(void) { while(1); }
-  void OnInputChanged(void);
+  constexpr static size_t kTaskStackDepth = configMINIMAL_STACK_SIZE;
+  constexpr static size_t kTaskPriority = 5;
 
-  
+  static_assert(kTaskStackDepth >= configMINIMAL_STACK_SIZE);
+
+  TaskHandle_t task_handle_;
+  static void ControllerTaskWrapper(void * controllerManager);
+  void ControllerTask(void);
+  Status OnInputChanged(uint controllerIndex);
+
+  std::bitset<ControllerDriver::kMaxControllers> new_controller_inputs_;
 };
 
 } // namespace sparkbox::controller

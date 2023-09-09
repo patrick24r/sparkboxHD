@@ -22,7 +22,7 @@ enum Buttons : int {
 class ControllerState {
  public:
   ControllerState() : connected_(false), buttons_(0) {}
-  ControllerState(bool connected, size_t buttons) : connected_(connected), buttons_(buttons) {}
+  ControllerState(bool connected, uint16_t buttons) : connected_(connected), buttons_(buttons) {}
   bool Connected(void) { return connected_;  }
 
   bool ButtonA(void) { return buttons_[kButtonA]; }

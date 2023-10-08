@@ -4,23 +4,15 @@
 #include "sparkbox/controller/controller_state.h"
 #include "sparkbox/status.h"
 
-namespace {
-
-using ::sparkbox::controller::ControllerDriver;
-using ::sparkbox::controller::ControllerState;
-using ::sparkbox::Status;
-
-} // namespace
-
 namespace device::shared::host {
 
-class HostControllerDriver : public ControllerDriver {
+class HostControllerDriver : public sparkbox::controller::ControllerDriver {
  public:
-  Status SetUp() final;
+  sparkbox::Status SetUp() final;
   void TearDown() final;
 
-  Status SetOnInputChanged(Callback& callback) final;
-  Status GetControllerState(int controllerIndex, ControllerState& state) final;
+  sparkbox::Status SetOnInputChanged(Callback& callback) final;
+  sparkbox::Status GetControllerState(int controllerIndex, sparkbox::controller::ControllerState& state) final;
 
  private:
   Callback on_input_changed_cb_ = NULL;

@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_GENERATOR "Unix Makefiles" CACHE STRING "" FORCE)
-set(CMAKE_TOOLCHAIN_FILE
-    ${CMAKE_CURRENT_SOURCE_DIR}/posix.cmake)
-
-# FreeRTOS config
+# Device FreeRTOS config
 set(FREERTOS_PORT "GCC_POSIX" CACHE STRING "" FORCE)
 add_library(freertos_config INTERFACE)
 target_include_directories(freertos_config SYSTEM INTERFACE
@@ -14,6 +10,7 @@ target_compile_definitions(freertos_config INTERFACE
     projCOVERAGE_TEST=0
 )
 
+# Device library
 add_library(sparkbox_device STATIC
     sparkbox_device.cc
 )

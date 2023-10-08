@@ -2,6 +2,7 @@
 
 namespace {
 using ::sparkbox::controller::ControllerDriver;
+using ::sparkbox::controller::ControllerState;
 using ::sparkbox::Status;
 } // namespace
 

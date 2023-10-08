@@ -6,8 +6,9 @@
 #include "sparkbox_device.h"
 
 namespace {
-using namespace ::std;
-using namespace ::sparkbox;
+
+using ::sparkbox::Sparkbox;
+
 }
 
 int main(void) {

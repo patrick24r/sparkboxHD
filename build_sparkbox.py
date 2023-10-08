@@ -23,7 +23,6 @@ def main():
     build_dir = "build"
     if not os.path.exists(build_dir):
         os.mkdir(build_dir)
-    
     if args.clean:
         for root, dirs, files in os.walk(build_dir):
             for f in files:
@@ -31,10 +30,11 @@ def main():
             for d in dirs:
                 shutil.rmtree(os.path.join(root, d))
 
-    # Find toolchain file
-    
-
     # Run cmake
+    subprocess.run(["cmake", ".", "-B", build_dir, "-DCMAKE_TOOLCHAIN_FILE="+toolchain_file])
+    # Run make
+    subprocess.run(["make", "-C", build_dir, "-j"])
+
 
 # Using the special variable  
 # __name__ 

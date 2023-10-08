@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_GENERATOR "MinGW Makefiles" CACHE STRING "" FORCE)
-set(CMAKE_TOOLCHAIN_FILE
-    ${CMAKE_CURRENT_SOURCE_DIR}/windows.cmake)
-
 # FreeRTOS config
 set(FREERTOS_PORT "MSVC_MINGW" CACHE STRING "" FORCE)
 add_library(freertos_config INTERFACE)

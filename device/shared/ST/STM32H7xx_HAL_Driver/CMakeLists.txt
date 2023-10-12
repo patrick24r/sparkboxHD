@@ -18,6 +18,7 @@ add_library(stm32h7_hal STATIC
     Src/stm32h7xx_hal_cec.c
     Src/stm32h7xx_hal_comp.c
     Src/stm32h7xx_hal_cordic.c
+    Src/stm32h7xx_hal_cortex.c
     Src/stm32h7xx_hal_crc.c
     Src/stm32h7xx_hal_crc_ex.c
     Src/stm32h7xx_hal_cryp.c

@@ -33,7 +33,7 @@ def main():
     # Run cmake
     subprocess.run(["cmake", ".", "-B", build_dir, "-DCMAKE_TOOLCHAIN_FILE="+toolchain_file])
     # Run make
-    subprocess.run(["make", "-C", build_dir, "-j"])
+    subprocess.run(["make", "-C", build_dir, "-j", "VERBOSE=1"])
 
 
 # Using the special variable  

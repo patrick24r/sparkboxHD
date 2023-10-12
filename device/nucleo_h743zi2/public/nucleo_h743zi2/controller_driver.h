@@ -15,4 +15,4 @@ class ControllerDriver final : public sparkbox::controller::ControllerDriver {
   sparkbox::Status GetControllerState(int controllerIndex, ControllerState& state) final { return sparkbox::Status::kOk; };
 };
 
-}
+} // namespace NucleoH743ZI2

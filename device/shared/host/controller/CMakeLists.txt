@@ -11,6 +11,6 @@ target_include_directories(device.shared.host.controller
 
 target_link_libraries(device.shared.host.controller
     PUBLIC
-        sparkbox
         sparkbox.controller.driver
+        sparkbox.core
 )

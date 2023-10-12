@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
 
+add_library(stm32h7_hal_interface INTERFACE)
+target_include_directories(stm32h7_hal_interface INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Inc
+)
+target_link_libraries(stm32h7_hal_interface INTERFACE
+    stm32h7_hal_conf
+)
+
+
 add_library(stm32h7_hal STATIC
     Src/Legacy/stm32h7xx_hal_eth.c
     Src/Legacy/stm32h7xx_hal_eth_ex.c
@@ -28,13 +37,13 @@ add_library(stm32h7_hal STATIC
     Src/stm32h7xx_hal_exti.c
     Src/stm32h7xx_hal_fdcan.c
     Src/stm32h7xx_hal_flash.c
-    Src/stm32h7xx_hal_flash._ex.c
+    Src/stm32h7xx_hal_flash_ex.c
     Src/stm32h7xx_hal_fmac.c
     Src/stm32h7xx_hal_gfxmmu.c
     Src/stm32h7xx_hal_gpio.c
     Src/stm32h7xx_hal_hash.c
     Src/stm32h7xx_hal_hash_ex.c
-    Src/stm32h7xx_hal_hdc.c
+    Src/stm32h7xx_hal_hcd.c
     Src/stm32h7xx_hal_hrtim.c
     Src/stm32h7xx_hal_hsem.c
     Src/stm32h7xx_hal_i2c.c
@@ -123,14 +132,12 @@ add_library(stm32h7_hal STATIC
     Src/stm32h7xx_ll_usb.c
     Src/stm32h7xx_ll_utils.c
 )
-
 target_include_directories(stm32h7_hal
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/Inc
 )
-
 target_link_libraries(stm32h7_hal
     PUBLIC
-        # Device specific stm32h7 files and definitions
-        stm32h7_device    
+        cmsis.device.st.stm32h7xx
+        stm32h7_hal_interface
 )

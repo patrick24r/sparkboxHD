@@ -83,8 +83,9 @@ void ControllerManager::ControllerTask(void) {
   }
 }
 
-Status ControllerManager::OnInputChanged(uint controllerIndex) {
-  if (controllerIndex >= new_controller_inputs_.size()) {
+Status ControllerManager::OnInputChanged(int controllerIndex) {
+  if (controllerIndex >= static_cast<int>(new_controller_inputs_.size()) ||
+      controllerIndex < 0) {
     return Status::kBadParameter;
   }
 

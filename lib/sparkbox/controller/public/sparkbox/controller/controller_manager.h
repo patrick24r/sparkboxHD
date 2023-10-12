@@ -42,7 +42,7 @@ class ControllerManager {
   TaskHandle_t task_handle_;
   static void ControllerTaskWrapper(void * controllerManager);
   void ControllerTask(void);
-  Status OnInputChanged(uint controllerIndex);
+  Status OnInputChanged(int controllerIndex);
 
   std::bitset<ControllerDriver::kMaxControllers> new_controller_inputs_;
 };

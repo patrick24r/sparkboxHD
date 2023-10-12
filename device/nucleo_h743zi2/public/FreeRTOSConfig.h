@@ -52,9 +52,7 @@
   #include <stdint.h>
   extern uint32_t SystemCoreClock;
 #endif
-#ifndef CMSIS_device_header
-#define CMSIS_device_header "stm32h7xx.h"
-#endif /* CMSIS_device_header */
+#include "stm32h7xx.h"
 
 #define configENABLE_FPU                         0
 #define configENABLE_MPU                         0

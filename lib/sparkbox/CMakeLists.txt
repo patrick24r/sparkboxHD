@@ -15,6 +15,12 @@ target_include_directories(sparkbox
         public
 )
 
+target_compile_options(sparkbox INTERFACE
+    -Wall
+    -ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=
+    -std=c++2a
+)
+
 target_link_libraries(sparkbox
     PUBLIC
         freertos_kernel

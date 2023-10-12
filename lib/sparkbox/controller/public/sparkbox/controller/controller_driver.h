@@ -15,7 +15,7 @@ namespace sparkbox::controller {
 class ControllerDriver {
  public:
   static constexpr int kMaxControllers = 4;
-  using Callback = std::function<Status(uint)>;
+  using Callback = std::function<Status(int)>;
 
   virtual Status SetUp(void) = 0;
   virtual void TearDown(void) = 0;

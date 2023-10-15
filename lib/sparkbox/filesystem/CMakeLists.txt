@@ -15,12 +15,10 @@ target_link_libraries(sparkbox.filesystem.driver
 add_library(sparkbox.filesystem.manager STATIC
     filesystem_manager.cc
 )
-
 target_include_directories(sparkbox.filesystem.manager
     PUBLIC
         public
 )
-
 target_link_libraries(sparkbox.filesystem.manager
     PUBLIC
         sparkbox.filesystem.driver

@@ -32,6 +32,9 @@ class Sparkbox final {
   Status SetUp(void);
   void TearDown(void);
 
+  // Start the sparkbox
+  void Start(void);
+
   FilesystemManager& Filesystem(void) { return fs_manager_; }
   ControllerManager& Controller(void) { return controller_manager_; }
 

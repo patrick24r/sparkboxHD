@@ -3,7 +3,7 @@
 #include "FreeRTOS.h"
 #include "nucleo_h743zi2/controller_driver.h"
 #include "nucleo_h743zi2/core/core_driver.h"
-#include "nucleo_h743zi2/filesystem_driver.h"
+#include "nucleo_h743zi2/filesystem/filesystem_driver.h"
 #include "sparkbox/sparkbox.h"
 
 namespace device {

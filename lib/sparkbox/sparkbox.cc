@@ -1,5 +1,6 @@
 #include "sparkbox/sparkbox.h"
 
+#include "FreeRTOS.h"
 #include "sparkbox/log.h"
 #include "sparkbox/status.h"
 
@@ -42,6 +43,5 @@ void Sparkbox::TearDown(void) {
   fs_manager_.TearDown();
   core_driver_.TearDown();
 }
-
 
 } // namespace sparkbox

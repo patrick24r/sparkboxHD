@@ -1,22 +1,20 @@
 #include "nucleo_h743zi2/filesystem/filesystem_driver.h"
 
-#include "nucleo_h743zi2/core/core_defines.h"
 #include "sparkbox/status.h"
 #include "stm32h7xx_hal.h"
+#include "stm32h7xx_hal_gpio.h"
 
 namespace {
 using ::sparkbox::Status;
 } // namespace
 
-namespace NucleoH743ZI2 {
+namespace nucleoh743zi2 {
 
 Status FilesystemDriver::SetUp(void) {
-  HAL_GPIO_WritePin(GPIOB, LD1_Pin, GPIO_PIN_SET);
   return Status::kOk;
 }
 
 void FilesystemDriver::TearDown(void) {
-  HAL_GPIO_WritePin(GPIOB, LD3_Pin, GPIO_PIN_SET);
   return;
 }
 
@@ -56,4 +54,4 @@ Status FilesystemDriver::Write(int file_id,
   return Status::kOk;
 }
 
-} // namespace NucleoH743ZI2
+} // namespace nucleoh743zi2

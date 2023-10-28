@@ -9,9 +9,9 @@
 namespace device {
 
 sparkbox::Sparkbox& GetSparkbox() {
-  static NucleoH743ZI2::CoreDriver core_driver;
-  static NucleoH743ZI2::FilesystemDriver fs_driver;
-  static NucleoH743ZI2::ControllerDriver cont_driver;
+  static nucleoh743zi2::core::CoreDriver core_driver;
+  static nucleoh743zi2::FilesystemDriver fs_driver;
+  static nucleoh743zi2::ControllerDriver cont_driver;
   static sparkbox::Sparkbox sbox = sparkbox::Sparkbox(core_driver,
                                                       fs_driver,
                                                       cont_driver);

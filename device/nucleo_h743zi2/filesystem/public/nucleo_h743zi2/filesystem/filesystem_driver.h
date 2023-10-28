@@ -3,7 +3,7 @@
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/status.h"
 
-namespace NucleoH743ZI2 {
+namespace nucleoh743zi2 {
 
 class FilesystemDriver final : public sparkbox::filesystem::FilesystemDriver {
  public:

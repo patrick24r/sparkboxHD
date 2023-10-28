@@ -9,7 +9,6 @@ target_include_directories(nucleo_h743zi2.filesystem
 )
 target_link_libraries(nucleo_h743zi2.filesystem
     PUBLIC
-        nucleo_h743zi2.core_defines
         sparkbox.filesystem.driver
         stm32h7_hal
 )

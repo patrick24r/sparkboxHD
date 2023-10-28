@@ -3,7 +3,7 @@
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/status.h"
 
-namespace NucleoH743ZI2 {
+namespace nucleoh743zi2 {
 
 class ControllerDriver final : public sparkbox::controller::ControllerDriver {
  public:
@@ -15,4 +15,4 @@ class ControllerDriver final : public sparkbox::controller::ControllerDriver {
   sparkbox::Status GetControllerState(int controllerIndex, ControllerState& state) final { return sparkbox::Status::kOk; };
 };
 
-} // namespace NucleoH743ZI2
+} // namespace nucleoh743zi2

@@ -10,12 +10,7 @@
 #include "sparkbox/status.h"
 
 namespace {
-using ::sparkbox::controller::ControllerDriver;
 using ::sparkbox::controller::ControllerManager;
-using ::sparkbox::CoreDriver;
-using ::sparkbox::filesystem::FilesystemDriver;
-using ::sparkbox::filesystem::FilesystemManager;
-using ::sparkbox::Status;
 }
 
 namespace sparkbox {
@@ -23,8 +18,8 @@ namespace sparkbox {
 class Sparkbox final {
  public:
   Sparkbox(CoreDriver& core_driver,
-           FilesystemDriver& fs_driver,
-           ControllerDriver& cont_driver) :
+           filesystem::FilesystemDriver& fs_driver,
+           controller::ControllerDriver& cont_driver) :
     core_driver_(core_driver),
     fs_manager_{fs_driver},
     controller_manager_{cont_driver} {}
@@ -35,13 +30,13 @@ class Sparkbox final {
   // Start the sparkbox
   void Start(void);
 
-  FilesystemManager& Filesystem(void) { return fs_manager_; }
-  ControllerManager& Controller(void) { return controller_manager_; }
+  filesystem::FilesystemManager& Filesystem(void) { return fs_manager_; }
+  controller::ControllerManager& Controller(void) { return controller_manager_; }
 
  private:
   CoreDriver& core_driver_;
-  FilesystemManager fs_manager_;
-  ControllerManager controller_manager_;
+  filesystem::FilesystemManager fs_manager_;
+  controller::ControllerManager controller_manager_;
   
 };
 

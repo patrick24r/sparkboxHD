@@ -23,9 +23,8 @@ def main():
         raise Exception("Toolchain file " + toolchain_file + " not found")
 
     # Set up build directory
-    build_dir = os.path.join(script_dir, "build")
-    if not os.path.exists(build_dir):
-        os.mkdir(build_dir)
+    build_dir = os.path.join(script_dir, "build", args.device)
+    os.makedirs(build_dir, exist_ok=True)
     if args.clean:
         for root, dirs, files in os.walk(build_dir):
             for f in files:

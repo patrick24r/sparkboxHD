@@ -1,19 +1,22 @@
 #pragma once
 
+#include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/status.h"
 
-namespace sparkbox::audio
-{
+namespace sparkbox::audio {
 
 class AudioManager {
  public:
-  sparkbox::Status ImportAudioFiles(const char * directory);
-  sparkbox::Status ImportAudioFile(const char * file);
+  AudioManager(AudioDriver &driver) : driver_(driver) {}
+  sparkbox::Status ImportAudioFiles(const char *directory);
+  sparkbox::Status ImportAudioFile(const char *file);
 
  private:
-  sparkbox::Status ImportWavFile(const char * file);
-  sparkbox::Status ImportMp3File(const char * file);
+  AudioDriver& driver_;
+
+  sparkbox::Status ImportWavFile(const char *file);
+  sparkbox::Status ImportMp3File(const char *file);
 };
 
 
-} // namespace Sparkbox::Audio
+} // namespace Sparkbox::asudio

@@ -8,6 +8,14 @@
 
 namespace {
 
+extern "C" {
+
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+void HAL_SuspendTick(void);
+void HAL_ResumeTick(void);
+
+}
+
 static TIM_HandleTypeDef htim7;
 
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {

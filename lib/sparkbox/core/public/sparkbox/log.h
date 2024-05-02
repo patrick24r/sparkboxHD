@@ -17,7 +17,7 @@
 // Logging macros, all output to stderr
 #define SP_LOG_BASE(level, message, ...) \
   do { \
-    fprintf(stderr, "%-5s | %-25s | %s:%d: ", level, __FILE__, __FUNCTION__, __LINE__); \
+    fprintf(stderr, "%-5s | %-25s:%d | %s: ", level, __FILE__, __LINE__, __FUNCTION__); \
     fprintf(stderr, message __VA_OPT__(,) __VA_ARGS__); \
     fprintf(stderr, "\n"); \
   } while (0)

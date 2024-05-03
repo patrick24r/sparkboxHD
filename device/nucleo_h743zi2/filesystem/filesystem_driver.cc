@@ -18,8 +18,8 @@ void FilesystemDriver::TearDown(void) {
   return;
 }
 
-Status FilesystemDriver::Exists(const std::string& path, bool& exists) {
-  return Status::kOk;
+bool FilesystemDriver::Exists(const std::string& path) {
+  return true;
 }
 
 Status FilesystemDriver::CreateDirectory(const std::string& directory) {

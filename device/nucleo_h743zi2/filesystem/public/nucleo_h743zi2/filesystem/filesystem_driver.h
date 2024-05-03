@@ -10,7 +10,7 @@ class FilesystemDriver final : public sparkbox::filesystem::FilesystemDriver {
   sparkbox::Status SetUp(void) final;
   void TearDown(void) final;
   
-  sparkbox::Status Exists(const std::string& path, bool& exists) final;
+  bool Exists(const std::string& path) final;
   sparkbox::Status CreateDirectory(const std::string& directory) final;
   sparkbox::Status Remove(const std::string& path) final;
 

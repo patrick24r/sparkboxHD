@@ -20,15 +20,13 @@ using namespace ::sparkbox;
 namespace device::shared::host {
 
 // Check if a file OR directory exists
-Status HostFilesystemDriver::Exists(const std::string& path, bool& exists) {
-  exists = std::filesystem::exists(path);
-  return Status::kOk;
+bool HostFilesystemDriver::Exists(const std::string& path) {
+  return std::filesystem::exists(path);
 }
 
 // Create a directory if it does not exist
 Status HostFilesystemDriver::CreateDirectory(const std::string& path) {
-  bool already_exists = false;
-  if (Exists(path, already_exists) == Status::kOk && already_exists == true) {
+  if (Exists(path)) {
     return Status::kOk;
   }
 
@@ -41,16 +39,8 @@ Status HostFilesystemDriver::CreateDirectory(const std::string& path) {
 
 // Remove a file OR directory
 Status HostFilesystemDriver::Remove(const std::string& path) {
-  Status status = Status::kOk;
-  bool already_exists = false;
-
-  status = Exists(path, already_exists);
-  if (status != Status::kOk) {
-    return status;
-  }
-
   // File/folder doesn't exist, no need to do anything
-  if (!already_exists) {
+  if (!Exists(path)) {
     return Status::kOk;
   }
 

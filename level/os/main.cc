@@ -15,6 +15,7 @@ int main(void) {
   Sparkbox sbox = device::GetSparkbox();
   sbox.SetUp();
   sbox.Filesystem().RunTest();
+  sbox.Audio().RunTest();
   sbox.TearDown();
   return 0;
 }

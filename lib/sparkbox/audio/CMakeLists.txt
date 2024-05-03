@@ -21,4 +21,5 @@ target_link_libraries(sparkbox.audio.manager
     PUBLIC
         sparkbox.audio.driver
         sparkbox.core
+        sparkbox.filesystem.manager
 )

@@ -29,7 +29,7 @@ class FilesystemDriver {
   virtual void TearDown(void) = 0;
 
   // Checks if a file or directory exists
-  virtual Status Exists(const std::string& path, bool& exists) = 0;
+  virtual bool Exists(const std::string& path) = 0;
   // Creates a directory
   virtual Status CreateDirectory(const std::string& directory) = 0;
   // Removes a file or directory

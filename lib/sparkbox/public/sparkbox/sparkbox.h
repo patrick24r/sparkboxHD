@@ -19,9 +19,11 @@ class Sparkbox final {
  public:
   Sparkbox(CoreDriver& core_driver,
            filesystem::FilesystemDriver& fs_driver,
+           audio::AudioDriver& audio_driver,
            controller::ControllerDriver& cont_driver) :
     core_driver_(core_driver),
     fs_manager_{fs_driver},
+    audio_manager_{audio_driver, fs_driver},
     controller_manager_{cont_driver} {}
 
   Status SetUp(void);
@@ -30,12 +32,14 @@ class Sparkbox final {
   // Start the sparkbox
   void Start(void);
 
+  audio::AudioManager& Audio(void) { return audio_manager_; }
   filesystem::FilesystemManager& Filesystem(void) { return fs_manager_; }
   controller::ControllerManager& Controller(void) { return controller_manager_; }
 
  private:
   CoreDriver& core_driver_;
   filesystem::FilesystemManager fs_manager_;
+  audio::AudioManager audio_manager_;
   controller::ControllerManager controller_manager_;
   
 };

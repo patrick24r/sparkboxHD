@@ -25,7 +25,7 @@ class HostFilesystemDriver final : public sparkbox::filesystem::FilesystemDriver
   Status SetUp(void) final { return Status::kOk; }
   void TearDown(void) final {}
 
-  Status Exists(const std::string& path, bool& exists) final;
+  bool Exists(const std::string& path) final;
   Status CreateDirectory(const std::string& directory) final;
   Status Remove(const std::string& path) final;
 

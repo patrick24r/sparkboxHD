@@ -10,15 +10,19 @@ target_include_directories(sparkbox.audio.driver
 # sparkbox.audio.manager
 add_library(sparkbox.audio.manager STATIC
     audio_manager.cc
+    audio_file_importer.cc
 )
 
 target_include_directories(sparkbox.audio.manager
     PUBLIC
         public
+    PRIVATE
+        internal
 )
 
 target_link_libraries(sparkbox.audio.manager
     PUBLIC
+        freertos_kernel
         sparkbox.audio.driver
         sparkbox.core
         sparkbox.filesystem.manager

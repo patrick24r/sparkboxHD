@@ -12,10 +12,11 @@ class HostControllerDriver : public sparkbox::controller::ControllerDriver {
   void TearDown() final;
 
   sparkbox::Status SetOnInputChanged(Callback& callback) final;
-  sparkbox::Status GetControllerState(int controllerIndex, sparkbox::controller::ControllerState& state) final;
+  sparkbox::Status GetControllerState(
+      int controllerIndex, sparkbox::controller::ControllerState& state) final;
 
  private:
   Callback on_input_changed_cb_ = NULL;
 };
 
-} // namespace device::shared::host
+}  // namespace device::shared::host

@@ -37,6 +37,17 @@ def main():
     # Run make
     subprocess.run(["make", "-C", build_dir, "-j", "VERBOSE=1"])
 
+    # Copy sound files from each level/<level>/sounds to build/<device>/<level>/sounds
+    level_dir = os.path.join(script_dir, "level")
+    for level_name in os.listdir(level_dir):
+        level_name_dir = os.path.join(level_dir, level_name)
+        if (os.path.isdir(level_name_dir)):
+            build_level_dir = os.path.join(build_dir, "level", level_name, "sounds")
+            if (os.path.exists(build_level_dir)):
+                shutil.rmtree(build_level_dir)
+            shutil.copytree(os.path.join(level_name_dir, "sounds"), build_level_dir)
+
+
 
 # Using the special variable  
 # __name__ 

@@ -12,4 +12,4 @@ namespace device {
 
 Sparkbox& GetSparkbox();
 
-} // namespace device
+}  // namespace device

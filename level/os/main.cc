@@ -1,4 +1,4 @@
-#include <cstdlib>	
+#include <cstdlib>
 #include <iostream>
 #include <string>
 
@@ -14,8 +14,10 @@ using ::sparkbox::Sparkbox;
 int main(void) {
   Sparkbox sbox = device::GetSparkbox();
   sbox.SetUp();
-  sbox.Filesystem().RunTest();
-  sbox.Audio().RunTest();
+
+  // Start the sparkbox
+  sbox.Start();
+
   sbox.TearDown();
   return 0;
 }

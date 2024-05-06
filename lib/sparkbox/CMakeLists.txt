@@ -15,11 +15,6 @@ target_include_directories(sparkbox
         public
 )
 
-target_compile_options(sparkbox INTERFACE
-    -Wall
-    -std=c++2a
-)
-
 target_link_libraries(sparkbox
     PUBLIC
         freertos_kernel

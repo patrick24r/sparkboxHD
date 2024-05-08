@@ -16,3 +16,17 @@ target_compile_options(sparkbox.core INTERFACE
     -std=c++2a
   >
 )
+
+# Sparkbox manager base class that all managers inherit from
+add_library(sparkbox.core.manager STATIC
+  manager.cc
+)
+target_include_directories(sparkbox.core.manager
+  PUBLIC
+    internal
+)
+target_link_libraries(sparkbox.core.manager
+  PUBLIC
+    freertos_kernel
+    sparkbox.core
+)

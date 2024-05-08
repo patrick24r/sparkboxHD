@@ -25,4 +25,5 @@ target_link_libraries(sparkbox.controller.manager
     PUBLIC
         freertos_kernel
         sparkbox.controller.driver
+        sparkbox.core.manager
 )

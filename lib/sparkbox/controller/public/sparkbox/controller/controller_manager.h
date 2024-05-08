@@ -6,36 +6,35 @@
 #include "FreeRTOS.h"
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/controller/controller_state.h"
-#include "task.h"
+#include "sparkbox/manager.h"
+#include "sparkbox/message.h"
+#include "sparkbox/status.h"
 
 namespace sparkbox::controller {
 
-class ControllerManager {
+class ControllerManager : sparkbox::Manager {
  public:
   ControllerManager(ControllerDriver& driver)
-      : driver_(driver), task_handle_(nullptr), new_controller_inputs_(0) {}
+      : sparkbox::Manager(kConfig), driver_(driver) {}
 
-  sparkbox::Status SetUp(void);
-  void TearDown(void);
+  sparkbox::Status SetUp(void) override;
+  void TearDown(void) override;
 
   Status GetControllerState(int controller);
 
  private:
+  static constexpr sparkbox::Manager::Config kConfig = {
+      .task_name = "ControllerTask",
+      .task_stack_depth = configMINIMAL_STACK_SIZE,
+      .task_priority = 5,
+      .queue_length = 50,
+  };
   ControllerDriver& driver_;
   std::array<ControllerState, ControllerDriver::kMaxControllers>
       controllers_state_;
 
-  constexpr static size_t kTaskStackDepth = configMINIMAL_STACK_SIZE;
-  constexpr static size_t kTaskPriority = 5;
-
-  static_assert(kTaskStackDepth >= configMINIMAL_STACK_SIZE);
-
-  TaskHandle_t task_handle_;
-  static void ControllerTaskWrapper(void* controllerManager);
-  void ControllerTask(void);
-  Status OnInputChanged(int controllerIndex);
-
-  std::bitset<ControllerDriver::kMaxControllers> new_controller_inputs_;
+  void HandleMessage(sparkbox::Message& message) override;
+  sparkbox::Status InputChangedCb(int controllerIndex);
 };
 
 }  // namespace sparkbox::controller

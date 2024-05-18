@@ -30,4 +30,12 @@ enum class Status : int {
   kUnsupported,
 };
 
-} // namespace sparkbox
+}  // namespace sparkbox
+
+#define SP_RETURN_IF_ERROR(expr)               \
+  do {                                         \
+    const ::sparkbox::Status temp_err((expr)); \
+    if (temp_err != ::sparkbox::Status::kOk) { \
+      return temp_err;                         \
+    }                                          \
+  } while (0)

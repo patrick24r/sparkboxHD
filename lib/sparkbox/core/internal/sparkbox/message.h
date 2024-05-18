@@ -5,6 +5,9 @@ namespace sparkbox {
 enum class MessageType : size_t {
   // AudioManager Messages
   kAudio = 1000,
+  kAudioSetChannelSource,
+  kAudioStartPlayback,
+  kAudioStopPlayback,
   kAudioBlockComplete,
 
   // ControllerManager Messages

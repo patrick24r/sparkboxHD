@@ -19,8 +19,8 @@ class AudioFileImporter {
   sparkbox::Status ImportAudioFiles(const std::string &directory);
 
   static bool IsSampleRateSupported(uint32_t sample_rate_hz) {
-    return sample_rate_hz == 8000 || sample_rate_hz == 16000 ||
-           sample_rate_hz == 22050 || sample_rate_hz == 44100 ||
+    return sample_rate_hz == 11025 || sample_rate_hz == 22050 ||
+           sample_rate_hz == 44100 || sample_rate_hz == 16000 ||
            sample_rate_hz == 48000;
   }
 

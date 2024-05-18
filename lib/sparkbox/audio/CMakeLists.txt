@@ -20,12 +20,28 @@ target_include_directories(sparkbox.audio.manager
 target_link_libraries(sparkbox.audio.manager
     PUBLIC
         freertos_kernel
+        sparkbox.audio.channel
         sparkbox.audio.driver
         sparkbox.audio.file_importer
         sparkbox.core
         sparkbox.core.manager
-        sparkbox.filesystem.manager
+        sparkbox.filesystem.driver
         
+)
+
+# sparkbox.audio.channel
+add_library(sparkbox.audio.channel STATIC
+    channel.cc
+)
+target_include_directories(sparkbox.audio.channel
+    PUBLIC
+        public
+        internal
+)
+target_link_libraries(sparkbox.audio.channel
+    PUBLIC
+        sparkbox.audio.resampler
+        sparkbox.core
 )
 
 # sparkbox.audio.file_importer
@@ -41,4 +57,18 @@ target_link_libraries(sparkbox.audio.file_importer
     PUBLIC
         sparkbox.core
         sparkbox.filesystem.driver
+)
+
+# sparkbox.audio.resampler
+add_library(sparkbox.audio.resampler STATIC
+    resampler.cc
+)
+target_include_directories(sparkbox.audio.resampler
+    PUBLIC
+        public
+        internal
+)
+target_link_libraries(sparkbox.audio.resampler
+    PUBLIC
+        sparkbox.core
 )

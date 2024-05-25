@@ -22,6 +22,16 @@ using std::placeholders::_1;
 
 namespace sparkbox::audio {
 
+struct PlayAudioConfig {
+  uint8_t channel;
+  int number_of_repeats;
+};
+
+struct ChannelSourceConfig {
+  uint8_t channel;
+  const char *audio_file;
+};
+
 Status AudioManager::SetUp(void) {
   SP_ASSERT(driver_.SetUp() == Status::kOk);
   SP_ASSERT(Manager::SetUp() == Status::kOk);
@@ -41,30 +51,33 @@ void AudioManager::TearDown(void) {
 
 Status AudioManager::SetChannelAudioSource(uint8_t channel,
                                            const char *audio_file) {
-  if (channel >= audio_channel_.size()) {
-    return Status::kBadParameter;
-  }
-
-  // Check if the audio file has been imported
+  ChannelSourceConfig *config = new ChannelSourceConfig{
+      .channel = channel,
+      .audio_file = audio_file,
+  };
+  Message message = Message(MessageType::kAudioSetChannelSource, config,
+                            sizeof(ChannelSourceConfig));
+  SendInternalMessage(message);
 
   return Status::kOk;
 }
 
 Status AudioManager::PlayAudio(uint8_t channel, int number_of_repeats) {
-  PlayAudioConfig config = {
+  PlayAudioConfig *config = new PlayAudioConfig{
       .channel = channel,
       .number_of_repeats = number_of_repeats,
   };
-  Message message =
-      Message(MessageType::kAudioStartPlayback, &config, sizeof(config));
+  Message message = Message(MessageType::kAudioStartPlayback, config,
+                            sizeof(PlayAudioConfig));
   SendInternalMessage(message);
 
   return Status::kOk;
 }
 
 Status AudioManager::StopAudio(uint8_t channel) {
+  uint8_t *channel_copy = new uint8_t{channel};
   Message message =
-      Message(MessageType::kAudioStopPlayback, &channel, sizeof(uint8_t));
+      Message(MessageType::kAudioStopPlayback, channel_copy, sizeof(uint8_t));
   SendInternalMessage(message);
 
   return Status::kOk;
@@ -73,53 +86,73 @@ Status AudioManager::StopAudio(uint8_t channel) {
 // Dispatch a message. Guaranteed to be on the audio manager's task
 void AudioManager::HandleMessage(Message &message) {
   if (message.message_type == MessageType::kAudioStartPlayback) {
-    HandleAudioStartPlayback(*static_cast<PlayAudioConfig *>(message.payload));
+    PlayAudioConfig *config = static_cast<PlayAudioConfig *>(message.payload);
+    HandleAudioStartPlayback(config->channel, config->number_of_repeats);
+    delete config;
   } else if (message.message_type == MessageType::kAudioStopPlayback) {
     // Stop audio playback for the requested channel
-    HandleAudioStopPlayback(*static_cast<uint8_t *>(message.payload));
+    uint8_t *channel = static_cast<uint8_t *>(message.payload);
+    HandleAudioStopPlayback(*channel);
+    delete channel;
   } else if (message.message_type == MessageType::kAudioBlockComplete) {
-    // Just finished sending the last block to
+    // Just finished sending the last block to audio driver
     HandleAudioBlockComplete();
+  } else if (message.message_type == MessageType::kAudioSetChannelSource) {
+    ChannelSourceConfig *config =
+        static_cast<ChannelSourceConfig *>(message.payload);
+    HandleAudioSetChannelSource(config->channel, config->audio_file);
+    delete config;
   } else {
     SP_LOG_INFO("Unknown message type received by audio manager: %zu",
                 static_cast<size_t>(message.message_type));
   }
 }
 
-void AudioManager::HandleAudioStartPlayback(PlayAudioConfig &config) {
+void AudioManager::HandleAudioStartPlayback(uint8_t channel,
+                                            int number_of_repeats) {
   // Invalid channel number, do nothing
-  if (config.channel >= audio_channel_.size()) {
+  if (channel >= audio_channel_.size()) {
+    SP_LOG_ERROR("Invalid channel: %u", channel);
     return;
   }
   bool any_channel_was_playing = AnyChannelPlaying();
 
   // Reset the repeat count
-  audio_channel_[config.channel].SetRepeatCount(config.number_of_repeats);
+  audio_channel_[channel].SetRepeatCount(number_of_repeats);
   // Channel is already playing, reset number of repeats only
-  if (audio_channel_[config.channel].GetPlaybackStatus() ==
+  if (audio_channel_[channel].GetPlaybackStatus() ==
       Channel::PlaybackStatus::kPlaying) {
+    SP_LOG_INFO("Audio channel %u is already playing", channel);
     return;
   }
 
   // This channel is being turned on. Start it from the beginning of the file
-  audio_channel_[config.channel].SkipToSample(0);
-  audio_channel_[config.channel].SetPlaybackStatus(
-      Channel::PlaybackStatus::kPlaying);
+  audio_channel_[channel].SkipToSample(0);
+  audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kPlaying);
 
   // This is the first channel being turned on
   if (!any_channel_was_playing) {
     // Inform the device it needs to be ready for playback
     driver_.PlaybackStart();
-    // Since this is the first block, immediately mix the next block
+    // Since this is the first block, mix the first block then send it
+    MixNextSampleBlock();
+    // Force any_channel_playing to be true
+    next_buffer_.any_channel_playing = true;
+    WriteNextSampleBlock();
+
+    // Then immediately begin mixing the next block
+    MixNextSampleBlock();
   }
 }
 
 void AudioManager::HandleAudioStopPlayback(uint8_t channel) {
   // Invalid channel number, do nothing
   if (channel >= audio_channel_.size()) {
+    SP_LOG_ERROR("Invalid channel: %u", channel);
     return;
   }
 
+  SP_LOG_INFO("Stopping channel %u playback", channel);
   // Set the status to stopped. Audio will actually be stopped later
   audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kStopped);
 }
@@ -137,6 +170,26 @@ void AudioManager::HandleAudioBlockComplete(void) {
   }
 
   MixNextSampleBlock();
+}
+
+void AudioManager::HandleAudioSetChannelSource(uint8_t channel,
+                                               const char *audio_file) {
+  if (channel >= audio_channel_.size()) {
+    SP_LOG_ERROR("Invalid channel number: %u", channel);
+    return;
+  }
+
+  ImportedFile *imported_audio_file =
+      audio_file_importer_.GetImportedFile(audio_file);
+  // Check if the audio file has been imported
+  if (imported_audio_file == nullptr) {
+    SP_LOG_ERROR("Audio file '%s' not imported", audio_file);
+    return;
+  }
+
+  audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kStopped);
+  audio_channel_[channel].SetSource(imported_audio_file);
+  SP_LOG_INFO("Set audio channel %u source to '%s'", channel, audio_file);
 }
 
 void AudioManager::MixNextSampleBlock(void) {
@@ -172,6 +225,7 @@ void AudioManager::MixNextSampleBlock(void) {
       continue;
     }
 
+    // Get the samples from each channel into temporary storage
     if (audio_channel_[channel_idx].GetNextSamples(
             std::span<int16_t>(mixed_samples_buffer_[2 + channel_idx].begin(),
                                next_buffer_.buffer_size_samples),
@@ -227,8 +281,8 @@ void AudioManager::BlockCompleteCb(Status status) {
   // A block just finished sending, immediately send the next buffer
   WriteNextSampleBlock();
 
-  // Let ourselves know the buffer finished sending. This will be processed on
-  // our own task
+  // Let ourselves know the buffer finished sending so we can populate the next
+  // buffer. This will be processed on the audio task
   Message message = Message(MessageType::kAudioBlockComplete);
   SendInternalMessageISR(message);
 }

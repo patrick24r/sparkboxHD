@@ -24,6 +24,8 @@ class ImportedFile {
         samples_size_bytes_ / number_of_channels_ / bytes_per_sample_;
   }
 
+  uint8_t *samples() const { return samples_; }
+  uint8_t bytes_per_sample() const { return bytes_per_sample_; }
   uint32_t sample_count() const { return sample_count_; }
   uint32_t sample_rate_hz() const { return sample_rate_hz_; }
   uint8_t number_of_channels() const { return number_of_channels_; }

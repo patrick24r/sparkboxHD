@@ -21,5 +21,6 @@ target_link_libraries(sparkbox
         sparkbox.audio.manager
         sparkbox.controller.manager
         sparkbox.core
+        sparkbox.core.task
         sparkbox.filesystem.manager
 )

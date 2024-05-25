@@ -23,8 +23,8 @@ class Resampler {
     float w2;
   };
   struct ResampleFilter {
-    const uint8_t numerator;
-    const uint8_t denominator;
+    uint8_t numerator;
+    uint8_t denominator;
     FilterCoefficients coefficients;
     FilterData data[2];
   };
@@ -32,25 +32,17 @@ class Resampler {
   template <typename T>
   struct FormattedSamples {
     // num_channels = 1 if mono, 2 if stereo with alternating L R samples
-    const uint8_t num_channels;
+    uint8_t num_channels;
     std::span<T> samples;
-
-    sparkbox::Status Validate() {
-      if (num_channels != 1 && num_channels != 2) {
-        SP_LOG_ERROR("Unsupported number of channels: %u", num_channels);
-        return sparkbox::Status::kBadParameter;
-      }
-
-      return sparkbox::Status::kOk;
-    }
+    size_t NumberOfBlocks() { return samples.size() / num_channels; }
   };
 
   // Get a resample filter for a new resample operation
   ResampleFilter GetResampleFilter(uint8_t ratio_numerator,
                                    uint8_t ratio_denominator);
 
-  template <typename InType, typename OutType>
   // Resample the audio in samples_in to samples_out
+  template <typename InType, typename OutType>
   sparkbox::Status ResampleNextBlock(ResampleFilter& filter,
                                      FormattedSamples<InType>& samples_in,
                                      FormattedSamples<OutType>& samples_out);
@@ -59,6 +51,14 @@ class Resampler {
   template <typename T>
   void BiquadFilter(std::span<T> samples,
                     const FilterCoefficients& coefficients, FilterData& data);
+
+  // Returns the greatest common divisor of the two numbers
+  uint32_t GCD(uint32_t a, uint32_t b) {
+    for (uint32_t i = std::min(a, b); i > 0; i--) {
+      if (i % a == 0 && i % b == 0) return i;
+    }
+    return 1;
+  }
 };
 
 }  // namespace sparkbox::audio

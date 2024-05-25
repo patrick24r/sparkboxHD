@@ -5,7 +5,6 @@
 #include <span>
 #include <string>
 
-#include "FreeRTOS.h"
 #include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/audio/audio_file_importer.h"
 #include "sparkbox/audio/channel.h"
@@ -18,7 +17,7 @@ namespace sparkbox::audio {
 class AudioManager : sparkbox::Manager {
  public:
   AudioManager(AudioDriver &driver, filesystem::FilesystemDriver &fs_driver)
-      : sparkbox::Manager(kConfig),
+      : sparkbox::Manager("AudioTask"),
         driver_(driver),
         audio_file_importer_(fs_driver) {}
 
@@ -32,12 +31,6 @@ class AudioManager : sparkbox::Manager {
   sparkbox::Status StopAudio(uint8_t channel);
 
  private:
-  static constexpr sparkbox::Manager::Config kConfig = {
-      .task_name = "AudioTask",
-      .task_stack_depth = configMINIMAL_STACK_SIZE,
-      .task_priority = 5,
-      .queue_length = 50,
-  };
   AudioDriver &driver_;
   AudioFileImporter audio_file_importer_;
 
@@ -76,13 +69,10 @@ class AudioManager : sparkbox::Manager {
   BufferParameters next_buffer_;
 
   void HandleMessage(sparkbox::Message &message) override;
-  struct PlayAudioConfig {
-    uint8_t channel = 0;
-    int number_of_repeats = 0;
-  };
-  void HandleAudioStartPlayback(PlayAudioConfig &config);
+  void HandleAudioStartPlayback(uint8_t channel, int number_of_repeats);
   void HandleAudioStopPlayback(uint8_t channel);
   void HandleAudioBlockComplete(void);
+  void HandleAudioSetChannelSource(uint8_t channel, const char *audio_file);
 
   bool AnyChannelPlaying(void) {
     for (uint8_t ch_idx = 0; ch_idx < kMaxChannels; ch_idx++) {

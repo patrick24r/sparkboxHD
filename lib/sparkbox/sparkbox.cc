@@ -1,8 +1,9 @@
 #include "sparkbox/sparkbox.h"
 
-#include "FreeRTOS.h"
+#include "freertos/task.h"
 #include "sparkbox/log.h"
 #include "sparkbox/status.h"
+#include "sparkbox/task.h"
 
 namespace {
 

@@ -15,7 +15,7 @@ namespace sparkbox::controller {
 class ControllerManager : sparkbox::Manager {
  public:
   ControllerManager(ControllerDriver& driver)
-      : sparkbox::Manager(kConfig), driver_(driver) {}
+      : sparkbox::Manager("ControllerTask"), driver_(driver) {}
 
   sparkbox::Status SetUp(void) override;
   void TearDown(void) override;
@@ -23,12 +23,6 @@ class ControllerManager : sparkbox::Manager {
   Status GetControllerState(int controller);
 
  private:
-  static constexpr sparkbox::Manager::Config kConfig = {
-      .task_name = "ControllerTask",
-      .task_stack_depth = configMINIMAL_STACK_SIZE,
-      .task_priority = 5,
-      .queue_length = 50,
-  };
   ControllerDriver& driver_;
   std::array<ControllerState, ControllerDriver::kMaxControllers>
       controllers_state_;

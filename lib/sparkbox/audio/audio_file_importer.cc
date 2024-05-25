@@ -83,6 +83,15 @@ Status AudioFileImporter::ImportAudioFiles(const std::string& directory) {
   return Status::kOk;
 }
 
+ImportedFile* AudioFileImporter::GetImportedFile(const std::string& file) {
+  if (imported_files_.count(file) != 1) {
+    SP_LOG_ERROR("File '%s' not imported", file.c_str());
+    return nullptr;
+  }
+
+  return &imported_files_.at(file);
+}
+
 Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
   // File exists and has correct extension. Try to import it
   Status status;

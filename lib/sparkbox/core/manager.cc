@@ -1,10 +1,11 @@
 #include "sparkbox/manager.h"
 
-#include "queue.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
 #include "sparkbox/assert.h"
+#include "sparkbox/log.h"
 #include "sparkbox/message.h"
 #include "sparkbox/status.h"
-#include "task.h"
 
 namespace {
 using sparkbox::Status;
@@ -13,14 +14,13 @@ using sparkbox::Status;
 namespace sparkbox {
 
 Status Manager::SetUp(void) {
-  // Create the manager's task
-  SP_ASSERT(xTaskCreate(TaskWrapper, config_.task_name,
-                        config_.task_stack_depth, this, config_.task_priority,
-                        &task_handle_) == pdPASS);
-
   // Create the manager's message queue for sparkbox messages
-  queue_handle_ = xQueueCreate(config_.queue_length, sizeof(sparkbox::Message));
+  queue_handle_ = xQueueCreate(queue_depth_, sizeof(sparkbox::Message));
   SP_ASSERT(queue_handle_ != nullptr);
+
+  // Create the manager's task and add it to the scheduler. Pass in a pointer to
+  // "this" so we can go from static TaskWrapper to non-static TaskFunction
+  task_.AddToScheduler(this);
 
   return Status::kOk;
 }
@@ -44,7 +44,7 @@ void Manager::TaskFunction() {
   // Wait for messages in the queue and send them to dispatch
   while (1) {
     // While the queue is not empty, dispatch the messages
-    while (queue_handle_ && !xQueueIsQueueEmptyFromISR(queue_handle_)) {
+    while (!xQueueIsQueueEmptyFromISR(queue_handle_)) {
       Message message;
       SP_ASSERT(xQueueReceive(queue_handle_, &message, 0) == pdTRUE);
       HandleMessage(message);
@@ -54,9 +54,7 @@ void Manager::TaskFunction() {
 }
 
 void Manager::TearDown(void) {
-  if (task_handle_ != nullptr) {
-    vTaskDelete(task_handle_);
-  }
+  task_.RemoveFromScheduler();
 
   if (queue_handle_ != nullptr) {
     vQueueDelete(queue_handle_);

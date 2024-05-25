@@ -40,11 +40,11 @@ class Channel {
 
  private:
   Resampler resampler_;
-  Resampler::FilterData filter_;
+  Resampler::ResampleFilter filter_;
 
   ImportedFile* audio_source_ = nullptr;
   PlaybackStatus playback_status_ = PlaybackStatus::kStopped;
-  size_t next_sample_index_ = 0;
+  size_t next_source_sample_index_ = 0;
   int repeat_count_ = 0;
 };
 

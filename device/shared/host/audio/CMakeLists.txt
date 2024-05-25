@@ -11,6 +11,7 @@ target_include_directories(device.shared.host.audio
 
 target_link_libraries(device.shared.host.audio
     PUBLIC
+        sparkbox
         sparkbox.audio.driver
         sparkbox.core
 )

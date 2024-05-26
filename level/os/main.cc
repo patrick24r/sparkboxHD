@@ -17,8 +17,8 @@ namespace sparkbox::level::os {
 void EntryTask(void* data) {
   Sparkbox* sbox = reinterpret_cast<Sparkbox*>(data);
   SP_LOG_INFO("Playing gettysburg.wav...");
-  sbox->Audio().SetChannelAudioSource(0, "sounds/gettysburg.wav");
-  sbox->Audio().PlayAudio(0, -1);
+  sbox->Audio().SetChannelAudioSource(0, "sounds/CantinaBand3.wav");
+  sbox->Audio().PlayAudio(0, 1);
 
   while (1) {
     taskYIELD();

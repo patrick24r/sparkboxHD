@@ -12,7 +12,7 @@ class AudioDriver {
  public:
   using Callback = std::function<void(sparkbox::Status)>;
   virtual sparkbox::Status SetUp(void) = 0;
-  virtual sparkbox::Status TearDown(void) = 0;
+  virtual void TearDown(void) = 0;
 
   // Device specific function called when playback begins
   virtual sparkbox::Status PlaybackStart(void) = 0;

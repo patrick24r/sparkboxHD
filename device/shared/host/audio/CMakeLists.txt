@@ -14,4 +14,5 @@ target_link_libraries(device.shared.host.audio
         sparkbox
         sparkbox.audio.driver
         sparkbox.core
+        sparkbox.core.manager
 )

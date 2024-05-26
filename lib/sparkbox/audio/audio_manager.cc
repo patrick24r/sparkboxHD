@@ -39,6 +39,7 @@ Status AudioManager::SetUp(void) {
   // Set the driver callbacks
   AudioDriver::Callback cb =
       std::bind(&AudioManager::BlockCompleteCb, this, _1);
+  driver_.SetOnSampleBlockComplete(cb);
 
   // Import all audio from the "sounds" directory
   return audio_file_importer_.ImportAudioFiles("sounds");

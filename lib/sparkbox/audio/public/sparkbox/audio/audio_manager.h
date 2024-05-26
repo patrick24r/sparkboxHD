@@ -21,8 +21,8 @@ class AudioManager : sparkbox::Manager {
         driver_(driver),
         audio_file_importer_(fs_driver) {}
 
-  sparkbox::Status SetUp(void) override;
-  void TearDown(void) override;
+  sparkbox::Status SetUp(void);
+  void TearDown(void);
 
   // Set the audio file source for a channel. Stops
   sparkbox::Status SetChannelAudioSource(uint8_t channel,

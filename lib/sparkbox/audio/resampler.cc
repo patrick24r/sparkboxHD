@@ -74,13 +74,13 @@ Status Resampler::ResampleNextBlock(ResampleFilter& filter,
   }
 
   // Try to create a working buffer large enough to copy each of the input
-  // samples in the format of the output. If the output has two channels, we can
-  // split this in half
+  // samples in the format of the output. If the output has two channels, we
+  // can split this in half
   auto working_buffer =
       std::vector<OutType>(samples_out.samples.size() * filter.denominator /
                            samples_out.num_channels);
 
-  // Go over each channel output (Left and Right). If either inp
+  // Go over each channel input (Left and Right)
   for (size_t ch_idx = 0;
        ch_idx < samples_out.num_channels && ch_idx < samples_in.num_channels;
        ch_idx++) {

@@ -18,7 +18,12 @@ void EntryTask(void* data) {
   Sparkbox* sbox = reinterpret_cast<Sparkbox*>(data);
   SP_LOG_INFO("Playing gettysburg.wav...");
   sbox->Audio().SetChannelAudioSource(0, "sounds/CantinaBand3.wav");
-  sbox->Audio().PlayAudio(0, 1);
+  sbox->Audio().PlayAudio(0, 2);
+
+  vTaskDelay(5000);
+
+  SP_LOG_INFO("Stopping gettysburg.wav...");
+  sbox->Audio().StopAudio(0);
 
   while (1) {
     taskYIELD();

@@ -33,7 +33,9 @@ sparkbox::Status HostAudioDriver::PlaybackStop(void) {
   // Overwrite the header data with the actual length
 
   // Close the file
-  CloseOutputFile();
+  sparkbox::Message message =
+      sparkbox::Message(sparkbox::MessageType::kAudioStopPlayback);
+  SendInternalMessage(message);
 
   return sparkbox::Status::kOk;
 }
@@ -53,9 +55,9 @@ sparkbox::Status HostAudioDriver::WriteSampleBlock(std::span<int16_t> samples,
       .sample_rate_hz = sample_rate_hz,
   };
 
-  // Tell ourselves that
+  // Tell ourselves that we got samples to write on our own task
   sparkbox::Message message =
-      sparkbox::Message(sparkbox::MessageType::kMaxMessage);
+      sparkbox::Message(sparkbox::MessageType::kAudioStartPlayback);
   SendInternalMessageISR(message);
 
   return sparkbox::Status::kOk;
@@ -98,8 +100,11 @@ Status HostAudioDriver::SetOnSampleBlockComplete(Callback& callback) {
 }
 
 void HostAudioDriver::HandleMessage(sparkbox::Message& message) {
-  if (message.message_type == sparkbox::MessageType::kMaxMessage) {
+  if (message.message_type == sparkbox::MessageType::kAudioStartPlayback) {
     WriteSamplesToFile();
+  } else if (message.message_type ==
+             sparkbox::MessageType::kAudioStopPlayback) {
+    CloseOutputFile();
   } else {
     SP_LOG_ERROR("Unknown message received: %zu",
                  static_cast<size_t>(message.message_type));
@@ -121,6 +126,7 @@ std::string HostAudioDriver::GetOutputFileName() {
 void HostAudioDriver::OpenOutputFile() {
   std::string file_name = GetOutputFileName();
   if (file_.is_open()) {
+    SP_LOG_ERROR("File is already open");
     return;
   }
 
@@ -132,10 +138,12 @@ void HostAudioDriver::OpenOutputFile() {
 
 void HostAudioDriver::CloseOutputFile() {
   if (!file_.is_open()) {
+    SP_LOG_ERROR("File is not open");
     return;
   }
 
   // Go to the WAV header and rewrite over the data length field
+  SP_LOG_INFO("samples_in_file_count_: %u", samples_in_file_count_);
   WriteWavHeader();
 
   file_.close();

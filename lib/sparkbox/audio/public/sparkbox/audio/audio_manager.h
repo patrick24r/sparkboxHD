@@ -45,13 +45,16 @@ class AudioManager : sparkbox::Manager {
 
   // Ensure we have 2 buffers of mixed audio + 4 buffers of intermediate audio
   // for resampling each of the 4 channels on the fly
-  static constexpr size_t kNumberOfBuffers = 2 + kMaxChannels;
+  static constexpr size_t kNumberOfBuffers = 2;
   // Buffer depth in milliseconds
   static constexpr size_t kBufferDepthMs = 15;
   // Number of 16 bit samples in each of the kNumberOfBuffers buffers
   static constexpr size_t kMixedSampleBufferSize = 48 * kBufferDepthMs * 2;
   std::array<std::array<int16_t, kMixedSampleBufferSize>, kNumberOfBuffers>
       mixed_samples_buffer_;
+
+  std::array<std::array<int16_t, kMixedSampleBufferSize>, kMaxChannels>
+      unmixed_samples_buffer_;
 
   struct BufferParameters {
     // If false, there is no audio to send

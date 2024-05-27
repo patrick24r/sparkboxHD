@@ -67,6 +67,7 @@ Status Channel::GetNextSamples(std::span<int16_t> samples, bool is_mono,
     // If we hit the repeat limit, fill the rest with 0's and return
     if (repeat_count_ == 0) {
       std::fill(samples.subspan(sample_filled_idx).begin(), samples.end(), 0);
+      playback_status_ = PlaybackStatus::kStopped;
       return Status::kOk;
     }
 
@@ -112,7 +113,8 @@ Status Channel::GetNextSamples(std::span<int16_t> samples, bool is_mono,
       Resampler::FormattedSamples<int8_t> samples_in_format = {
           .num_channels = audio_source_->number_of_channels(),
           .samples = std::span<int8_t>(
-              reinterpret_cast<int8_t*>(audio_source_->samples()),
+              reinterpret_cast<int8_t*>(audio_source_->samples() +
+                                        next_source_sample_index_),
               source_samples_to_fill)};
       resampler_.ResampleNextBlock<int8_t, int16_t>(filter_, samples_in_format,
                                                     samples_out_format);
@@ -120,7 +122,8 @@ Status Channel::GetNextSamples(std::span<int16_t> samples, bool is_mono,
       Resampler::FormattedSamples<int16_t> samples_in_format = {
           .num_channels = audio_source_->number_of_channels(),
           .samples = std::span<int16_t>(
-              reinterpret_cast<int16_t*>(audio_source_->samples()),
+              reinterpret_cast<int16_t*>(audio_source_->samples() +
+                                         next_source_sample_index_),
               source_samples_to_fill)};
       resampler_.ResampleNextBlock<int16_t, int16_t>(filter_, samples_in_format,
                                                      samples_out_format);
@@ -128,7 +131,8 @@ Status Channel::GetNextSamples(std::span<int16_t> samples, bool is_mono,
       Resampler::FormattedSamples<int32_t> samples_in_format = {
           .num_channels = audio_source_->number_of_channels(),
           .samples = std::span<int32_t>(
-              reinterpret_cast<int32_t*>(audio_source_->samples()),
+              reinterpret_cast<int32_t*>(audio_source_->samples() +
+                                         next_source_sample_index_),
               source_samples_to_fill)};
       resampler_.ResampleNextBlock<int32_t, int16_t>(filter_, samples_in_format,
                                                      samples_out_format);

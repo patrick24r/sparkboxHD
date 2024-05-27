@@ -142,6 +142,8 @@ void AudioManager::HandleAudioStartPlayback(uint8_t channel,
     WriteNextSampleBlock();
 
     // Then immediately begin mixing the next block
+    next_buffer_.is_ready = false;
+    next_buffer_.buffer_index = (next_buffer_.buffer_index + 1) % 2;
     MixNextSampleBlock();
   }
 }
@@ -165,8 +167,10 @@ void AudioManager::HandleAudioBlockComplete(void) {
   next_buffer_.buffer_index = (next_buffer_.buffer_index + 1) % 2;
   next_buffer_.any_channel_playing = AnyChannelPlaying();
 
-  // No channels are playing, do not mix the next block
+  // No channels are playing, do not mix the next block and let the driver know
+  // audio is done
   if (!next_buffer_.any_channel_playing) {
+    driver_.PlaybackStop();
     return;
   }
 
@@ -228,7 +232,7 @@ void AudioManager::MixNextSampleBlock(void) {
 
     // Get the samples from each channel into temporary storage
     if (audio_channel_[channel_idx].GetNextSamples(
-            std::span<int16_t>(mixed_samples_buffer_[2 + channel_idx].begin(),
+            std::span<int16_t>(unmixed_samples_buffer_[channel_idx].begin(),
                                next_buffer_.buffer_size_samples),
             next_buffer_.is_mono, next_buffer_.sample_rate_hz) != Status::kOk) {
       SP_LOG_ERROR("Error getting samples for audio channel %u", channel_idx);
@@ -249,9 +253,8 @@ void AudioManager::MixNextSampleBlock(void) {
       // When mixing, divide the volume by the number of channels to prevent
       // clipping
       mixed_samples_buffer_[next_buffer_.buffer_index][sample_idx] +=
-          mixed_samples_buffer_[next_buffer_.buffer_index + channel_idx]
-                               [sample_idx] /
-          audio_channel_.size();
+          unmixed_samples_buffer_[channel_idx][sample_idx];
+      // /audio_channel_.size();
     }
   }
 

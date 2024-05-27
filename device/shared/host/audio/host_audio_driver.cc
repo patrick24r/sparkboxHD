@@ -149,6 +149,7 @@ void HostAudioDriver::CloseOutputFile() {
   file_.close();
 }
 
+// Write the wav file header. Skips
 void HostAudioDriver::WriteWavHeader() {
   uint16_t num_channels = (current_samples_.is_mono ? 1 : 2);
   WavHeader header = {
@@ -160,8 +161,14 @@ void HostAudioDriver::WriteWavHeader() {
       .data_size = samples_in_file_count_,
   };
 
-  file_.seekg(0);
+  auto stream_pos = file_.tellp();
+
+  // Jump to the front of the file and overwrite the header
+  file_.seekp(0);
   file_.write(reinterpret_cast<char*>(&header), sizeof(header));
+
+  // Jump back to where we were before
+  file_.seekp(stream_pos);
 }
 
 }  // namespace device::shared::host

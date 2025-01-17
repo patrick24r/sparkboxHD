@@ -4,6 +4,8 @@ import os
 import shutil
 import subprocess
 
+from sys import platform
+
 def main():
     # Parse arguments
     parser = argparse.ArgumentParser(description='Build Sparkbox')
@@ -33,9 +35,9 @@ def main():
                 shutil.rmtree(os.path.join(root, d))
 
     # Run cmake
-    subprocess.run(["cmake", ".", "-B", build_dir, "-DCMAKE_TOOLCHAIN_FILE="+toolchain_file])
+    subprocess.run(["cmake", ".", "-B", build_dir, "-G", "Ninja", "-DCMAKE_TOOLCHAIN_FILE="+toolchain_file])
     # Run make
-    subprocess.run(["make", "-C", build_dir, "-j", "VERBOSE=1"])
+    subprocess.run(["ninja", "-C", build_dir, "-v"])
 
     # Copy sound files from each level/<level>/sounds to build/<device>/<level>/sounds
     level_dir = os.path.join(script_dir, "level")
@@ -46,7 +48,6 @@ def main():
             if (os.path.exists(build_level_dir)):
                 shutil.rmtree(build_level_dir)
             shutil.copytree(os.path.join(level_name_dir, "sounds"), build_level_dir)
-
 
 
 # Using the special variable  

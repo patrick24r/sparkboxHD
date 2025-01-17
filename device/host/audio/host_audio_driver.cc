@@ -33,10 +33,6 @@ sparkbox::Status HostAudioDriver::PlaybackStop(void) {
   // Overwrite the header data with the actual length
 
   // Close the file
-  sparkbox::Message message =
-      sparkbox::Message(sparkbox::MessageType::kAudioStopPlayback);
-  SendInternalMessage(message);
-
   return sparkbox::Status::kOk;
 }
 
@@ -55,60 +51,12 @@ sparkbox::Status HostAudioDriver::WriteSampleBlock(std::span<int16_t> samples,
       .sample_rate_hz = sample_rate_hz,
   };
 
-  // Tell ourselves that we got samples to write on our own task
-  sparkbox::Message message =
-      sparkbox::Message(sparkbox::MessageType::kAudioStartPlayback);
-  SendInternalMessageISR(message);
-
   return sparkbox::Status::kOk;
-}
-
-// Write the samples to the file
-void HostAudioDriver::WriteSamplesToFile() {
-  // Wait an amount of time the samples should approximately need to play to
-  // simulate actual device behavior
-  size_t time_spent_playing_ms = current_samples_.samples.size() /
-                                 (current_samples_.is_mono ? 1 : 2) * 1000 /
-                                 current_samples_.sample_rate_hz;
-  vTaskDelay(time_spent_playing_ms);
-
-  // If any parameters changed - sample rate or number of channels - we need to
-  // open a new file
-  if (previous_samples_.is_mono != current_samples_.is_mono ||
-      previous_samples_.sample_rate_hz != current_samples_.sample_rate_hz) {
-    SP_LOG_INFO("Detected new audio stream parameters, new file created...");
-    CloseOutputFile();
-    OpenOutputFile();
-  }
-
-  // Write the samples to the open file
-  file_.write(reinterpret_cast<char*>(current_samples_.samples.data()),
-              current_samples_.samples.size_bytes());
-  samples_in_file_count_ += current_samples_.samples.size();
-
-  // Cache the current samples for next time
-  previous_samples_ = current_samples_;
-
-  // Tell the sparkbox everything went great
-  SP_ASSERT(on_sample_complete_cb_);
-  on_sample_complete_cb_(sparkbox::Status::kOk);
 }
 
 Status HostAudioDriver::SetOnSampleBlockComplete(Callback& callback) {
   on_sample_complete_cb_ = callback;
   return Status::kOk;
-}
-
-void HostAudioDriver::HandleMessage(sparkbox::Message& message) {
-  if (message.message_type == sparkbox::MessageType::kAudioStartPlayback) {
-    WriteSamplesToFile();
-  } else if (message.message_type ==
-             sparkbox::MessageType::kAudioStopPlayback) {
-    CloseOutputFile();
-  } else {
-    SP_LOG_ERROR("Unknown message received: %zu",
-                 static_cast<size_t>(message.message_type));
-  }
 }
 
 std::string HostAudioDriver::GetOutputFileName() {
@@ -135,18 +83,6 @@ void HostAudioDriver::OpenOutputFile() {
   WriteWavHeader();
 }
 
-void HostAudioDriver::CloseOutputFile() {
-  if (!file_.is_open()) {
-    return;
-  }
-
-  // Go to the WAV header and rewrite over the data length field
-  SP_LOG_INFO("samples_in_file_count_: %u", samples_in_file_count_);
-  WriteWavHeader();
-
-  file_.close();
-}
-
 // Write the wav file header. Skips
 void HostAudioDriver::WriteWavHeader() {
   uint16_t num_channels = (current_samples_.is_mono ? 1 : 2);
@@ -167,6 +103,18 @@ void HostAudioDriver::WriteWavHeader() {
 
   // Jump back to where we were before
   file_.seekp(stream_pos);
+}
+
+void HostAudioDriver::CloseOutputFile() {
+  if (!file_.is_open()) {
+    return;
+  }
+
+  // Go to the WAV header and rewrite over the data length field
+  SP_LOG_INFO("samples_in_file_count_: %u", samples_in_file_count_);
+  WriteWavHeader();
+
+  file_.close();
 }
 
 }  // namespace device::host

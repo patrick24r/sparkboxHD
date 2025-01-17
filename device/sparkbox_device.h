@@ -1,15 +1,13 @@
 #pragma once
 
-#include "sparkbox/audio/audio_driver.h"
-#include "sparkbox/controller/controller_driver.h"
-#include "sparkbox/core_driver.h"
-#include "sparkbox/filesystem/filesystem_driver.h"
+#include "device/app/application_driver.h"
+#include "sparkbox/sparkbox.h"
 
 namespace device {
 
-sparkbox::CoreDriver& GetCoreDriver();
-sparkbox::filesystem::FilesystemDriver& GetFilesystemDriver();
-sparkbox::audio::AudioDriver& GetAudioDriver();
-sparkbox::controller::ControllerDriver& GetControllerDriver();
+app::CoreAppDriver& GetCoreDriver();
+app::FilesystemAppDriver& GetFilesystemDriver();
+app::AudioAppDriver& GetAudioDriver();
+app::ControllerAppDriver& GetControllerDriver();
 
 }  // namespace device

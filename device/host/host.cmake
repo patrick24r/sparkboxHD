@@ -1,11 +1,3 @@
-if (UNIX)
-  set(CMAKE_GENERATOR "Unix Makefiles" CACHE STRING "" FORCE)
-elseif(WIN32)
-  set(CMAKE_GENERATOR "MinGW Makefiles" CACHE STRING "" FORCE)
-else()
-  message(FATAL_ERROR "Unknown Host environment")
-endif()
-
 set(CMAKE_CXX_COMPILER g++ CACHE STRING "" FORCE)
 set(CMAKE_C_COMPILER gcc CACHE STRING "" FORCE)
 set(SPARKBOX_DEVICE "HOST" CACHE STRING "" FORCE)

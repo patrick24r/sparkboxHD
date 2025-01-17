@@ -8,7 +8,9 @@
 #include <span>
 #include <string>
 
+#include "device/app/application_driver.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/log.h"
 #include "sparkbox/status.h"
 
 namespace {
@@ -17,15 +19,16 @@ using ::sparkbox::Status;
 
 namespace device::host {
 
-class HostFilesystemDriver final
-    : public sparkbox::filesystem::FilesystemDriver {
+class HostFilesystemDriver final : public device::app::FilesystemAppDriver {
  public:
   static constexpr int kMaxFiles = 5;
   static constexpr int kMaxDirs = 3;
 
   // Nothing special to be done for initialization on host
-  Status SetUp(void) { return Status::kOk; }
-  void TearDown(void) final {}
+  void SetUp(void) { SP_LOG_DEBUG("Host filesystem driver set up..."); }
+  void TearDown(void) final {
+    SP_LOG_DEBUG("Host filesystem driver tear down...");
+  }
 
   Status OpenDirectory(int& directory_id, const std::string& directory) final;
   Status CloseDirectory(int directory_id) final;
@@ -38,6 +41,7 @@ class HostFilesystemDriver final
   Status CreateDirectory(const std::string& directory) final;
   Status Remove(const std::string& path) final;
 
+  using IoMode = sparkbox::filesystem::FilesystemDriver::IoMode;
   Status Open(int& file_id, const std::string& path, IoMode mode) final;
   Status Close(int file_id) final;
 

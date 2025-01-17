@@ -1,5 +1,6 @@
 #include "sparkbox_device.h"
 
+#include "device/app/application_driver.h"
 #include "host_audio_driver.h"
 #include "host_controller_driver.h"
 #include "host_core_driver.h"
@@ -14,13 +15,9 @@ host::HostFilesystemDriver filesystem_driver;
 host::HostAudioDriver audio_driver;
 host::HostControllerDriver controller_driver;
 
-sparkbox::CoreDriver& GetCoreDriver() { return core_driver; }
-sparkbox::filesystem::FilesystemDriver& GetFilesystemDriver() {
-  return filesystem_driver;
-}
-sparkbox::audio::AudioDriver& GetAudioDriver() { return audio_driver; }
-sparkbox::controller::ControllerDriver& GetControllerDriver() {
-  return controller_driver;
-}
+app::CoreAppDriver& GetCoreDriver() { return core_driver; }
+app::FilesystemAppDriver& GetFilesystemDriver() { return filesystem_driver; }
+app::AudioAppDriver& GetAudioDriver() { return audio_driver; }
+app::ControllerAppDriver& GetControllerDriver() { return controller_driver; }
 
 }  // namespace device

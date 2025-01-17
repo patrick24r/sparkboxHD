@@ -22,12 +22,12 @@ add_library(sparkbox_device STATIC
 
 target_include_directories(sparkbox_device
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../
 )
 
 target_link_libraries(sparkbox_device
     PUBLIC
+        device.app.driver
         device.host.audio
         device.host.controller
         device.host.core

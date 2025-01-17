@@ -52,7 +52,6 @@ void Sparkbox::TearDown(void) {
   audio_manager_.TearDown();
   controller_manager_.TearDown();
   fs_manager_.TearDown();
-  core_driver_.TearDown();
 }
 
 }  // namespace sparkbox

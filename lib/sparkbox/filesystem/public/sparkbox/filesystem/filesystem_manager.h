@@ -6,11 +6,10 @@ namespace sparkbox::filesystem {
 
 class FilesystemManager {
  public:
-  FilesystemManager(FilesystemDriver& driver) :
-    driver_(driver) {}
+  FilesystemManager(FilesystemDriver& driver) : driver_(driver) {}
 
-  Status SetUp(void) { return driver_.SetUp(); }
-  void TearDown(void) { driver_.TearDown(); }
+  Status SetUp(void) { return sparkbox::Status::kOk; }
+  void TearDown(void) {}
 
   void RunTest(void);
 
@@ -18,4 +17,4 @@ class FilesystemManager {
   FilesystemDriver& driver_;
 };
 
-} // namespace sparkbox::filesystem
+}  // namespace sparkbox::filesystem

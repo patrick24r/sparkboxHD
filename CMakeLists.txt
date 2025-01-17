@@ -4,4 +4,3 @@ project(Sparkbox C CXX ASM)
 
 add_subdirectory(device)
 add_subdirectory(lib)
-add_subdirectory(os)

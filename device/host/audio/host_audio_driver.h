@@ -6,22 +6,18 @@
 #include <iostream>
 #include <span>
 
+#include "device/app/application_driver.h"
 #include "sparkbox/audio/audio_driver.h"
-#include "sparkbox/manager.h"
 #include "sparkbox/status.h"
 
 namespace device::host {
 
-class HostAudioDriver : public sparkbox::audio::AudioDriver,
-                        public sparkbox::Manager {
+class HostAudioDriver : public device::app::AudioAppDriver {
  public:
-  HostAudioDriver() : sparkbox::Manager("HostAudioDriver") {}
+  HostAudioDriver() {}
 
-  sparkbox::Status SetUp(void) final {
-    sparkbox::Manager::SetUp();
-    return sparkbox::Status::kOk;
-  }
-  void TearDown(void) final { sparkbox::Manager::TearDown(); }
+  void SetUp(void) final {}
+  void TearDown() final {}
 
   sparkbox::Status PlaybackStart(void);
 
@@ -30,6 +26,7 @@ class HostAudioDriver : public sparkbox::audio::AudioDriver,
 
   sparkbox::Status PlaybackStop(void) final;
 
+  using Callback = sparkbox::audio::AudioDriver::Callback;
   sparkbox::Status SetOnSampleBlockComplete(Callback& callback) final;
 
  private:
@@ -63,12 +60,9 @@ class HostAudioDriver : public sparkbox::audio::AudioDriver,
   SampleData previous_samples_;
   SampleData current_samples_;
 
-  void HandleMessage(sparkbox::Message& message) final;
-
   // Functions to gracefully
   void OpenOutputFile();
   void WriteWavHeader();
-  void WriteSamplesToFile();
   void CloseOutputFile();
 };
 

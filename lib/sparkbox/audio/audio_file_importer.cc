@@ -154,7 +154,7 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
     SP_LOG_ERROR("Error reading wav header: %d", static_cast<int>(status));
     return status;
   } else if (bytes_read != header.data_size) {
-    SP_LOG_ERROR("Only read %lu, expected %u", bytes_read, header.data_size);
+    SP_LOG_ERROR("Only read %zu, expected %u", bytes_read, header.data_size);
     // No need to clear the data we did read. It will never be played or will
     // be overwritten
     return Status::kBadResourceState;

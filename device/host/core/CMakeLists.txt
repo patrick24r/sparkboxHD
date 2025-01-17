@@ -11,5 +11,6 @@ target_include_directories(device.host.core
 
 target_link_libraries(device.host.core
     PUBLIC
+        device.app.driver
         sparkbox.core
 )

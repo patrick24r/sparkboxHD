@@ -9,10 +9,6 @@
 #include "sparkbox/filesystem/filesystem_manager.h"
 #include "sparkbox/status.h"
 
-namespace {
-using ::sparkbox::controller::ControllerManager;
-}
-
 namespace sparkbox {
 
 class Sparkbox final {

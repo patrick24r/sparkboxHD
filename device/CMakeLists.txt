@@ -4,6 +4,8 @@ if (NOT SPARKBOX_DEVICE)
     message(FATAL_ERROR "Unspecified SPARKBOX_DEVICE")
 endif()
 
+add_subdirectory(app)
+
 # Add the subdirectory of the specified device
 if (${SPARKBOX_DEVICE} STREQUAL HOST)
     add_subdirectory(host)

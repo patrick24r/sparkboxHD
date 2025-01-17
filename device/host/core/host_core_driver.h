@@ -1,14 +1,13 @@
 #pragma once
 
-#include "sparkbox/core_driver.h"
-#include "sparkbox/status.h"
+#include "device/app/application_driver.h"
 
 namespace device::host {
 
-class CoreDriver final : public sparkbox::CoreDriver {
+class CoreDriver final : public device::app::CoreAppDriver {
  public:
-  sparkbox::Status SetUp(void) final;
-  void TearDown(void) final;
+  void SetUp() final;
+  void TearDown() final;
 };
 
 }  // namespace device::host

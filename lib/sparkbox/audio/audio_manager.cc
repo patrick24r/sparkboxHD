@@ -33,7 +33,6 @@ struct ChannelSourceConfig {
 };
 
 Status AudioManager::SetUp(void) {
-  SP_ASSERT(driver_.SetUp() == Status::kOk);
   SP_ASSERT(Manager::SetUp() == Status::kOk);
 
   // Set the driver callbacks
@@ -45,10 +44,7 @@ Status AudioManager::SetUp(void) {
   return audio_file_importer_.ImportAudioFiles("sounds");
 }
 
-void AudioManager::TearDown(void) {
-  Manager::TearDown();
-  driver_.TearDown();
-}
+void AudioManager::TearDown(void) { Manager::TearDown(); }
 
 Status AudioManager::SetChannelAudioSource(uint8_t channel,
                                            const char *audio_file) {

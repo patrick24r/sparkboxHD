@@ -16,13 +16,6 @@ namespace sparkbox {
 Status Sparkbox::SetUp(void) {
   Status return_status = Status::kOk;
 
-  // Set up core peripherals
-  return_status = core_driver_.SetUp();
-  if (return_status != Status::kOk) {
-    SP_LOG_ERROR("Error during core set up: %d",
-                 static_cast<int>(return_status));
-  }
-
   // Set up filesystem
   return_status = fs_manager_.SetUp();
   if (return_status != Status::kOk) {

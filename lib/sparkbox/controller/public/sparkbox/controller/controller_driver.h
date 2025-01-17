@@ -8,7 +8,7 @@
 
 namespace {
 using ::sparkbox::Status;
-} // namespace
+}  // namespace
 
 namespace sparkbox::controller {
 
@@ -25,7 +25,8 @@ class ControllerDriver {
   virtual Status SetOnInputChanged(Callback& callback) = 0;
 
   // Get the state of the given controller
-  virtual Status GetControllerState(int controllerIndex, ControllerState& state) = 0;
+  virtual Status GetControllerState(int controllerIndex,
+                                    ControllerState& state) = 0;
 };
-    
-} // namespace sparkbox::controller
+
+}  // namespace sparkbox::controller

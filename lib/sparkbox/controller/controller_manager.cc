@@ -22,7 +22,6 @@ namespace sparkbox::controller {
 
 Status ControllerManager::SetUp(void) {
   // Set up the controller driver
-  SP_ASSERT(driver_.SetUp() == Status::kOk);
   SP_ASSERT(Manager::SetUp() == Status::kOk);
 
   // Configure the callback indicating controller state changed
@@ -36,7 +35,6 @@ Status ControllerManager::SetUp(void) {
 void ControllerManager::TearDown(void) {
   // Tear down in reverse order
   Manager::TearDown();
-  driver_.TearDown();
 }
 
 void ControllerManager::HandleMessage(Message &message) {

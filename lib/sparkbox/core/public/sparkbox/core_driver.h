@@ -10,4 +10,4 @@ class CoreDriver {
   virtual void TearDown(void) = 0;
 };
 
-} // namespace sparkbox
+}  // namespace sparkbox

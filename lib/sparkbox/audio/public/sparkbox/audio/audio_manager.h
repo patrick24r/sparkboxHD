@@ -7,6 +7,7 @@
 
 #include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/audio/audio_file_importer.h"
+#include "sparkbox/audio/audio_manager_interface.h"
 #include "sparkbox/audio/channel.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/message.h"
@@ -14,7 +15,7 @@
 
 namespace sparkbox::audio {
 
-class AudioManager : sparkbox::Manager {
+class AudioManager : public AudioManagerInterface, sparkbox::Manager {
  public:
   AudioManager(AudioDriver &driver, filesystem::FilesystemDriver &fs_driver)
       : sparkbox::Manager("AudioTask"),
@@ -24,11 +25,11 @@ class AudioManager : sparkbox::Manager {
   sparkbox::Status SetUp(void);
   void TearDown(void);
 
-  // Set the audio file source for a channel. Stops
+  sparkbox::Status ImportAudioFiles(const std::string &directory) final;
   sparkbox::Status SetChannelAudioSource(uint8_t channel,
-                                         const char *audio_file);
-  sparkbox::Status PlayAudio(uint8_t channel, int number_of_repeats);
-  sparkbox::Status StopAudio(uint8_t channel);
+                                         const char *audio_file) final;
+  sparkbox::Status PlayAudio(uint8_t channel, int number_of_repeats) final;
+  sparkbox::Status StopAudio(uint8_t channel) final;
 
  private:
   AudioDriver &driver_;
@@ -72,6 +73,7 @@ class AudioManager : sparkbox::Manager {
   BufferParameters next_buffer_;
 
   void HandleMessage(sparkbox::Message &message) override;
+  void HandleImportAudioFiles(const char *directory);
   void HandleAudioStartPlayback(uint8_t channel, int number_of_repeats);
   void HandleAudioStopPlayback(uint8_t channel);
   void HandleAudioBlockComplete(void);

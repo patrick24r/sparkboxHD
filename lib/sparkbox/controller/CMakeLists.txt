@@ -11,6 +11,16 @@ target_link_libraries(sparkbox.controller.driver
         sparkbox.core
 )
 
+add_library(sparkbox.controller.manager_interface INTERFACE)
+target_include_directories(sparkbox.controller.driver
+    INTERFACE
+        public
+)
+target_link_libraries(sparkbox.controller.driver
+    INTERFACE
+        sparkbox.core
+)
+
 # sparkbox.controller.manager
 add_library(sparkbox.controller.manager STATIC
     controller_manager.cc
@@ -25,5 +35,6 @@ target_link_libraries(sparkbox.controller.manager
     PUBLIC
         freertos_kernel
         sparkbox.controller.driver
+        sparkbox.controller.manager_interface
         sparkbox.core.manager
 )

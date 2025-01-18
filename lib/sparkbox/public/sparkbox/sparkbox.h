@@ -7,11 +7,12 @@
 #include "sparkbox/core_driver.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/filesystem/filesystem_manager.h"
+#include "sparkbox/sparkbox_interface.h"
 #include "sparkbox/status.h"
 
 namespace sparkbox {
 
-class Sparkbox final {
+class Sparkbox : public SparkboxInterface {
  public:
   Sparkbox(CoreDriver& core_driver, filesystem::FilesystemDriver& fs_driver,
            audio::AudioDriver& audio_driver,
@@ -21,15 +22,17 @@ class Sparkbox final {
         audio_manager_{audio_driver, fs_driver},
         controller_manager_{cont_driver} {}
 
-  Status SetUp(void);
-  void TearDown(void);
+  Status SetUp(void) final;
+  void TearDown(void) final;
 
   // Start the sparkbox
-  void Start();
+  void Start() final;
 
-  audio::AudioManager& Audio(void) { return audio_manager_; }
-  filesystem::FilesystemManager& Filesystem(void) { return fs_manager_; }
-  controller::ControllerManager& Controller(void) {
+  audio::AudioManagerInterface& Audio(void) final { return audio_manager_; }
+  filesystem::FilesystemManagerInterface& Filesystem(void) final {
+    return fs_manager_;
+  }
+  controller::ControllerManagerInterface& Controller(void) final {
     return controller_manager_;
   }
 
@@ -39,5 +42,16 @@ class Sparkbox final {
   audio::AudioManager audio_manager_;
   controller::ControllerManager controller_manager_;
 };
+
+// This library is compiled to a shared library. Expose a way to create a
+// sparkbox
+extern "C" SparkboxInterface* CreateSparkbox(
+    sparkbox::CoreDriver& core_driver,
+    sparkbox::filesystem::FilesystemDriver& fs_driver,
+    sparkbox::audio::AudioDriver& audio_driver,
+    sparkbox::controller::ControllerDriver& controller_driver) {
+  return new sparkbox::Sparkbox(core_driver, fs_driver, audio_driver,
+                                controller_driver);
+}
 
 }  // namespace sparkbox

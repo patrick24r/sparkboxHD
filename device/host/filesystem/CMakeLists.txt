@@ -12,6 +12,6 @@ target_include_directories(device.host.filesystem
 target_link_libraries(device.host.filesystem
     PUBLIC
         device.app.driver
-        sparkbox
+        sparkbox.core
         sparkbox.filesystem.driver
 )

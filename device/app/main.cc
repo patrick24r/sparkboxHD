@@ -1,5 +1,7 @@
 
 #include "device/app/application_driver.h"
+#include "sparkbox/log.h"
+#include "sparkbox/sparkbox_interface.h"
 #include "sparkbox_device.h"
 
 int main() {
@@ -17,10 +19,28 @@ int main() {
   controller_driver.SetUp();
 
   // Load the sparkbox library
+  void* handle = device::LoadSparkbox();
+  if (handle == nullptr) {
+    SP_LOG_ERROR("Failed to load libsparkbox.so, aborting...");
+    return -1;
+  }
 
   // Create a sparkbox
+  sparkbox::SparkboxInterface* sparkbox = device::CreateSparkbox(
+      handle, core_driver, filesystem_driver, audio_driver, controller_driver);
+  if (sparkbox == nullptr) {
+    SP_LOG_ERROR("Failed to create sparkbox, aborting...");
+    return -1;
+  }
 
-  // Run the sparkbox. This launches FreeRTOS and
+  // Run the sparkbox. This launches FreeRTOS and the scheduler. We don't expect
+  // to continue past this
+  sparkbox->SetUp();
+  sparkbox->Start();
+
+  // If somehow we make it here, tear down everything
+  sparkbox->TearDown();
+  device::UnloadSparkbox(handle);
 
   // Tear down device if the sparkbox is done
   controller_driver.TearDown();

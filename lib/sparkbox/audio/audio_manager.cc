@@ -38,21 +38,26 @@ Status AudioManager::SetUp(void) {
   // Set the driver callbacks
   AudioDriver::Callback cb =
       std::bind(&AudioManager::BlockCompleteCb, this, _1);
-  driver_.SetOnSampleBlockComplete(cb);
-
-  // Import all audio from the "sounds" directory
-  return audio_file_importer_.ImportAudioFiles("sounds");
+  return driver_.SetOnSampleBlockComplete(cb);
 }
 
 void AudioManager::TearDown(void) { Manager::TearDown(); }
 
+Status AudioManager::ImportAudioFiles(const std::string &directory) {
+  Message message =
+      Message(MessageType::kAudioImportFiles,
+              const_cast<char *>(directory.c_str()), directory.length());
+  SendInternalMessage(message);
+  return Status::kOk;
+}
+
 Status AudioManager::SetChannelAudioSource(uint8_t channel,
                                            const char *audio_file) {
-  ChannelSourceConfig *config = new ChannelSourceConfig{
+  static ChannelSourceConfig config = ChannelSourceConfig{
       .channel = channel,
       .audio_file = audio_file,
   };
-  Message message = Message(MessageType::kAudioSetChannelSource, config,
+  Message message = Message(MessageType::kAudioSetChannelSource, &config,
                             sizeof(ChannelSourceConfig));
   SendInternalMessage(message);
 
@@ -60,21 +65,19 @@ Status AudioManager::SetChannelAudioSource(uint8_t channel,
 }
 
 Status AudioManager::PlayAudio(uint8_t channel, int number_of_repeats) {
-  PlayAudioConfig *config = new PlayAudioConfig{
+  static PlayAudioConfig config = PlayAudioConfig{
       .channel = channel,
       .number_of_repeats = number_of_repeats,
   };
-  Message message = Message(MessageType::kAudioStartPlayback, config,
+  Message message = Message(MessageType::kAudioStartPlayback, &config,
                             sizeof(PlayAudioConfig));
   SendInternalMessage(message);
-
   return Status::kOk;
 }
 
 Status AudioManager::StopAudio(uint8_t channel) {
-  uint8_t *channel_copy = new uint8_t{channel};
   Message message =
-      Message(MessageType::kAudioStopPlayback, channel_copy, sizeof(uint8_t));
+      Message(MessageType::kAudioStopPlayback, &channel, sizeof(uint8_t));
   SendInternalMessage(message);
 
   return Status::kOk;
@@ -83,26 +86,34 @@ Status AudioManager::StopAudio(uint8_t channel) {
 // Dispatch a message. Guaranteed to be on the audio manager's task
 void AudioManager::HandleMessage(Message &message) {
   if (message.message_type == MessageType::kAudioStartPlayback) {
-    PlayAudioConfig *config = static_cast<PlayAudioConfig *>(message.payload);
+    PlayAudioConfig *config = message.payload_as<PlayAudioConfig>();
     HandleAudioStartPlayback(config->channel, config->number_of_repeats);
-    delete config;
   } else if (message.message_type == MessageType::kAudioStopPlayback) {
     // Stop audio playback for the requested channel
-    uint8_t *channel = static_cast<uint8_t *>(message.payload);
+    uint8_t *channel = message.payload_as<uint8_t>();
     HandleAudioStopPlayback(*channel);
-    delete channel;
   } else if (message.message_type == MessageType::kAudioBlockComplete) {
     // Just finished sending the last block to audio driver
     HandleAudioBlockComplete();
   } else if (message.message_type == MessageType::kAudioSetChannelSource) {
-    ChannelSourceConfig *config =
-        static_cast<ChannelSourceConfig *>(message.payload);
+    ChannelSourceConfig *config = message.payload_as<ChannelSourceConfig>();
     HandleAudioSetChannelSource(config->channel, config->audio_file);
-    delete config;
+  } else if (message.message_type == MessageType::kAudioImportFiles) {
+    const char *directory =
+        const_cast<const char *>(message.payload_as<char>());
+    HandleImportAudioFiles(directory);
   } else {
     SP_LOG_INFO("Unknown message type received by audio manager: %zu",
                 static_cast<size_t>(message.message_type));
   }
+}
+
+void AudioManager::HandleImportAudioFiles(const char *directory) {
+  for (auto channel = 0; channel < kMaxChannels; channel++) {
+    StopAudio(channel);
+  }
+
+  audio_file_importer_.ImportAudioFiles(directory);
 }
 
 void AudioManager::HandleAudioStartPlayback(uint8_t channel,

@@ -7,6 +7,17 @@ target_include_directories(sparkbox.audio.driver
         public
 )
 
+# sparkbox.audio.manager_interface
+add_library(sparkbox.audio.manager_interface INTERFACE)
+target_include_directories(sparkbox.audio.manager_interface
+    INTERFACE
+        public
+)
+target_link_libraries(sparkbox.audio.manager_interface
+    INTERFACE
+        sparkbox.core
+)
+
 # sparkbox.audio.manager
 add_library(sparkbox.audio.manager STATIC
     audio_manager.cc

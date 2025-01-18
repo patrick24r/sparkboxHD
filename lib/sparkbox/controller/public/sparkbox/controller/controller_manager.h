@@ -5,6 +5,7 @@
 
 #include "FreeRTOS.h"
 #include "sparkbox/controller/controller_driver.h"
+#include "sparkbox/controller/controller_manager_interface.h"
 #include "sparkbox/controller/controller_state.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/message.h"
@@ -12,7 +13,7 @@
 
 namespace sparkbox::controller {
 
-class ControllerManager : sparkbox::Manager {
+class ControllerManager : public ControllerManagerInterface, sparkbox::Manager {
  public:
   ControllerManager(ControllerDriver& driver)
       : sparkbox::Manager("ControllerTask"), driver_(driver) {}
@@ -20,7 +21,7 @@ class ControllerManager : sparkbox::Manager {
   sparkbox::Status SetUp(void) override;
   void TearDown(void) override;
 
-  Status GetControllerState(int controller);
+  sparkbox::Status GetControllerState(int controller) final;
 
  private:
   ControllerDriver& driver_;

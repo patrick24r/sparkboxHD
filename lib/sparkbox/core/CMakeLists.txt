@@ -15,6 +15,7 @@ target_compile_options(sparkbox.core INTERFACE
     -fno-exceptions
     -std=c++2a
   >
+  -fPIC
 )
 
 # Sparkbox manager base class that all managers inherit from

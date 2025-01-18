@@ -1,10 +1,15 @@
 #pragma once
 
+#include <array>
+#include <cstdint>
+#include <cstring>
+
 namespace sparkbox {
 
 enum class MessageType : size_t {
   // AudioManager Messages
   kAudio = 1000,
+  kAudioImportFiles,
   kAudioSetChannelSource,
   kAudioStartPlayback,
   kAudioStopPlayback,
@@ -20,21 +25,28 @@ enum class MessageType : size_t {
   kMaxMessage,
 };
 
-struct Message {
-  Message()
-      : message_type(MessageType::kMaxMessage),
-        payload(nullptr),
-        payload_size(0) {}
-  Message(MessageType msg_type)
-      : message_type(msg_type), payload(nullptr), payload_size(0) {}
-  Message(MessageType msg_type, void* payload_data, size_t payload_data_size)
+class Message {
+ public:
+  Message() : Message(MessageType::kMaxMessage) {}
+  Message(MessageType msg_type) : Message(msg_type, nullptr, 0) {}
+  Message(MessageType msg_type, void* payload_data, size_t payload_data_bytes)
       : message_type(msg_type),
-        payload(payload_data),
-        payload_size(payload_data_size) {}
+        payload(new uint8_t[payload_data_bytes]),
+        payload_bytes(payload_data_bytes) {
+    // Copy the payload to this message
+    std::memmove(payload, payload_data, payload_data_bytes);
+  }
+
+  ~Message() { delete payload; }
+
+  template <typename T>
+  T* payload_as() {
+    return reinterpret_cast<T*>(payload);
+  }
 
   MessageType message_type;
-  void* payload;
-  size_t payload_size;
+  uint8_t* payload;
+  size_t payload_bytes;
 };
 
 }  // namespace sparkbox

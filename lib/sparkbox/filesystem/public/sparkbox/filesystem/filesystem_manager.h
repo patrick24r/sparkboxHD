@@ -1,17 +1,15 @@
 #pragma once
 
 #include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/filesystem/filesystem_manager_interface.h"
 
 namespace sparkbox::filesystem {
 
-class FilesystemManager {
+class FilesystemManager : public FilesystemManagerInterface {
  public:
   FilesystemManager(FilesystemDriver& driver) : driver_(driver) {}
 
-  Status SetUp(void) { return sparkbox::Status::kOk; }
-  void TearDown(void) {}
-
-  void RunTest(void);
+  void RunTest(void) final;
 
  private:
   FilesystemDriver& driver_;

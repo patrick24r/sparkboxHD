@@ -37,10 +37,14 @@ void ControllerManager::TearDown(void) {
   Manager::TearDown();
 }
 
+sparkbox::Status ControllerManager::GetControllerState(int controller) {
+  return sparkbox::Status::kOk;
+}
+
 void ControllerManager::HandleMessage(Message &message) {
   if (message.message_type == MessageType::kControllerInputChanged) {
     // Update the data for the controller whose input changed
-    int controller_index = *static_cast<int *>(message.payload);
+    int controller_index = *message.payload_as<int>();
     Status driver_status = driver_.GetControllerState(
         controller_index, controllers_state_[controller_index]);
     if (driver_status != Status::kOk) {

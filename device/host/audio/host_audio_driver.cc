@@ -10,7 +10,6 @@
 #include "sparkbox/assert.h"
 #include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/log.h"
-#include "sparkbox/sparkbox.h"
 #include "sparkbox/status.h"
 
 namespace {

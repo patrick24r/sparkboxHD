@@ -3,13 +3,11 @@ cmake_minimum_required(VERSION 3.16)
 add_executable(device.app
   main.cc
 )
-
 target_link_libraries(device.app
   PUBLIC
-    sparkbox
     sparkbox_device
+    sparkbox_interface
 )
-
 
 add_library(device.app.driver INTERFACE)
 target_include_directories(device.app.driver

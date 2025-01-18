@@ -12,7 +12,6 @@ target_include_directories(device.host.audio
 target_link_libraries(device.host.audio
     PUBLIC
         device.app.driver
-        sparkbox
         sparkbox.audio.driver
         sparkbox.core
 )

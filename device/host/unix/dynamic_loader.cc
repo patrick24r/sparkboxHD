@@ -1,4 +1,4 @@
-#include "dynamic_loader.h"
+#include "device/host/dynamic_loader.h"
 
 #include <dlfcn.h>
 

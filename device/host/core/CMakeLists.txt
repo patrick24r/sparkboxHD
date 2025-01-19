@@ -12,6 +12,10 @@ target_include_directories(device.host.core
 target_link_libraries(device.host.core
     PUBLIC
         device.app.driver
+        device.host.dynamic_loader
+        sparkbox.audio.driver
+        sparkbox.controller.driver
         sparkbox.core.driver
+        sparkbox.filesystem.driver
         sparkbox.utils
 )

@@ -1,7 +1,7 @@
 #include "sparkbox/audio/audio_file_importer.h"
 
 #include <algorithm>
-#include <span>
+#include <memory>
 #include <string>
 
 #include "sparkbox/log.h"
@@ -26,26 +26,14 @@ Status AudioFileImporter::ImportAudioFiles(const std::string& directory) {
   FilesystemDriver::DirectoryItem directory_item;
   Status status;
 
-  status = fs_driver_.OpenDirectory(directory_id, directory);
-  if (status != Status::kOk) {
-    SP_LOG_ERROR("Error opening directory '%s': %d", directory.c_str(),
-                 static_cast<int>(status));
-    return status;
-  }
+  SP_RETURN_IF_ERROR_LOG(fs_driver_.OpenDirectory(directory_id, directory),
+                         "Error opening directory '%s'", directory.c_str());
 
   while (fs_driver_.ReadDirectoryItem(directory_id, directory_item) ==
          Status::kOk) {
     // Skip any directories or irregular files
     if (!directory_item.is_regular_file) {
       continue;
-    }
-
-    // Check if we can import any more files
-    if (already_imported_files_ == kMaxImportedFiles) {
-      SP_LOG_ERROR(
-          "Cannot import '%s', reached limit for number of imported files",
-          directory_item.path.c_str());
-      break;
     }
 
     // Search for file extension
@@ -83,34 +71,30 @@ Status AudioFileImporter::ImportAudioFiles(const std::string& directory) {
   return Status::kOk;
 }
 
-ImportedFile* AudioFileImporter::GetImportedFile(const std::string& file) {
-  if (imported_files_.count(file) != 1) {
-    SP_LOG_ERROR("File '%s' not imported", file.c_str());
+ImportedFile* AudioFileImporter::GetImportedFile(const std::string& file_name) {
+  if (imported_files_.count(file_name) != 1) {
+    SP_LOG_ERROR("File '%s' not imported", file_name.c_str());
     return nullptr;
   }
 
-  return &imported_files_.at(file);
+  return imported_files_[file_name].get();
 }
 
 Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
   // File exists and has correct extension. Try to import it
   Status status;
   int file_id;
-  status =
-      fs_driver_.Open(file_id, file_name, filesystem::FilesystemDriver::kRead);
-  if (status != Status::kOk) {
-    SP_LOG_ERROR("Error opening wav file");
-    return status;
-  }
+  SP_RETURN_IF_ERROR_LOG(
+      fs_driver_.Open(file_id, file_name, filesystem::FilesystemDriver::kRead),
+      "Error opening wav file");
 
   // Read the wav header
   WavHeader header;
   size_t bytes_read;
-  status = fs_driver_.Read(file_id, &header, sizeof(WavHeader), bytes_read);
-  if (status != Status::kOk) {
-    SP_LOG_ERROR("Error reading wav header: %d", static_cast<int>(status));
-    return status;
-  } else if (bytes_read != sizeof(WavHeader)) {
+  SP_RETURN_IF_ERROR_LOG(
+      fs_driver_.Read(file_id, &header, sizeof(WavHeader), bytes_read),
+      "Error reading wav header");
+  if (bytes_read != sizeof(WavHeader)) {
     SP_LOG_ERROR("wav header not fully read, is the file too short?");
     return Status::kBadResourceState;
   }
@@ -139,39 +123,27 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
     return Status::kBadResourceState;
   }
 
-  // Import the audio if there is still space for it
-  if (kMaxBytesPlayback - playback_samples_used_bytes_ < header.data_size) {
-    SP_LOG_ERROR("Not enough space to import '%s'", file_name.c_str());
-    return Status::kBadResourceState;
-  }
-
-  // Save the sample data
-  uint8_t* file_data_location =
-      playback_samples_.data() + playback_samples_used_bytes_;
-  status = fs_driver_.Read(file_id, file_data_location, header.data_size,
-                           bytes_read);
+  // Copy the header data to an intermediary var because make_unique doesn't
+  // like packed structs
+  auto data_size = header.data_size;
+  auto sample_rate = header.sample_rate;
+  auto num_channels = header.num_channels;
+  auto bytes_per_sample = header.bits_per_sample / 8;
+  imported_files_.insert_or_assign(
+      file_name, std::move(std::make_unique<ImportedFile>(
+                     data_size, sample_rate, num_channels, bytes_per_sample)));
+  status = fs_driver_.Read(file_id, imported_files_[file_name].get()->bytes(),
+                           header.data_size, bytes_read);
   if (status != Status::kOk) {
     SP_LOG_ERROR("Error reading wav header: %d", static_cast<int>(status));
+    imported_files_.erase(imported_files_.find(file_name));
     return status;
   } else if (bytes_read != header.data_size) {
     SP_LOG_ERROR("Only read %zu, expected %u", bytes_read, header.data_size);
-    // No need to clear the data we did read. It will never be played or will
-    // be overwritten
+    imported_files_.erase(imported_files_.find(file_name));
     return Status::kBadResourceState;
   }
-  playback_samples_used_bytes_ += header.data_size;
 
-  // Save the sample metadata mapped to the file name
-  imported_files_.insert_or_assign(
-      file_name,
-      ImportedFile(file_data_location, header.data_size, header.sample_rate,
-                   header.num_channels, header.bits_per_sample / 8));
-  already_imported_files_++;
-
-  SP_LOG_INFO("Imported '%s' for %dB, %uB/%uB available)", file_name.c_str(),
-              header.data_size,
-              kMaxBytesPlayback - playback_samples_used_bytes_,
-              kMaxBytesPlayback);
   return Status::kOk;
 }
 

@@ -36,7 +36,7 @@ def main():
 
     # Run cmake
     subprocess.run(["cmake", ".", "-B", build_dir, "-G", "Ninja", "-DCMAKE_TOOLCHAIN_FILE="+toolchain_file])
-    # Run make
+    # Build
     subprocess.run(["ninja", "-C", build_dir, "-v"])
 
     # Copy sound files from each level/<level>/sounds to build/<device>/<level>/sounds

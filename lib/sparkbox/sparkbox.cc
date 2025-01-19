@@ -14,22 +14,17 @@ using ::sparkbox::Status;
 namespace sparkbox {
 
 Status Sparkbox::SetUp(void) {
-  Status return_status = Status::kOk;
-  // Set up controller
-  return_status = controller_manager_.SetUp();
-  if (return_status != Status::kOk) {
-    SP_LOG_ERROR("Error during controller set up: %d",
-                 static_cast<int>(return_status));
-  }
+  // Set up core and its task
+  SP_RETURN_IF_ERROR_LOG(core_manager_.SetUp(), "Error during core set up");
 
-  // Set up audio
-  return_status = audio_manager_.SetUp();
-  if (return_status != Status::kOk) {
-    SP_LOG_ERROR("Error during audio set up: %d",
-                 static_cast<int>(return_status));
-  }
+  // Set up controller and its task
+  SP_RETURN_IF_ERROR_LOG(controller_manager_.SetUp(),
+                         "Error during controller set up");
 
-  return return_status;
+  // Set up audio and its task
+  SP_RETURN_IF_ERROR_LOG(audio_manager_.SetUp(), "Error during audio set up");
+
+  return Status::kOk;
 }
 
 void Sparkbox::Start(void) { vTaskStartScheduler(); }

@@ -13,5 +13,5 @@ target_link_libraries(device.host.controller
     PUBLIC
         device.app.driver
         sparkbox.controller.driver
-        sparkbox.core
+        sparkbox.utils
 )

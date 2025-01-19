@@ -8,7 +8,7 @@
 #include "host_filesystem_driver.h"
 #include "sparkbox/audio/audio_driver.h"
 #include "sparkbox/controller/controller_driver.h"
-#include "sparkbox/core_driver.h"
+#include "sparkbox/core/core_driver.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/sparkbox_interface.h"
 

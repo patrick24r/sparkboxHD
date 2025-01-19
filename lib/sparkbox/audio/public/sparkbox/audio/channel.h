@@ -31,15 +31,14 @@ class Channel {
   PlaybackStatus GetPlaybackStatus(void) { return playback_status_; }
   uint32_t GetSampleRate(void) {
     if (audio_source_ == nullptr) return 0;
-    return audio_source_->sample_rate_hz();
+    return audio_source_->sample_rate_hz_;
   }
   uint8_t GetNumberOfChannels(void) {
     if (audio_source_ == nullptr) return 0;
-    return audio_source_->number_of_channels();
+    return audio_source_->number_of_channels_;
   }
 
  private:
-  Resampler resampler_;
   Resampler::ResampleFilter filter_;
 
   ImportedFile* audio_source_ = nullptr;

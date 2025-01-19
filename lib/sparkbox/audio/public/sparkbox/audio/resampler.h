@@ -38,22 +38,23 @@ class Resampler {
   };
 
   // Get a resample filter for a new resample operation
-  ResampleFilter GetResampleFilter(uint8_t ratio_numerator,
-                                   uint8_t ratio_denominator);
+  static ResampleFilter GetResampleFilter(uint8_t ratio_numerator,
+                                          uint8_t ratio_denominator);
 
   // Resample the audio in samples_in to samples_out
   template <typename InType, typename OutType>
-  sparkbox::Status ResampleNextBlock(ResampleFilter& filter,
-                                     FormattedSamples<InType>& samples_in,
-                                     FormattedSamples<OutType>& samples_out);
+  static sparkbox::Status ResampleNextBlock(
+      ResampleFilter& filter, FormattedSamples<InType>& samples_in,
+      FormattedSamples<OutType>& samples_out);
 
  private:
   template <typename T>
-  void BiquadFilter(std::span<T> samples,
-                    const FilterCoefficients& coefficients, FilterData& data);
+  static void BiquadFilter(std::span<T> samples,
+                           const FilterCoefficients& coefficients,
+                           FilterData& data);
 
   // Returns the greatest common divisor of the two numbers
-  uint32_t GCD(uint32_t a, uint32_t b) {
+  static uint32_t GCD(uint32_t a, uint32_t b) {
     for (uint32_t i = std::min(a, b); i > 0; i--) {
       if (i % a == 0 && i % b == 0) return i;
     }

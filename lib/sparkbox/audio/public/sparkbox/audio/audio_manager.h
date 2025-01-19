@@ -39,7 +39,7 @@ class AudioManager : public AudioManagerInterface, sparkbox::Manager {
   std::array<Channel, kMaxChannels> audio_channel_;
 
   // Max allowable latency is linked to video FPS. At 60 Hz, period = 16.7
-  // ms Ensure we have enough buffer space for 2 buffers of 15 ms of 16 bit,
+  // ms. Ensure we have enough buffer space for 2 buffers of 15 ms of 16 bit,
   // dual channel audio at max sample rate. This buffer will be filled with
   // pre-mixed audio. Audio will be 16 bit 48 kHz * kBufferDepthMs ms * 2
   // channels

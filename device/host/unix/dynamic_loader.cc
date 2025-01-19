@@ -9,7 +9,7 @@ namespace device::host {
 void* LoadLibrary(const char* library_file) {
   void* handle = dlopen(library_file, RTLD_LAZY);
   if (handle == nullptr) {
-    SP_LOG_ERROR("Error loading lib: %s", dlerror());
+    SP_LOG_ERROR("%s", dlerror());
   }
   return handle;
 }

@@ -2,6 +2,8 @@
 
 #include <variant>
 
+#include "sparkbox/log.h"
+
 namespace sparkbox {
 
 enum class Status : int {
@@ -38,4 +40,13 @@ enum class Status : int {
     if (temp_err != ::sparkbox::Status::kOk) { \
       return temp_err;                         \
     }                                          \
+  } while (0)
+
+#define SP_RETURN_IF_ERROR_LOG(expr, format, ...)      \
+  do {                                                 \
+    const ::sparkbox::Status temp_err((expr));         \
+    if (temp_err != ::sparkbox::Status::kOk) {         \
+      SP_LOG_ERROR(format __VA_OPT__(, ) __VA_ARGS__); \
+      return temp_err;                                 \
+    }                                                  \
   } while (0)

@@ -6,6 +6,7 @@
 #include <span>
 #include <sstream>
 #include <string>
+#include <thread>
 
 #include "sparkbox/assert.h"
 #include "sparkbox/audio/audio_driver.h"
@@ -18,30 +19,36 @@ using sparkbox::Status;
 
 namespace device::host {
 
-sparkbox::Status HostAudioDriver::PlaybackStart(void) {
-  // Playback is just beginning. Open a file to stream audio to
+void HostAudioDriver::SetUp() { SP_LOG_DEBUG("Host audio driver set up..."); }
 
+void HostAudioDriver::TearDown() {
+  SP_LOG_DEBUG("Host audio driver tear down...");
+}
+
+sparkbox::Status HostAudioDriver::PlaybackStart() {
+  // Playback is just beginning. Open a file to stream audio data to
+  OpenOutputFile();
   // Reset the "current" sample rate to 0 so when the next samples come, we know
   // to stream to a new file
   current_samples_.sample_rate_hz = 0;
-
   return sparkbox::Status::kOk;
 }
 
-sparkbox::Status HostAudioDriver::PlaybackStop(void) {
-  // Overwrite the header data with the actual length
-
+sparkbox::Status HostAudioDriver::PlaybackStop() {
   // Close the file
+  CloseOutputFile();
   return sparkbox::Status::kOk;
 }
 
-// Write the next block of samples. This is called from an interrupt context.
-// For host tests, simply write the samples to a file after the amount of time
-// to play the samples has elapsed
+// Write the next block of samples. For host tests, simply write the samples to
+// a file and return after the amount of time to play the samples has elapsed
 sparkbox::Status HostAudioDriver::WriteSampleBlock(std::span<int16_t> samples,
                                                    bool is_mono,
                                                    uint32_t sample_rate_hz) {
   SP_ASSERT(sample_rate_hz != 0);
+
+  // If we have a new sample rate or are switching between mono and stereo, we
+  // need to stream to a new file
 
   // Save the new most current samples
   current_samples_ = {
@@ -77,12 +84,10 @@ void HostAudioDriver::OpenOutputFile() {
   }
 
   file_.open(file_name, std::fstream::out | std::fstream::trunc);
-
-  // Write the WAV header
   WriteWavHeader();
 }
 
-// Write the wav file header. Skips
+// Write the wav file header. Maintains the file position
 void HostAudioDriver::WriteWavHeader() {
   uint16_t num_channels = (current_samples_.is_mono ? 1 : 2);
   WavHeader header = {
@@ -94,14 +99,9 @@ void HostAudioDriver::WriteWavHeader() {
       .data_size = samples_in_file_count_,
   };
 
-  auto stream_pos = file_.tellp();
-
   // Jump to the front of the file and overwrite the header
   file_.seekp(0);
   file_.write(reinterpret_cast<char*>(&header), sizeof(header));
-
-  // Jump back to where we were before
-  file_.seekp(stream_pos);
 }
 
 void HostAudioDriver::CloseOutputFile() {

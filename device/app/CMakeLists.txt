@@ -17,7 +17,8 @@ target_include_directories(device.app.driver
 target_link_libraries(device.app.driver
   INTERFACE
     sparkbox.filesystem.driver
-    sparkbox.core
+    sparkbox.utils
     sparkbox.audio.driver
     sparkbox.controller.driver
+    sparkbox.core.driver
 )

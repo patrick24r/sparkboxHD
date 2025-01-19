@@ -8,7 +8,7 @@ target_include_directories(sparkbox.filesystem.driver
 )
 target_link_libraries(sparkbox.filesystem.driver
     INTERFACE
-        sparkbox.core
+        sparkbox.utils
 )
 
 # sparkbox.filesystem.manager_interface
@@ -19,7 +19,7 @@ target_include_directories(sparkbox.filesystem.manager_interface
 )
 target_link_libraries(sparkbox.filesystem.manager_interface
     INTERFACE
-        sparkbox.core
+        sparkbox.utils
 )
 
 # sparkbox.filesystem.manager

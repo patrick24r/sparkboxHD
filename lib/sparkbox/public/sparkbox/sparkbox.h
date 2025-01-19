@@ -4,7 +4,8 @@
 #include "sparkbox/audio/audio_manager.h"
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/controller/controller_manager.h"
-#include "sparkbox/core_driver.h"
+#include "sparkbox/core/core_driver.h"
+#include "sparkbox/core/core_manager.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/filesystem/filesystem_manager.h"
 #include "sparkbox/sparkbox_interface.h"
@@ -17,7 +18,7 @@ class Sparkbox : public SparkboxInterface {
   Sparkbox(CoreDriver& core_driver, filesystem::FilesystemDriver& fs_driver,
            audio::AudioDriver& audio_driver,
            controller::ControllerDriver& cont_driver)
-      : core_driver_(core_driver),
+      : core_manager_(core_driver),
         fs_manager_{fs_driver},
         audio_manager_{audio_driver, fs_driver},
         controller_manager_{cont_driver} {}
@@ -37,7 +38,7 @@ class Sparkbox : public SparkboxInterface {
   }
 
  private:
-  CoreDriver& core_driver_;
+  CoreManager core_manager_;
   filesystem::FilesystemManager fs_manager_;
   audio::AudioManager audio_manager_;
   controller::ControllerManager controller_manager_;

@@ -8,7 +8,7 @@ target_include_directories(sparkbox.controller.driver
 )
 target_link_libraries(sparkbox.controller.driver
     INTERFACE
-        sparkbox.core
+        sparkbox.utils
 )
 
 add_library(sparkbox.controller.manager_interface INTERFACE)
@@ -18,7 +18,7 @@ target_include_directories(sparkbox.controller.driver
 )
 target_link_libraries(sparkbox.controller.driver
     INTERFACE
-        sparkbox.core
+        sparkbox.utils
 )
 
 # sparkbox.controller.manager

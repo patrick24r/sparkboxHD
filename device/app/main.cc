@@ -18,7 +18,8 @@ int main() {
   audio_driver.SetUp();
   controller_driver.SetUp();
 
-  // Load the sparkbox library
+  // Load the sparkbox library. Do this specifically after setting up the
+  // filesystem so the library can be read from it
   void* handle = device::LoadSparkbox();
   if (handle == nullptr) {
     SP_LOG_ERROR("Failed to load libsparkbox.so, aborting...");

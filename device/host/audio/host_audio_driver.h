@@ -16,15 +16,15 @@ class HostAudioDriver : public device::app::AudioAppDriver {
  public:
   HostAudioDriver() {}
 
-  void SetUp(void) final {}
-  void TearDown() final {}
+  void SetUp(void) final;
+  void TearDown() final;
 
-  sparkbox::Status PlaybackStart(void);
+  sparkbox::Status PlaybackStart();
 
   sparkbox::Status WriteSampleBlock(std::span<int16_t> samples, bool is_mono,
                                     uint32_t sample_rate_hz) final;
 
-  sparkbox::Status PlaybackStop(void) final;
+  sparkbox::Status PlaybackStop() final;
 
   using Callback = sparkbox::audio::AudioDriver::Callback;
   sparkbox::Status SetOnSampleBlockComplete(Callback& callback) final;
@@ -60,7 +60,8 @@ class HostAudioDriver : public device::app::AudioAppDriver {
   SampleData previous_samples_;
   SampleData current_samples_;
 
-  // Functions to gracefully
+  // Functions to gracefully handle writing the audio data to a file that can be
+  // listened to later
   void OpenOutputFile();
   void WriteWavHeader();
   void CloseOutputFile();

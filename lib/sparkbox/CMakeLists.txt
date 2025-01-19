@@ -5,6 +5,41 @@ add_subdirectory(controller)
 add_subdirectory(core)
 add_subdirectory(filesystem)
 
+# Sparkbox core
+add_library(sparkbox.utils INTERFACE)
+target_include_directories(sparkbox.utils
+  INTERFACE
+    public
+)
+target_compile_options(sparkbox.utils INTERFACE
+  -Wall
+  -Werror
+  -ffile-prefix-map=${CMAKE_SOURCE_DIR}=.
+  $<$<COMPILE_LANGUAGE:CXX>:
+    -fno-exceptions
+    -std=c++2a
+  >
+  -fPIC
+)
+
+# Sparkbox manager base class that all managers inherit from
+add_library(sparkbox.manager STATIC
+  manager.cc
+  task.cc
+)
+target_include_directories(sparkbox.manager
+  PUBLIC
+    public
+  PRIVATE
+    internal
+)
+target_link_libraries(sparkbox.manager
+  PUBLIC
+    freertos_kernel
+    sparkbox.utils
+)
+
+
 add_library(sparkbox_interface INTERFACE)
 target_include_directories(sparkbox_interface
     INTERFACE
@@ -14,8 +49,8 @@ target_link_libraries(sparkbox_interface
     INTERFACE
         sparkbox.audio.manager_interface
         sparkbox.controller.manager_interface
-        sparkbox.core
         sparkbox.filesystem.manager_interface
+        sparkbox.utils
 )
 
 
@@ -32,7 +67,7 @@ target_link_libraries(sparkbox
         freertos_kernel
         sparkbox.audio.manager
         sparkbox.controller.manager
-        sparkbox.core
-        sparkbox.core.task
+        sparkbox.manager
         sparkbox.filesystem.manager
+        sparkbox.utils
 )

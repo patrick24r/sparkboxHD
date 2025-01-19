@@ -18,7 +18,7 @@ class AudioFileImporter {
 
   sparkbox::Status ImportAudioFiles(const std::string &directory);
 
-  ImportedFile *GetImportedFile(const std::string &file);
+  ImportedFile *GetImportedFile(const std::string &file_name);
 
   static bool IsSampleRateSupported(uint32_t sample_rate_hz) {
     return sample_rate_hz == 11025 || sample_rate_hz == 22050 ||
@@ -45,16 +45,7 @@ class AudioFileImporter {
   static_assert(sizeof(WavHeader) == 44);
 
   filesystem::FilesystemDriver &fs_driver_;
-
-  // Abstracted view into imported files
-  static constexpr uint32_t kMaxImportedFiles = 256;
-  std::map<std::string, ImportedFile> imported_files_;
-  uint32_t already_imported_files_ = 0;
-
-  // Underlying memory for the imported samples
-  static constexpr uint32_t kMaxBytesPlayback = 1000000U;
-  std::array<uint8_t, kMaxBytesPlayback> playback_samples_;
-  uint32_t playback_samples_used_bytes_ = 0;
+  std::map<std::string, std::unique_ptr<ImportedFile>> imported_files_;
 
   sparkbox::Status ImportWavFile(const std::string &file);
   sparkbox::Status ImportMp3File(const std::string &file);

@@ -9,7 +9,7 @@
 #define LOG_STRING_INFO "INFO"
 #define LOG_STRING_DEBUG "DEBUG"
 
-// If not overwritten,
+// If not overwritten, be verbose
 #ifndef LOG_LEVEL
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 #endif

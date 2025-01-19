@@ -32,24 +32,23 @@ Resampler::ResampleFilter Resampler::GetResampleFilter(
   float W = K * K;
   float Q = 0.707;
   float alpha = 1.0 + K / Q + W;
-  ResampleFilter filter_out = {.numerator = ratio_numerator,
-                               .denominator = ratio_denominator,
-                               .coefficients = {.a1 = 2 * (W - 1) / alpha,
-                                                .a2 = (1 - K / Q + W) / alpha,
-                                                .b0 = W / alpha,
-                                                .b1 = 2 * W / alpha,
-                                                .b2 = W / alpha},
-                               .data = {
-                                   {
-                                       .w1 = 0.0,
-                                       .w2 = 0.0,
-                                   },
-                                   {
-                                       .w1 = 0.0,
-                                       .w2 = 0.0,
-                                   },
-                               }};
-  return filter_out;
+  return {.numerator = ratio_numerator,
+          .denominator = ratio_denominator,
+          .coefficients = {.a1 = 2 * (W - 1) / alpha,
+                           .a2 = (1 - K / Q + W) / alpha,
+                           .b0 = W / alpha,
+                           .b1 = 2 * W / alpha,
+                           .b2 = W / alpha},
+          .data = {
+              {
+                  .w1 = 0.0,
+                  .w2 = 0.0,
+              },
+              {
+                  .w1 = 0.0,
+                  .w2 = 0.0,
+              },
+          }};
 }
 
 // Resample audio with the technique described at

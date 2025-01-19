@@ -9,14 +9,16 @@
 #include "sparkbox/controller/controller_state.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/message.h"
+#include "sparkbox/router.h"
 #include "sparkbox/status.h"
 
 namespace sparkbox::controller {
 
 class ControllerManager : public ControllerManagerInterface, sparkbox::Manager {
  public:
-  ControllerManager(ControllerDriver& driver)
-      : sparkbox::Manager("ControllerTask"), driver_(driver) {}
+  ControllerManager(Router& router, ControllerDriver& driver)
+      : sparkbox::Manager(router, Destination::kControllerManager),
+        driver_(driver) {}
 
   sparkbox::Status SetUp(void) override;
   void TearDown(void) override;

@@ -25,6 +25,7 @@ target_compile_options(sparkbox.utils INTERFACE
 # Sparkbox manager base class that all managers inherit from
 add_library(sparkbox.manager STATIC
   manager.cc
+  router.cc
   task.cc
 )
 target_include_directories(sparkbox.manager

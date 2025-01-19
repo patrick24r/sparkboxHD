@@ -25,28 +25,25 @@ enum class MessageType : size_t {
   kMaxMessage,
 };
 
+// Abrstraction around the data we want to send with a message. Note that
 class Message {
  public:
   Message() : Message(MessageType::kMaxMessage) {}
   Message(MessageType msg_type) : Message(msg_type, nullptr, 0) {}
-  Message(MessageType msg_type, void* payload_data, size_t payload_data_bytes)
-      : message_type(msg_type),
-        payload(new uint8_t[payload_data_bytes]),
-        payload_bytes(payload_data_bytes) {
-    // Copy the payload to this message
-    std::memmove(payload, payload_data, payload_data_bytes);
-  }
+  Message(MessageType msg_type, void* data, size_t data_bytes)
+      : message_type_(msg_type), payload_(data), payload_bytes_(data_bytes) {}
 
-  ~Message() { delete payload; }
-
+  MessageType type() { return message_type_; }
+  size_t size_bytes() { return payload_bytes_; }
   template <typename T>
-  T* payload_as() {
-    return reinterpret_cast<T*>(payload);
+  T* payload_ptr_as() {
+    return reinterpret_cast<T*>(payload_);
   }
 
-  MessageType message_type;
-  uint8_t* payload;
-  size_t payload_bytes;
+ private:
+  MessageType message_type_;
+  void* payload_;
+  size_t payload_bytes_;
 };
 
 }  // namespace sparkbox

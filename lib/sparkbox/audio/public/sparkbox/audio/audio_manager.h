@@ -11,14 +11,16 @@
 #include "sparkbox/audio/channel.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/message.h"
+#include "sparkbox/router.h"
 #include "sparkbox/status.h"
 
 namespace sparkbox::audio {
 
 class AudioManager : public AudioManagerInterface, sparkbox::Manager {
  public:
-  AudioManager(AudioDriver &driver, filesystem::FilesystemDriver &fs_driver)
-      : sparkbox::Manager("AudioTask"),
+  AudioManager(Router &router, AudioDriver &driver,
+               filesystem::FilesystemDriver &fs_driver)
+      : sparkbox::Manager(router, Destination::kAudioManager),
         driver_(driver),
         audio_file_importer_(fs_driver) {}
 

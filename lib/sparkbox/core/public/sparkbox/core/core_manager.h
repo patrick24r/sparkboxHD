@@ -3,13 +3,14 @@
 #include "sparkbox/core/core_driver.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/message.h"
+#include "sparkbox/router.h"
 
 namespace sparkbox {
 
 class CoreManager : public Manager {
  public:
-  CoreManager(CoreDriver& core_driver)
-      : Manager("CoreTask"), core_driver_(core_driver) {}
+  CoreManager(Router& router, CoreDriver& core_driver)
+      : Manager(router, Destination::kCoreManager), core_driver_(core_driver) {}
 
  private:
   CoreDriver& core_driver_;

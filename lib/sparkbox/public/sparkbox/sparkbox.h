@@ -8,6 +8,7 @@
 #include "sparkbox/core/core_manager.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/filesystem/filesystem_manager.h"
+#include "sparkbox/router.h"
 #include "sparkbox/sparkbox_interface.h"
 #include "sparkbox/status.h"
 
@@ -18,10 +19,11 @@ class Sparkbox : public SparkboxInterface {
   Sparkbox(CoreDriver& core_driver, filesystem::FilesystemDriver& fs_driver,
            audio::AudioDriver& audio_driver,
            controller::ControllerDriver& cont_driver)
-      : core_manager_(core_driver),
+      : router_(),
+        core_manager_{router_, core_driver},
         fs_manager_{fs_driver},
-        audio_manager_{audio_driver, fs_driver},
-        controller_manager_{cont_driver} {}
+        audio_manager_{router_, audio_driver, fs_driver},
+        controller_manager_{router_, cont_driver} {}
 
   Status SetUp(void) final;
   void TearDown(void) final;
@@ -38,6 +40,7 @@ class Sparkbox : public SparkboxInterface {
   }
 
  private:
+  Router router_;
   CoreManager core_manager_;
   filesystem::FilesystemManager fs_manager_;
   audio::AudioManager audio_manager_;

@@ -47,64 +47,58 @@ Status AudioManager::ImportAudioFiles(const std::string &directory) {
   Message message =
       Message(MessageType::kAudioImportFiles,
               const_cast<char *>(directory.c_str()), directory.length());
-  SendInternalMessage(message);
-  return Status::kOk;
+  return SendInternalMessage(message);
 }
 
 Status AudioManager::SetChannelAudioSource(uint8_t channel,
                                            const char *audio_file) {
-  static ChannelSourceConfig config = ChannelSourceConfig{
+  ChannelSourceConfig config = {
       .channel = channel,
       .audio_file = audio_file,
   };
   Message message = Message(MessageType::kAudioSetChannelSource, &config,
                             sizeof(ChannelSourceConfig));
-  SendInternalMessage(message);
-
-  return Status::kOk;
+  return SendInternalMessage(message);
 }
 
 Status AudioManager::PlayAudio(uint8_t channel, int number_of_repeats) {
-  static PlayAudioConfig config = PlayAudioConfig{
+  PlayAudioConfig config = {
       .channel = channel,
       .number_of_repeats = number_of_repeats,
   };
   Message message = Message(MessageType::kAudioStartPlayback, &config,
                             sizeof(PlayAudioConfig));
-  SendInternalMessage(message);
-  return Status::kOk;
+  return SendInternalMessage(message);
 }
 
 Status AudioManager::StopAudio(uint8_t channel) {
   Message message =
       Message(MessageType::kAudioStopPlayback, &channel, sizeof(uint8_t));
-  SendInternalMessage(message);
-
-  return Status::kOk;
+  return SendInternalMessage(message);
 }
 
 // Dispatch a message. Guaranteed to be on the audio manager's task
 void AudioManager::HandleMessage(Message &message) {
-  if (message.message_type == MessageType::kAudioStartPlayback) {
-    PlayAudioConfig *config = message.payload_as<PlayAudioConfig>();
+  if (message.type() == MessageType::kAudioStartPlayback) {
+    const PlayAudioConfig *config = message.payload_ptr_as<PlayAudioConfig>();
     HandleAudioStartPlayback(config->channel, config->number_of_repeats);
-  } else if (message.message_type == MessageType::kAudioStopPlayback) {
+  } else if (message.type() == MessageType::kAudioStopPlayback) {
     // Stop audio playback for the requested channel
-    uint8_t *channel = message.payload_as<uint8_t>();
+    const uint8_t *channel = message.payload_ptr_as<uint8_t>();
     HandleAudioStopPlayback(*channel);
-  } else if (message.message_type == MessageType::kAudioBlockComplete) {
+  } else if (message.type() == MessageType::kAudioBlockComplete) {
     // Just finished sending the last block to audio driver
     HandleAudioBlockComplete();
-  } else if (message.message_type == MessageType::kAudioSetChannelSource) {
-    ChannelSourceConfig *config = message.payload_as<ChannelSourceConfig>();
+  } else if (message.type() == MessageType::kAudioSetChannelSource) {
+    const ChannelSourceConfig *config =
+        message.payload_ptr_as<ChannelSourceConfig>();
     HandleAudioSetChannelSource(config->channel, config->audio_file);
-  } else if (message.message_type == MessageType::kAudioImportFiles) {
-    const char *directory =
-        const_cast<const char *>(message.payload_as<char>());
+  } else if (message.type() == MessageType::kAudioImportFiles) {
+    const char *directory = message.payload_ptr_as<char>();
     HandleImportAudioFiles(directory);
   } else {
     SP_LOG_INFO("Unknown message type received by audio manager: %zu",
-                static_cast<size_t>(message.message_type));
+                static_cast<size_t>(message.type()));
   }
 }
 

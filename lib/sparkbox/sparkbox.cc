@@ -27,7 +27,10 @@ Status Sparkbox::SetUp(void) {
   return Status::kOk;
 }
 
-void Sparkbox::Start(void) { vTaskStartScheduler(); }
+void Sparkbox::Start(void) {
+  // Add an entry task.
+  vTaskStartScheduler();
+}
 
 void Sparkbox::TearDown(void) {
   // Tear down in the opposite order as set up

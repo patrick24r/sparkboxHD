@@ -6,6 +6,8 @@ namespace sparkbox::controller {
 
 class ControllerManagerInterface {
  public:
+  virtual ~ControllerManagerInterface() = default;
+
   virtual sparkbox::Status GetControllerState(int controller) = 0;
 };
 

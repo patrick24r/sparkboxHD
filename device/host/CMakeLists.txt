@@ -60,5 +60,5 @@ target_link_libraries(sparkbox_device
         device.host.controller
         device.host.core
         device.host.filesystem
-        sparkbox_interface
+        sparkbox.sparkbox_interface
 )

@@ -1,11 +1,15 @@
 #pragma once
 
+#include <cstdint>
+#include <string>
+
 #include "sparkbox/status.h"
 
 namespace sparkbox::audio {
 
 class AudioManagerInterface {
  public:
+  virtual ~AudioManagerInterface() = default;
   // Imports all audio in a given directory, overwriting any pre-imported files.
   // Stops all playback
   virtual sparkbox::Status ImportAudioFiles(const std::string& directory) = 0;

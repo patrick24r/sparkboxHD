@@ -27,6 +27,8 @@ class FilesystemDriver {
   // kAppend : If set, will always open a file in append mode
   static constexpr IoMode kAppend = 1 << 3;
 
+  virtual ~FilesystemDriver() = default;
+
   // Checks if a file or directory exists
   virtual bool Exists(const std::string& path) = 0;
   // Creates a directory

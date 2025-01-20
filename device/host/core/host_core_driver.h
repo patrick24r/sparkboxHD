@@ -5,7 +5,9 @@
 #include "sparkbox/controller/controller_driver.h"
 #include "sparkbox/core/core_driver.h"
 #include "sparkbox/filesystem/filesystem_driver.h"
+#include "sparkbox/level/level_interface.h"
 #include "sparkbox/sparkbox_interface.h"
+#include "sparkbox/status.h"
 
 namespace device::host {
 
@@ -14,8 +16,12 @@ class CoreDriver final : public device::app::CoreAppDriver {
   void SetUp() final;
   void TearDown() final;
 
+  void* LoadLibrary(const char* library_file) final;
+  void* GetLibrarySymbol(void* handle, const char* symbol) final;
+  void UnloadLibrary(void* handle) final;
+
   void* LoadSparkbox() final;
-  sparkbox::SparkboxInterface* CreateSparkbox(
+  sparkbox::SparkboxDeviceInterface* CreateSparkbox(
       void* handle, sparkbox::CoreDriver& core_driver,
       sparkbox::filesystem::FilesystemDriver& fs_driver,
       sparkbox::audio::AudioDriver& audio_driver,

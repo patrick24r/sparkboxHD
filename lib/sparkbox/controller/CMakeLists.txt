@@ -12,11 +12,11 @@ target_link_libraries(sparkbox.controller.driver
 )
 
 add_library(sparkbox.controller.manager_interface INTERFACE)
-target_include_directories(sparkbox.controller.driver
+target_include_directories(sparkbox.controller.manager_interface
     INTERFACE
         public
 )
-target_link_libraries(sparkbox.controller.driver
+target_link_libraries(sparkbox.controller.manager_interface
     INTERFACE
         sparkbox.utils
 )

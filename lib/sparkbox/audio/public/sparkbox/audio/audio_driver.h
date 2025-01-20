@@ -12,6 +12,8 @@ class AudioDriver {
  public:
   using Callback = std::function<void(sparkbox::Status)>;
 
+  virtual ~AudioDriver() = default;
+
   // Device specific function called when playback begins
   virtual sparkbox::Status PlaybackStart(void) = 0;
 

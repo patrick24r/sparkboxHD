@@ -17,6 +17,8 @@ class ControllerDriver {
   static constexpr int kMaxControllers = 4;
   using Callback = std::function<Status(int)>;
 
+  virtual ~ControllerDriver() = default;
+
   // Sets the callback for when new controller input is recieved.
   // This includes connected/disconnected controllers
   virtual Status SetOnInputChanged(Callback& callback) = 0;

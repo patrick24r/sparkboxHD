@@ -6,7 +6,6 @@
 #include "sparkbox/filesystem/filesystem_driver.h"
 #include "sparkbox/sparkbox_interface.h"
 
-
 namespace device::app {
 
 // Methods the application needs to call on drivers, but sparkbox does not
@@ -19,7 +18,7 @@ class ApplicationDriver {
 class CoreAppDriver : public ApplicationDriver, public sparkbox::CoreDriver {
  public:
   virtual void* LoadSparkbox() = 0;
-  virtual sparkbox::SparkboxInterface* CreateSparkbox(
+  virtual sparkbox::SparkboxDeviceInterface* CreateSparkbox(
       void* handle, sparkbox::CoreDriver& core_driver,
       sparkbox::filesystem::FilesystemDriver& fs_driver,
       sparkbox::audio::AudioDriver& audio_driver,

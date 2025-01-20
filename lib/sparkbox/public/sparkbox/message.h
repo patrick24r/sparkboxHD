@@ -25,7 +25,8 @@ enum class MessageType : size_t {
   kMaxMessage,
 };
 
-// Abrstraction around the data we want to send with a message. Note that
+// Abstraction around the data we want to send with a message. Note that this
+// class takes no ownership of the data it holds
 class Message {
  public:
   Message() : Message(MessageType::kMaxMessage) {}

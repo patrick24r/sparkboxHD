@@ -14,16 +14,17 @@
 
 namespace sparkbox {
 
-class Sparkbox : public SparkboxInterface {
+class Sparkbox : public SparkboxDeviceInterface, public SparkboxLevelInterface {
  public:
   Sparkbox(CoreDriver& core_driver, filesystem::FilesystemDriver& fs_driver,
            audio::AudioDriver& audio_driver,
            controller::ControllerDriver& cont_driver)
       : router_(),
-        core_manager_{router_, core_driver},
+        core_manager_{*this, core_driver},
         fs_manager_{fs_driver},
         audio_manager_{router_, audio_driver, fs_driver},
-        controller_manager_{router_, cont_driver} {}
+        controller_manager_{router_, cont_driver},
+        entry_task_("SparkboxEntryTask", EntryTaskWrapper) {}
 
   Status SetUp(void) final;
   void TearDown(void) final;
@@ -45,11 +46,16 @@ class Sparkbox : public SparkboxInterface {
   filesystem::FilesystemManager fs_manager_;
   audio::AudioManager audio_manager_;
   controller::ControllerManager controller_manager_;
+
+  // Entry task for the sparkbox
+  Task entry_task_;
+  static void EntryTaskWrapper(void* sparkbox_ptr);
+  void EntryTask();
 };
 
 // This library is compiled to a shared library. Expose a way to create a
-// sparkbox
-extern "C" SparkboxInterface* CreateSparkbox(
+// sparkbox to the device
+extern "C" SparkboxDeviceInterface* CreateSparkbox(
     sparkbox::CoreDriver& core_driver,
     sparkbox::filesystem::FilesystemDriver& fs_driver,
     sparkbox::audio::AudioDriver& audio_driver,

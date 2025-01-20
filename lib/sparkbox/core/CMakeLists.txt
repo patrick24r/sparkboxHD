@@ -5,6 +5,10 @@ target_include_directories(sparkbox.core.driver
   INTERFACE
     public
 )
+target_link_libraries(sparkbox.core.driver
+  INTERFACE
+    sparkbox.utils
+)
 
 add_library(sparkbox.core.manager STATIC
   core_manager.cc
@@ -16,6 +20,6 @@ target_include_directories(sparkbox.core.manager
 target_link_libraries(sparkbox.core.manager
   PUBLIC
     sparkbox.core.driver
-    sparkbox.manager
+    sparkbox.level.level_interface
     sparkbox.utils
 )

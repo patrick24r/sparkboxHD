@@ -17,5 +17,6 @@ target_link_libraries(device.host.core
         sparkbox.controller.driver
         sparkbox.core.driver
         sparkbox.filesystem.driver
+        sparkbox.level.level_interface
         sparkbox.utils
 )

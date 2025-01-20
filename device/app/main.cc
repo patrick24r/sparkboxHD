@@ -27,7 +27,7 @@ int main() {
   }
 
   // Create a sparkbox
-  sparkbox::SparkboxInterface* sparkbox = core_driver.CreateSparkbox(
+  sparkbox::SparkboxDeviceInterface* sparkbox = core_driver.CreateSparkbox(
       handle, core_driver, filesystem_driver, audio_driver, controller_driver);
   if (sparkbox == nullptr) {
     SP_LOG_ERROR("Failed to create sparkbox, aborting...");

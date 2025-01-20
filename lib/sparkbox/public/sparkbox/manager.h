@@ -28,6 +28,7 @@ class Manager {
         task_(SP_STRINGIZE_ENUM(destination), TaskWrapper, task_stack_depth),
         queue_depth_(queue_depth),
         queue_handle_(nullptr) {}
+  virtual ~Manager() = default;
 
   virtual Status SetUp(void);
   virtual void TearDown(void);

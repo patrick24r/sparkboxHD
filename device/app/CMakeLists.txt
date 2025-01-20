@@ -6,7 +6,7 @@ add_executable(device.app
 target_link_libraries(device.app
   PUBLIC
     sparkbox_device
-    sparkbox_interface
+    sparkbox.sparkbox_interface
 )
 
 add_library(device.app.driver INTERFACE)

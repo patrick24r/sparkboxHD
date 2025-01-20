@@ -1,20 +1,20 @@
 #pragma once
 
 #include "sparkbox/core/core_driver.h"
-#include "sparkbox/manager.h"
-#include "sparkbox/message.h"
-#include "sparkbox/router.h"
+#include "sparkbox/sparkbox_interface.h"
 
 namespace sparkbox {
 
-class CoreManager : public Manager {
+class CoreManager {
  public:
-  CoreManager(Router& router, CoreDriver& core_driver)
-      : Manager(router, Destination::kCoreManager), core_driver_(core_driver) {}
+  CoreManager(SparkboxLevelInterface& sparkbox, CoreDriver& core_driver)
+      : sparkbox_(sparkbox), core_driver_(core_driver) {}
+
+  const char* LoadAndRunLevel(const char* level_name);
 
  private:
+  SparkboxLevelInterface& sparkbox_;
   CoreDriver& core_driver_;
-  void HandleMessage(Message& message) final;
 };
 
 }  // namespace sparkbox

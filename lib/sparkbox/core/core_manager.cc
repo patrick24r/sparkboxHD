@@ -1,7 +1,7 @@
 #include "sparkbox/core/core_manager.h"
 
-#include "sparkbox/level/level.h"
 #include "sparkbox/level/level_interface.h"
+#include "sparkbox/level/level_lib.h"
 #include "sparkbox/status.h"
 
 namespace sparkbox {

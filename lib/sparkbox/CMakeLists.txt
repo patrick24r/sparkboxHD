@@ -49,12 +49,15 @@ target_include_directories(sparkbox.sparkbox_interface
 )
 target_link_libraries(sparkbox.sparkbox_interface
     INTERFACE
+        sparkbox.audio.driver
         sparkbox.audio.manager_interface
+        sparkbox.controller.driver
         sparkbox.controller.manager_interface
+        sparkbox.core.driver
+        sparkbox.filesystem.driver
         sparkbox.filesystem.manager_interface
         sparkbox.utils
 )
-
 
 # Main sparkbox library
 add_library(sparkbox SHARED

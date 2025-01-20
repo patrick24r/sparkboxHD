@@ -2,12 +2,23 @@
 
 #include "freertos/task.h"
 #include "sparkbox/log.h"
+#include "sparkbox/sparkbox_lib.h"
 #include "sparkbox/status.h"
 #include "sparkbox/task.h"
 
+// TImplement the library function to create a sparkbox
+extern "C" sparkbox::SparkboxDeviceInterface* CreateSparkbox(
+    sparkbox::CoreDriver& core_driver,
+    sparkbox::filesystem::FilesystemDriver& fs_driver,
+    sparkbox::audio::AudioDriver& audio_driver,
+    sparkbox::controller::ControllerDriver& controller_driver) {
+  return new sparkbox::Sparkbox(core_driver, fs_driver, audio_driver,
+                                controller_driver);
+}
+
 namespace {
 
-using ::sparkbox::Status;
+using sparkbox::Status;
 
 }  // namespace
 
@@ -42,8 +53,8 @@ void Sparkbox::EntryTaskWrapper(void* sparkbox_ptr) {
 
 void Sparkbox::EntryTask() {
   // Load and run the os, which allows the user to select the game
-  const char* next_level = core_manager_.LoadAndRunLevel(
-      "../../lib/sparkbox/level/os/libsparkbox.level.os.so");
+  const char* next_level =
+      core_manager_.LoadAndRunLevel("sparkbox/os/libsparkbox_os");
 
   // Now that a game has been selected, that game should continuously pick new
   // levels to run

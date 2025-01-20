@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sparkbox/level/level.h"
 #include "sparkbox/level/level_interface.h"
 #include "sparkbox/sparkbox_interface.h"
 

@@ -34,7 +34,7 @@ add_library(device.host.dynamic_loader STATIC
 )
 target_include_directories(device.host.dynamic_loader
   PUBLIC
-    ${HOST_SUB_DIR}
+    public
 )
 target_link_libraries(device.host.dynamic_loader
   PUBLIC
@@ -50,7 +50,7 @@ add_library(sparkbox_device STATIC
 target_include_directories(sparkbox_device
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../
-        ${HOST_SUB_DIR}
+        public
 )
 
 target_link_libraries(sparkbox_device

@@ -53,15 +53,4 @@ class Sparkbox : public SparkboxDeviceInterface, public SparkboxLevelInterface {
   void EntryTask();
 };
 
-// This library is compiled to a shared library. Expose a way to create a
-// sparkbox to the device
-extern "C" SparkboxDeviceInterface* CreateSparkbox(
-    sparkbox::CoreDriver& core_driver,
-    sparkbox::filesystem::FilesystemDriver& fs_driver,
-    sparkbox::audio::AudioDriver& audio_driver,
-    sparkbox::controller::ControllerDriver& controller_driver) {
-  return new sparkbox::Sparkbox(core_driver, fs_driver, audio_driver,
-                                controller_driver);
-}
-
 }  // namespace sparkbox

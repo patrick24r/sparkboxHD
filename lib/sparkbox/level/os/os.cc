@@ -1,6 +1,6 @@
 #include "sparkbox/level/os/os.h"
 
-#include "sparkbox/level/level.h"
+#include "sparkbox/level/level_lib.h"
 #include "sparkbox/log.h"
 
 extern "C" sparkbox::level::LevelInterface* CreateLevel(
@@ -19,8 +19,8 @@ namespace sparkbox::level::os {
 const char* Os::Run() {
   SP_LOG_DEBUG("Started Sparkbox OS!");
   // Load assets
-  // sparkbox_.Audio().ImportAudioFiles("os/sounds");
-  // sparkbox_.Video().ImportSprites("os/sprites");
+  // sparkbox_.Audio().ImportAudioFiles("sparkboxos/sounds");
+  // sparkbox_.Video().ImportSprites("sparkbox/os/sprites");
 
   // Play the audio once
   // sparkbox_.Audio().SetChannelAudioSource(0, "cantinaband.wav");

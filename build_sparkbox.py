@@ -111,7 +111,7 @@ def copy_level_to_out_dir(level_dir: str, out_dir: str):
     if (os.path.exists(sounds_src_dir)):
         sounds_dest_dir = os.path.join(out_dir, "sounds")
         os.makedirs(sounds_dest_dir, exist_ok=True)
-        shutil.copytree(sounds_src_dir, sounds_dest_dir)
+        shutil.copytree(sounds_src_dir, sounds_dest_dir, dirs_exist_ok=True)
 
     sprites_src_dir = os.path.join(level_dir, "sprites")
     if (os.path.exists(sprites_src_dir)):

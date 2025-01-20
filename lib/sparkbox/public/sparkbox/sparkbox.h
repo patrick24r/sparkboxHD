@@ -32,6 +32,7 @@ class Sparkbox : public SparkboxDeviceInterface, public SparkboxLevelInterface {
   // Start the sparkbox
   void Start() final;
 
+  // SparkboxLevelInterface functions
   audio::AudioManagerInterface& Audio(void) final { return audio_manager_; }
   filesystem::FilesystemManagerInterface& Filesystem(void) final {
     return fs_manager_;

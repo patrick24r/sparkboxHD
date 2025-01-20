@@ -114,9 +114,6 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
   } else if (header.num_channels != 1 && header.num_channels != 2) {
     SP_LOG_ERROR("Unsupported number of channels: %u", header.num_channels);
     return Status::kBadResourceState;
-  } else if (header.chunk_size != header.data_size + 36) {
-    SP_LOG_ERROR("Invalid chunk or data size");
-    return Status::kBadResourceState;
   } else if (header.bits_per_sample != 32 && header.bits_per_sample != 16 &&
              header.bits_per_sample != 8) {
     SP_LOG_ERROR("Unsupported bits per sample: %d", header.bits_per_sample);
@@ -152,4 +149,5 @@ Status AudioFileImporter::ImportMp3File(const std::string& file_name) {
   SP_LOG_ERROR("Importing mp3 files is currently unsupported");
   return Status::kUnsupported;
 }
+
 }  // namespace sparkbox::audio

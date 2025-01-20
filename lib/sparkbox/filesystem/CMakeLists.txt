@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.26)
 
 # sparkbox.filesystem.driver
 add_library(sparkbox.filesystem.driver INTERFACE)

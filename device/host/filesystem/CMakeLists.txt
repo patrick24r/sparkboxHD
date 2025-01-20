@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.26)
 
 add_library(device.host.filesystem STATIC
     host_filesystem_driver.cc

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.26)
 
 add_library(sparkbox.core.driver INTERFACE)
 target_include_directories(sparkbox.core.driver

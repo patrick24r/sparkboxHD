@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.26)
 
 if (NOT SPARKBOX_DEVICE)
     message(FATAL_ERROR "Unspecified SPARKBOX_DEVICE")

@@ -10,7 +10,7 @@ enum class MessageType : size_t {
   // AudioManager Messages
   kAudio = 1000,
   kAudioImportFiles,
-  kAudioSetChannelSource,
+  kAudioSetStreamSource,
   kAudioStartPlayback,
   kAudioStopPlayback,
   kAudioBlockComplete,

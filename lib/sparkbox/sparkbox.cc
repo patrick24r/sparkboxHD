@@ -6,7 +6,7 @@
 #include "sparkbox/status.h"
 #include "sparkbox/task.h"
 
-// TImplement the library function to create a sparkbox
+// Implement the library function to create a sparkbox
 extern "C" sparkbox::SparkboxDeviceInterface* CreateSparkbox(
     sparkbox::CoreDriver& core_driver,
     sparkbox::filesystem::FilesystemDriver& fs_driver,

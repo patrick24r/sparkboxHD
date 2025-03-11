@@ -14,17 +14,18 @@
 #define LOG_LEVEL LOG_LEVEL_DEBUG
 #endif
 
-#ifndef LOG_OUTPUT
-#define LOG_OUTPUT stdout
+// If not overwritten, print to stdout
+#ifndef LOG_OUTPUT_DESTINATION
+#define LOG_OUTPUT_DESTINATION stdout
 #endif
 
 // Logging macros, all output to stderr
-#define SP_LOG_BASE(level, message, ...)                                  \
-  do {                                                                    \
-    fprintf(LOG_OUTPUT, "%-5s | %s:%d | %s: ", level, __FILE__, __LINE__, \
-            __FUNCTION__);                                                \
-    fprintf(LOG_OUTPUT, message __VA_OPT__(, ) __VA_ARGS__);              \
-    fprintf(LOG_OUTPUT, "\n");                                            \
+#define SP_LOG_BASE(level, message, ...)                                    \
+  do {                                                                      \
+    fprintf(LOG_OUTPUT_DESTINATION, "%-5s | %s:%d | %s: ", level, __FILE__, \
+            __LINE__, __FUNCTION__);                                        \
+    fprintf(LOG_OUTPUT_DESTINATION, message __VA_OPT__(, ) __VA_ARGS__);    \
+    fprintf(LOG_OUTPUT_DESTINATION, "\n");                                  \
   } while (0)
 
 #define SP_LOG_ERROR(format, ...) \

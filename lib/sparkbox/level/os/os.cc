@@ -25,7 +25,7 @@ const char* Os::Run() {
   // sparkbox_.Video().ImportSprites("sparkbox/os/sprites");
 
   // Play the audio once on channel 0
-  sparkbox_.Audio().SetChannelAudioSource(
+  sparkbox_.Audio().SetStreamAudioSource(
       0, "sparkbox/os/sounds/sample-file-3.wav");
   sparkbox_.Audio().PlayAudio(0, 1);
 

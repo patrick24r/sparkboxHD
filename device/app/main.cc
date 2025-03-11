@@ -23,7 +23,7 @@ int main() {
   // filesystem so the library can be read from it
   void* handle = core_driver.LoadLibrary("sparkbox/libsparkbox");
   if (handle == nullptr) {
-    SP_LOG_ERROR("Failed to load libsparkbox.so, aborting...");
+    SP_LOG_ERROR("Failed to load libsparkbox, aborting...");
     return -1;
   }
 

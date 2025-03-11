@@ -7,7 +7,7 @@
 
 #include "FreeRTOS.h"
 #include "sparkbox/assert.h"
-#include "sparkbox/audio/channel.h"
+#include "sparkbox/audio/stream.h"
 #include "sparkbox/log.h"
 #include "sparkbox/manager.h"
 #include "sparkbox/status.h"
@@ -23,12 +23,12 @@ using std::placeholders::_1;
 namespace sparkbox::audio {
 
 struct PlayAudioConfig {
-  uint8_t channel;
+  uint8_t stream;
   int number_of_repeats;
 };
 
-struct ChannelSourceConfig {
-  uint8_t channel;
+struct StreamSourceConfig {
+  uint8_t stream;
   const char *audio_file;
 };
 
@@ -50,20 +50,20 @@ Status AudioManager::ImportAudioFiles(const std::string &directory) {
   return SendInternalMessage(message);
 }
 
-Status AudioManager::SetChannelAudioSource(uint8_t channel,
-                                           const char *audio_file) {
-  ChannelSourceConfig config = {
-      .channel = channel,
+Status AudioManager::SetStreamAudioSource(uint8_t stream,
+                                          const char *audio_file) {
+  StreamSourceConfig config = {
+      .stream = stream,
       .audio_file = audio_file,
   };
-  Message message = Message(MessageType::kAudioSetChannelSource, &config,
-                            sizeof(ChannelSourceConfig));
+  Message message = Message(MessageType::kAudioSetStreamSource, &config,
+                            sizeof(StreamSourceConfig));
   return SendInternalMessage(message);
 }
 
-Status AudioManager::PlayAudio(uint8_t channel, int number_of_repeats) {
+Status AudioManager::PlayAudio(uint8_t stream, int number_of_repeats) {
   PlayAudioConfig config = {
-      .channel = channel,
+      .stream = stream,
       .number_of_repeats = number_of_repeats,
   };
   Message message = Message(MessageType::kAudioStartPlayback, &config,
@@ -71,9 +71,9 @@ Status AudioManager::PlayAudio(uint8_t channel, int number_of_repeats) {
   return SendInternalMessage(message);
 }
 
-Status AudioManager::StopAudio(uint8_t channel) {
+Status AudioManager::StopAudio(uint8_t stream) {
   Message message =
-      Message(MessageType::kAudioStopPlayback, &channel, sizeof(uint8_t));
+      Message(MessageType::kAudioStopPlayback, &stream, sizeof(uint8_t));
   return SendInternalMessage(message);
 }
 
@@ -81,18 +81,18 @@ Status AudioManager::StopAudio(uint8_t channel) {
 void AudioManager::HandleMessage(Message &message) {
   if (message.type() == MessageType::kAudioStartPlayback) {
     const PlayAudioConfig *config = message.payload_ptr_as<PlayAudioConfig>();
-    HandleAudioStartPlayback(config->channel, config->number_of_repeats);
+    HandleAudioStartPlayback(config->stream, config->number_of_repeats);
   } else if (message.type() == MessageType::kAudioStopPlayback) {
-    // Stop audio playback for the requested channel
-    const uint8_t *channel = message.payload_ptr_as<uint8_t>();
-    HandleAudioStopPlayback(*channel);
+    // Stop audio playback for the requested stream
+    const uint8_t *stream_idx = message.payload_ptr_as<uint8_t>();
+    HandleAudioStopPlayback(*stream_idx);
   } else if (message.type() == MessageType::kAudioBlockComplete) {
     // Just finished sending the last block to audio driver
     HandleAudioBlockComplete();
-  } else if (message.type() == MessageType::kAudioSetChannelSource) {
-    const ChannelSourceConfig *config =
-        message.payload_ptr_as<ChannelSourceConfig>();
-    HandleAudioSetChannelSource(config->channel, config->audio_file);
+  } else if (message.type() == MessageType::kAudioSetStreamSource) {
+    const StreamSourceConfig *config =
+        message.payload_ptr_as<StreamSourceConfig>();
+    HandleAudioSetStreamSource(config->stream, config->audio_file);
   } else if (message.type() == MessageType::kAudioImportFiles) {
     const char *directory = message.payload_ptr_as<char>();
     HandleImportAudioFiles(directory);
@@ -103,85 +103,86 @@ void AudioManager::HandleMessage(Message &message) {
 }
 
 void AudioManager::HandleImportAudioFiles(const char *directory) {
-  for (auto channel = 0; channel < kMaxChannels; channel++) {
-    StopAudio(channel);
+  for (auto stream = 0; stream < kMaxStreams; stream++) {
+    HandleAudioStopPlayback(stream);
   }
 
   audio_file_importer_.ImportAudioFiles(directory);
 }
 
-void AudioManager::HandleAudioStartPlayback(uint8_t channel,
+void AudioManager::HandleAudioStartPlayback(uint8_t stream,
                                             int number_of_repeats) {
   // Invalid channel number, do nothing
-  if (channel >= audio_channel_.size()) {
-    SP_LOG_ERROR("Invalid channel: %u", channel);
+  if (stream >= audio_streams_.size()) {
+    SP_LOG_ERROR("Invalid channel: %u", stream);
     return;
   }
-  bool any_channel_was_playing = AnyChannelPlaying();
+  bool any_stream_was_playing = AnyStreamPlaying();
 
   // Reset the repeat count
-  audio_channel_[channel].SetRepeatCount(number_of_repeats);
+  audio_streams_[stream].SetRepeats(number_of_repeats);
   // Channel is already playing, reset number of repeats only
-  if (audio_channel_[channel].GetPlaybackStatus() ==
-      Channel::PlaybackStatus::kPlaying) {
-    SP_LOG_INFO("Audio channel %u is already playing", channel);
+  if (audio_streams_[stream].GetPlaybackStatus() ==
+      SparkboxStream::PlaybackStatus::kPlaying) {
+    SP_LOG_INFO("Audio channel %u is already playing, setting repeats to %d",
+                stream, number_of_repeats);
     return;
+  } else {
+    SP_LOG_DEBUG("Starting playback on stream %u", stream);
   }
 
-  // This channel is being turned on. Start it from the beginning of the file
-  audio_channel_[channel].SkipToSample(0);
-  audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kPlaying);
+  // This stream is being turned on. Start it from the beginning of the file
+  audio_streams_[stream].SkipToSampleBlock(0);
+  audio_streams_[stream].SetPlaybackStatus(
+      SparkboxStream::PlaybackStatus::kPlaying);
 
-  // This is the first channel being turned on
-  if (!any_channel_was_playing) {
+  // This is the first stream being turned on
+  if (!any_stream_was_playing) {
     // Inform the device it needs to be ready for playback
     driver_.PlaybackStart();
-    // Since this is the first block, mix the first block then send it
-    MixNextSampleBlock();
-    // Force any_channel_playing to be true
-    next_buffer_.any_channel_playing = true;
-    WriteNextSampleBlock();
+    // Since this is the first buffer, mix it, then immediately send it
+    next_buffer_idx_ = 0;
+    MixNextBuffer();
+    WriteNextBuffer();
 
-    // Then immediately begin mixing the next block
-    next_buffer_.is_ready = false;
-    next_buffer_.buffer_index = (next_buffer_.buffer_index + 1) % 2;
-    MixNextSampleBlock();
+    // Then immediately begin mixing the next buffer afterwards to start the
+    // cycle
+    MixNextBuffer();
   }
 }
 
 void AudioManager::HandleAudioStopPlayback(uint8_t channel) {
   // Invalid channel number, do nothing
-  if (channel >= audio_channel_.size()) {
+  if (channel >= audio_streams_.size()) {
     SP_LOG_ERROR("Invalid channel: %u", channel);
     return;
   }
 
-  SP_LOG_INFO("Stopping channel %u playback", channel);
+  if (audio_streams_[channel].GetPlaybackStatus() ==
+      SparkboxStream::PlaybackStatus::kPlaying) {
+    SP_LOG_DEBUG("Stopping channel %u playback", channel);
+  }
+
   // Set the status to stopped. Audio will actually be stopped later
-  audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kStopped);
+  audio_streams_[channel].SetPlaybackStatus(
+      SparkboxStream::PlaybackStatus::kStopped);
 }
 
 void AudioManager::HandleAudioBlockComplete(void) {
-  // The last block of samples just finished sending. Set up next_buffer_
-  // and mix the next set of samples
-  next_buffer_.is_ready = false;
-  next_buffer_.buffer_index = (next_buffer_.buffer_index + 1) % 2;
-  next_buffer_.any_channel_playing = AnyChannelPlaying();
-
-  // No channels are playing, do not mix the next block and let the driver know
-  // audio is done
-  if (!next_buffer_.any_channel_playing) {
+  // We just finished sending a buffer of audio. If no channels are playing, do
+  // not mix any more and let the driver know we're done
+  if (!AnyStreamPlaying()) {
     driver_.PlaybackStop();
     return;
   }
 
-  MixNextSampleBlock();
+  MixNextBuffer();
 }
 
-void AudioManager::HandleAudioSetChannelSource(uint8_t channel,
-                                               const char *audio_file) {
-  if (channel >= audio_channel_.size()) {
-    SP_LOG_ERROR("Invalid channel number: %u", channel);
+void AudioManager::HandleAudioSetStreamSource(uint8_t stream,
+                                              const char *audio_file) {
+  if (stream >= audio_streams_.size()) {
+    SP_LOG_ERROR("Invalid stream number: %u", stream);
     return;
   }
 
@@ -193,98 +194,104 @@ void AudioManager::HandleAudioSetChannelSource(uint8_t channel,
     return;
   }
 
-  audio_channel_[channel].SetPlaybackStatus(Channel::PlaybackStatus::kStopped);
-  audio_channel_[channel].SetSource(imported_audio_file);
-  SP_LOG_INFO("Set audio channel %u source to '%s'", channel, audio_file);
+  audio_streams_[stream].SetPlaybackStatus(
+      SparkboxStream::PlaybackStatus::kStopped);
+  audio_streams_[stream].SetSource(imported_audio_file);
+  SP_LOG_INFO("Set audio stream %u source to '%s'", stream, audio_file);
 }
 
-void AudioManager::MixNextSampleBlock(void) {
-  // Find the highest resolution sample rate and stereo/mono among all channels
-  next_buffer_.is_mono = true;
-  next_buffer_.sample_rate_hz = 1;
-  for (uint8_t channel_idx = 0; channel_idx < audio_channel_.size();
-       channel_idx++) {
-    if (audio_channel_[channel_idx].GetPlaybackStatus() !=
-        Channel::PlaybackStatus::kPlaying) {
-      continue;
-    }
+void AudioManager::MixNextBuffer() {
+  MixedAudioBuffer &next_mixed_buffer =
+      mixed_samples_buffers_[next_buffer_idx_];
 
-    next_buffer_.sample_rate_hz =
-        std::max(next_buffer_.sample_rate_hz,
-                 audio_channel_[channel_idx].GetSampleRate());
-    if (audio_channel_[channel_idx].GetNumberOfChannels() > 1) {
-      next_buffer_.is_mono = false;
-    }
-  }
-
-  // Calculate how many samples to ask each channel for
-  next_buffer_.buffer_size_samples =
-      (kBufferDepthMs * next_buffer_.sample_rate_hz *
-       (next_buffer_.is_mono ? 1 : 2)) /
-      1000;
-
-  // Get the next group of samples from each channel
-  for (uint8_t channel_idx = 0; channel_idx < audio_channel_.size();
-       channel_idx++) {
-    if (audio_channel_[channel_idx].GetPlaybackStatus() !=
-        Channel::PlaybackStatus::kPlaying) {
-      continue;
-    }
-
-    // Get the samples from each channel into temporary storage
-    if (audio_channel_[channel_idx].GetNextSamples(
-            std::span<int16_t>(unmixed_samples_buffer_[channel_idx].begin(),
-                               next_buffer_.buffer_size_samples),
-            next_buffer_.is_mono, next_buffer_.sample_rate_hz) != Status::kOk) {
-      SP_LOG_ERROR("Error getting samples for audio channel %u", channel_idx);
-    }
-  }
-
-  // Mix samples into the proper buffer half
-  for (uint32_t sample_idx = 0; sample_idx < next_buffer_.buffer_size_samples;
-       sample_idx++) {
-    mixed_samples_buffer_[next_buffer_.buffer_index][sample_idx] = 0;
-    for (uint8_t channel_idx = 0; channel_idx < audio_channel_.size();
-         channel_idx++) {
-      if (audio_channel_[channel_idx].GetPlaybackStatus() !=
-          Channel::PlaybackStatus::kPlaying) {
-        continue;
-      }
-
-      // When mixing, divide the volume by the number of channels to prevent
-      // clipping
-      mixed_samples_buffer_[next_buffer_.buffer_index][sample_idx] +=
-          unmixed_samples_buffer_[channel_idx][sample_idx];
-      // /audio_channel_.size();
-    }
-  }
-
-  next_buffer_.is_ready = true;
-}
-
-// Send the next batch of samples to the driver as described by next_buffer_
-void AudioManager::WriteNextSampleBlock(void) {
-  // If the next buffer has no channels playing, audio will be stopped later
-  if (!next_buffer_.any_channel_playing) {
+  // Do nothing if no stream is playing
+  if (!AnyStreamPlaying()) {
+    SP_LOG_DEBUG("No more streams playing, stopping mixing");
     return;
   }
 
+  // Find the sample rate - the highest of all active streams
+  uint32_t sample_rate_hz = 0;
+  for (auto &stream_it : audio_streams_) {
+    if (stream_it.GetPlaybackStatus() !=
+        SparkboxStream::PlaybackStatus::kPlaying) {
+      continue;
+    }
+    sample_rate_hz = std::max(sample_rate_hz, stream_it.GetSampleRateHz());
+  }
+  SP_ASSERT(sample_rate_hz != 0);
+  next_mixed_buffer.sample_rate_hz_ = sample_rate_hz;
+
+  // Get the next group of samples from each active stream
+  size_t stream_active_bitmask = 0;
+  for (int stream_idx = 0; stream_idx < kMaxStreams; stream_idx++) {
+    if (audio_streams_[stream_idx].GetPlaybackStatus() !=
+        SparkboxStream::PlaybackStatus::kPlaying) {
+      continue;
+    }
+
+    // Save that this stream was active. It may go inactive if it finishes
+    // playback
+    stream_active_bitmask |= 0x01 << stream_idx;
+
+    // If getting the samples begets an error, stop that stream
+    if (audio_streams_[stream_idx].GetNextSamples(
+            std::span<int16_t>(unmixed_samples_[stream_idx]), sample_rate_hz) !=
+        sparkbox::Status::kOk) {
+      SP_LOG_ERROR("Error getting samples for audio stream %d, pausing it",
+                   stream_idx);
+      audio_streams_[stream_idx].SetPlaybackStatus(
+          SparkboxStream::PlaybackStatus::kStopped);
+    }
+  }
+
+  // Mix the samples into the mixed samples buffer. For each sample, for each
+  // stream, add their samples up
+  for (size_t samp_idx = 0; samp_idx < next_mixed_buffer.UsedSamplesSize();
+       samp_idx++) {
+    int16_t sample_out = 0;
+    for (size_t str_idx = 0; str_idx < unmixed_samples_.size(); str_idx++) {
+      if ((stream_active_bitmask >> str_idx) & 0x01) {
+        sample_out += unmixed_samples_[str_idx][samp_idx];
+      }
+    }
+    next_mixed_buffer.mixed_samples_[samp_idx] = sample_out;
+  }
+
+  next_mixed_buffer.is_ready_ = true;
+}
+
+// Send the next batch of samples to the driver as described by next_buffer_
+void AudioManager::WriteNextBuffer() {
+  // If the next buffer has no streams playing, audio will be stopped later. Do
+  // nothing about it here
+  MixedAudioBuffer &next_mixed_buffer =
+      mixed_samples_buffers_[next_buffer_idx_];
+
   // If we're not ready, there was not enough time to fill this buffer
-  SP_ASSERT(next_buffer_.is_ready);
+  SP_ASSERT(next_mixed_buffer.is_ready_);
 
   // Send the collection of filled samples to the driver to play
-  std::span<int16_t> samples = std::span<int16_t>(
-      mixed_samples_buffer_[next_buffer_.buffer_index].data(),
-      next_buffer_.buffer_size_samples);
-  driver_.WriteSampleBlock(samples, next_buffer_.is_mono,
-                           next_buffer_.sample_rate_hz);
+  std::span<int16_t> samples =
+      std::span<int16_t>(next_mixed_buffer.mixed_samples_.data(),
+                         next_mixed_buffer.UsedSamplesSize());
+  driver_.WriteSampleBlock(samples, next_mixed_buffer.sample_rate_hz_);
+
+  // Increment the next buffer index and set it to not ready
+  next_buffer_idx_ = (next_buffer_idx_ + 1) % kNumMixedBuffers;
+  next_mixed_buffer.is_ready_ = false;
 }
 
 // Last block of audio was sent by the device driver. This is in an interrupt
 // context
 void AudioManager::BlockCompleteCb(Status status) {
+  if (status != Status::kOk) {
+    SP_LOG_ERROR("Error writing audio block: %d. Continuing...",
+                 static_cast<int>(status));
+  }
+
   // A block just finished sending, immediately send the next buffer
-  WriteNextSampleBlock();
+  WriteNextBuffer();
 
   // Let ourselves know the buffer finished sending so we can populate the next
   // buffer. This will be processed on the audio task

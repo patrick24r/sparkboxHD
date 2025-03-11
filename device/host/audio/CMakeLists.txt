@@ -13,5 +13,6 @@ target_link_libraries(device.host.audio
     PUBLIC
         device.app.driver
         sparkbox.audio.driver
+        sparkbox.manager
         sparkbox.utils
 )

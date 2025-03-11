@@ -55,91 +55,62 @@ Resampler::ResampleFilter Resampler::GetResampleFilter(
 // https://en.wikipedia.org/wiki/Sample-rate_conversion
 // Allow for the samples to be resampled in place if samples_in and samples_out
 // have some overlapping memory
-template <typename InType, typename OutType>
+template <typename SampleType>
 Status Resampler::ResampleNextBlock(ResampleFilter& filter,
-                                    FormattedSamples<InType>& samples_in,
-                                    FormattedSamples<OutType>& samples_out) {
+                                    std::span<SampleType> samples_in,
+                                    uint8_t num_channels,
+                                    std::span<SampleType> samples_out) {
   // If the output buffer is too large, we cannot fill it.
   // (out_num_samples / out_num_channels) <=
   // (in_num_samples / in_num_channels) * (numerator / denominator)
   size_t expected_samples_out =
-      samples_in.NumberOfBlocks() * filter.numerator / filter.denominator;
-  if (samples_out.NumberOfBlocks() > expected_samples_out) {
+      samples_in.size() * filter.numerator / filter.denominator;
+  if (samples_out.size() > expected_samples_out) {
     SP_LOG_ERROR(
-        "Number of output sample blocks too large. Max supported=%zu,  "
+        "Number of output samples too large. Max supported=%zu,  "
         "Actual=%zu",
-        expected_samples_out, samples_out.NumberOfBlocks());
+        expected_samples_out, samples_out.size());
+    return Status::kBadParameter;
+  }
+
+  if (num_channels > 2) {
+    SP_LOG_ERROR("%u channels not supported by resampler", num_channels);
     return Status::kBadParameter;
   }
 
   // Try to create a working buffer large enough to copy each of the input
   // samples in the format of the output. If the output has two channels, we
   // can split this in half
-  auto working_buffer =
-      std::vector<OutType>(samples_out.samples.size() * filter.denominator /
-                           samples_out.num_channels);
+  auto working_buffer = std::vector<SampleType>(
+      samples_out.size() * filter.numerator / num_channels);
 
   // Go over each channel input (Left and Right)
-  for (size_t ch_idx = 0;
-       ch_idx < samples_out.num_channels && ch_idx < samples_in.num_channels;
-       ch_idx++) {
-    // Iterate over the samples_in and copy them to the intermediate
-    // working_buffer_
+  for (size_t ch_idx = 0; ch_idx < num_channels; ch_idx++) {
+    // For each sample_in, interpolate to 'filter.numerator' samples in the
+    // working buffer
     size_t work_buff_idx = 0;
-    for (size_t samp_in_idx = ch_idx; samp_in_idx < samples_in.samples.size();
-         samp_in_idx += samples_in.num_channels) {
-      // For each sample_in, interpolate to (filter.numerator - 1) samples
-      for (int idx_offset = 0; idx_offset < filter.numerator; idx_offset++) {
-        // For the first sample of each filter.numerator chunk of samples, fill
-        // it with the actual next sample. Otherwise, it's a zero
-        if (idx_offset == 0) {
-          // Copy and convert the sample(s) from the input to the output
-          InType sample_in = samples_in.samples[samp_in_idx];
-          OutType sample_out = 0;
+    for (size_t samp_in_idx = ch_idx; samp_in_idx < samples_in.size();
+         samp_in_idx += num_channels) {
+      // sample_in gets copied to the first spot
+      working_buffer[work_buff_idx] = samples_in[samp_in_idx];
 
-          // If going from stereo -> mono, mix the sample_in's channels
-          if (samples_in.num_channels == 2 && samples_out.num_channels == 1) {
-            sample_in = (sample_in + samples_in.samples[samp_in_idx + 1]) / 2;
-          }
-
-          if (sizeof(InType) > sizeof(OutType)) {
-            // Downsize sample in to sample out before cast if necessary. Keep
-            // MSB intact
-            sample_in >>= (8 * (sizeof(InType) - sizeof(OutType)));
-          }
-
-          sample_out = static_cast<OutType>(sample_in);
-
-          if (sizeof(InType) < sizeof(OutType)) {
-            // Upsize sample in to sample out if necessary. Keep MSB intact
-            sample_out <<= (8 * (sizeof(OutType) - sizeof(InType)));
-          }
-
-          working_buffer[work_buff_idx] = sample_out;
-        } else {
-          working_buffer[work_buff_idx] = 0;
-        }
-        work_buff_idx++;
+      // Then the next (filter.numerator -1) samples are all 0s
+      for (int idx_offset = 1; idx_offset < filter.numerator;
+           idx_offset++, work_buff_idx++) {
+        working_buffer[work_buff_idx] = 0;
       }
     }
 
     // Filter the working_buffer for the amount of samples we give it
-    BiquadFilter<OutType>(
-        std::span<OutType>(working_buffer.begin(), work_buff_idx + 1),
+    BiquadFilter<SampleType>(
+        std::span<SampleType>(working_buffer.begin(), work_buff_idx + 1),
         filter.coefficients, filter.data[ch_idx]);
 
-    // Copy every filter.denominator'th working_buffer_ sample to sample_out
+    // Copy every filter.denominator'th working_buffer sample to sample_out
     work_buff_idx = filter.denominator - 1;
-    for (size_t samp_out_idx = ch_idx;
-         samp_out_idx < samples_out.samples.size();
-         samp_out_idx += samples_out.num_channels) {
-      samples_out.samples[samp_out_idx] = working_buffer[work_buff_idx];
-
-      // If going from mono -> stereo, copy the filtered sample twice
-      if (samples_in.num_channels == 1 && samples_out.num_channels == 2) {
-        samples_out.samples[samp_out_idx + 1] = working_buffer[work_buff_idx];
-      }
-
+    for (size_t samp_out_idx = ch_idx; samp_out_idx < samples_out.size();
+         samp_out_idx += num_channels) {
+      samples_out[samp_out_idx] = working_buffer[work_buff_idx];
       work_buff_idx += filter.denominator;
     }
   }
@@ -171,33 +142,16 @@ void UnusedFunction() {
   SP_ASSERT("Why are you calling this when I explicitly told you not to");
 
   Resampler::ResampleFilter filter;
-
   std::span<int8_t> tmp_span_8;
-  Resampler::FormattedSamples<int8_t> fmt_smp_8 = {
-      .num_channels = 1,
-      .samples = tmp_span_8,
-  };
   std::span<int16_t> tmp_span_16;
-  Resampler::FormattedSamples<int16_t> fmt_smp_16 = {
-      .num_channels = 1,
-      .samples = tmp_span_16,
-  };
   std::span<int32_t> tmp_span_32;
-  Resampler::FormattedSamples<int32_t> fmt_smp_32 = {
-      .num_channels = 1,
-      .samples = tmp_span_32,
-  };
+  std::span<int64_t> tmp_span_64;
 
   Resampler resampler;
-  resampler.ResampleNextBlock<int8_t, int8_t>(filter, fmt_smp_8, fmt_smp_8);
-  resampler.ResampleNextBlock<int8_t, int16_t>(filter, fmt_smp_8, fmt_smp_16);
-  resampler.ResampleNextBlock<int8_t, int32_t>(filter, fmt_smp_8, fmt_smp_32);
-  resampler.ResampleNextBlock<int16_t, int8_t>(filter, fmt_smp_16, fmt_smp_8);
-  resampler.ResampleNextBlock<int16_t, int16_t>(filter, fmt_smp_16, fmt_smp_16);
-  resampler.ResampleNextBlock<int16_t, int32_t>(filter, fmt_smp_16, fmt_smp_32);
-  resampler.ResampleNextBlock<int32_t, int8_t>(filter, fmt_smp_32, fmt_smp_8);
-  resampler.ResampleNextBlock<int32_t, int16_t>(filter, fmt_smp_32, fmt_smp_16);
-  resampler.ResampleNextBlock<int32_t, int32_t>(filter, fmt_smp_32, fmt_smp_32);
+  resampler.ResampleNextBlock<int8_t>(filter, tmp_span_8, 1, tmp_span_8);
+  resampler.ResampleNextBlock<int16_t>(filter, tmp_span_16, 1, tmp_span_16);
+  resampler.ResampleNextBlock<int32_t>(filter, tmp_span_32, 1, tmp_span_32);
+  resampler.ResampleNextBlock<int64_t>(filter, tmp_span_64, 1, tmp_span_64);
 }
 
 }  // namespace sparkbox::audio

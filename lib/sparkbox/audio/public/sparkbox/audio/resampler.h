@@ -27,6 +27,13 @@ class Resampler {
     uint8_t denominator;
     FilterCoefficients coefficients;
     FilterData data[2];
+
+    void ResetData() {
+      for (auto& data_it : data) {
+        data_it.w1 = 0;
+        data_it.w2 = 0;
+      }
+    }
   };
 
   template <typename T>
@@ -42,10 +49,11 @@ class Resampler {
                                           uint8_t ratio_denominator);
 
   // Resample the audio in samples_in to samples_out
-  template <typename InType, typename OutType>
-  static sparkbox::Status ResampleNextBlock(
-      ResampleFilter& filter, FormattedSamples<InType>& samples_in,
-      FormattedSamples<OutType>& samples_out);
+  template <typename SampleType>
+  static sparkbox::Status ResampleNextBlock(ResampleFilter& filter,
+                                            std::span<SampleType> samples_in,
+                                            uint8_t num_channels,
+                                            std::span<SampleType> samples_out);
 
  private:
   template <typename T>

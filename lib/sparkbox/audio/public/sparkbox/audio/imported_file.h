@@ -29,8 +29,16 @@ class ImportedFile {
   const uint8_t bytes_per_sample_;
   const uint32_t samples_bytes_count_;
 
-  uint8_t* const bytes() { return samples_bytes_.get(); }
-  uint32_t sample_count() {
+  void* bytes() { return samples_bytes_.get(); }
+
+  template <typename OutType>
+  OutType bytes_as() {
+    return reinterpret_cast<OutType>(samples_bytes_.get());
+  }
+
+  uint32_t sample_count() { return samples_bytes_count_ / bytes_per_sample_; }
+
+  uint32_t block_count() {
     return samples_bytes_count_ / bytes_per_sample_ / number_of_channels_;
   }
 

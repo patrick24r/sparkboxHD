@@ -131,6 +131,12 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
                      data_size, sample_rate, num_channels, bytes_per_sample)));
   status = fs_driver_.Read(file_id, imported_files_[file_name].get()->bytes(),
                            header.data_size, bytes_read);
+
+  if (header.sa)
+
+    SP_LOG_DEBUG("First 10 samples: %d, %d, %d, %d, %d",
+                 imported_files_[file_name].get()->bytes());
+
   if (status != Status::kOk) {
     SP_LOG_ERROR("Error reading wav header: %d", static_cast<int>(status));
     imported_files_.erase(imported_files_.find(file_name));

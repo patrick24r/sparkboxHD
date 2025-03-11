@@ -22,7 +22,7 @@ target_link_libraries(sparkbox.audio.manager_interface
 add_library(sparkbox.audio.manager STATIC
     audio_file_importer.cc    
     audio_manager.cc
-    channel.cc
+    stream.cc
     resampler.cc
 )
 target_include_directories(sparkbox.audio.manager

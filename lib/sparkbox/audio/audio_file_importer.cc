@@ -10,11 +10,11 @@
 namespace {
 using sparkbox::Status;
 using sparkbox::filesystem::FilesystemDriver;
-}  // namespace
+} // namespace
 
 namespace sparkbox::audio {
 
-Status AudioFileImporter::ImportAudioFiles(const std::string& directory) {
+Status AudioFileImporter::ImportAudioFiles(const std::string &directory) {
   // Check if directory exists
   if (!fs_driver_.Exists(directory)) {
     SP_LOG_ERROR("Directory '%s' does not exist", directory.c_str());
@@ -71,7 +71,7 @@ Status AudioFileImporter::ImportAudioFiles(const std::string& directory) {
   return Status::kOk;
 }
 
-ImportedFile* AudioFileImporter::GetImportedFile(const std::string& file_name) {
+ImportedFile *AudioFileImporter::GetImportedFile(const std::string &file_name) {
   if (imported_files_.count(file_name) != 1) {
     SP_LOG_ERROR("File '%s' not imported", file_name.c_str());
     return nullptr;
@@ -80,7 +80,7 @@ ImportedFile* AudioFileImporter::GetImportedFile(const std::string& file_name) {
   return imported_files_[file_name].get();
 }
 
-Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
+Status AudioFileImporter::ImportWavFile(const std::string &file_name) {
   // File exists and has correct extension. Try to import it
   Status status;
   int file_id;
@@ -132,11 +132,6 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
   status = fs_driver_.Read(file_id, imported_files_[file_name].get()->bytes(),
                            header.data_size, bytes_read);
 
-  if (header.sa)
-
-    SP_LOG_DEBUG("First 10 samples: %d, %d, %d, %d, %d",
-                 imported_files_[file_name].get()->bytes());
-
   if (status != Status::kOk) {
     SP_LOG_ERROR("Error reading wav header: %d", static_cast<int>(status));
     imported_files_.erase(imported_files_.find(file_name));
@@ -150,10 +145,10 @@ Status AudioFileImporter::ImportWavFile(const std::string& file_name) {
   return Status::kOk;
 }
 
-Status AudioFileImporter::ImportMp3File(const std::string& file_name) {
+Status AudioFileImporter::ImportMp3File(const std::string &file_name) {
   // File exists and has correct extension. Try to import it
   SP_LOG_ERROR("Importing mp3 files is currently unsupported");
   return Status::kUnsupported;
 }
 
-}  // namespace sparkbox::audio
+} // namespace sparkbox::audio

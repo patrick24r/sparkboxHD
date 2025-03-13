@@ -50,10 +50,10 @@
   (1000) /* In this non-real time simulated environment the tick frequency has \
             to be at least a multiple of the Win32 tick frequency, and         \
             therefore very slow. */
-#define configMINIMAL_STACK_SIZE                                         \
-  ((unsigned short)                                                      \
-       PTHREAD_STACK_MIN) /* The stack size being passed is equal to the \
-                             minimum stack size needed by pthread_create(). */
+#define configMINIMAL_STACK_SIZE                                               \
+  ((unsigned short)8192) /* The stack size being passed is equal to the        \
+                                         minimum stack size needed by          \
+                            pthread_create(). */
 #define configTOTAL_HEAP_SIZE ((size_t)(2048 * 1024))
 #define configMAX_TASK_NAME_LEN (12)
 #define configUSE_TRACE_FACILITY 1
@@ -127,7 +127,7 @@ void vConfigureTimerForRunTimeStats(
 
 #define configINCLUDE_MESSAGE_BUFFER_AMP_DEMO 0
 #if (configINCLUDE_MESSAGE_BUFFER_AMP_DEMO == 1)
-extern void vGenerateCoreBInterrupt(void* xUpdatedMessageBuffer);
+extern void vGenerateCoreBInterrupt(void *xUpdatedMessageBuffer);
 #define sbSEND_COMPLETED(pxStreamBuffer) vGenerateCoreBInterrupt(pxStreamBuffer)
 #endif /* configINCLUDE_MESSAGE_BUFFER_AMP_DEMO */
 
@@ -154,7 +154,7 @@ extern void vGenerateCoreBInterrupt(void* xUpdatedMessageBuffer);
 /* Prototype for the function used to print out.  In this case it prints to the
  * console before the network is connected then a UDP port after the network has
  * connected. */
-extern void vLoggingPrintf(const char* pcFormatString, ...);
+extern void vLoggingPrintf(const char *pcFormatString, ...);
 
 /* Set to 1 to print out debug messages.  If ipconfigHAS_DEBUG_PRINTF is set to
  * 1 then FreeRTOS_debug_printf should be defined to the function used to print

@@ -20,22 +20,20 @@
 #endif
 
 // Logging macros, all output to stderr
-#define SP_LOG_BASE(level, message, ...)                                    \
-  do {                                                                      \
-    fprintf(LOG_OUTPUT_DESTINATION, "%-5s | %s:%d | %s: ", level, __FILE__, \
-            __LINE__, __FUNCTION__);                                        \
-    fprintf(LOG_OUTPUT_DESTINATION, message __VA_OPT__(, ) __VA_ARGS__);    \
-    fprintf(LOG_OUTPUT_DESTINATION, "\n");                                  \
+#define SP_LOG_BASE(level, message, ...)                                       \
+  do {                                                                         \
+    fprintf(LOG_OUTPUT_DESTINATION, "%-5s | %s:%d | %s: " message "\n", level, \
+            __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);                  \
   } while (0)
 
-#define SP_LOG_ERROR(format, ...) \
+#define SP_LOG_ERROR(format, ...)                                              \
   SP_LOG_BASE(LOG_STRING_ERROR, format __VA_OPT__(, ) __VA_ARGS__)
 
-#define SP_LOG_WARN(format, ...) \
+#define SP_LOG_WARN(format, ...)                                               \
   SP_LOG_BASE(LOG_STRING_WARN, format __VA_OPT__(, ) __VA_ARGS__)
 
-#define SP_LOG_INFO(format, ...) \
+#define SP_LOG_INFO(format, ...)                                               \
   SP_LOG_BASE(LOG_STRING_INFO, format __VA_OPT__(, ) __VA_ARGS__)
 
-#define SP_LOG_DEBUG(format, ...) \
+#define SP_LOG_DEBUG(format, ...)                                              \
   SP_LOG_BASE(LOG_STRING_DEBUG, format __VA_OPT__(, ) __VA_ARGS__)
